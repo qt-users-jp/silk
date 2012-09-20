@@ -26,7 +26,7 @@
 
 import QtQuick.HTTP 1.1
 import QtQuick.HTML 4.01
-import "http://localhost:8080/examples/components/" as Remote
+import "http://git.qtquick.me/?p=silk.git;a=blob_plain;f=src/contents/examples/components/" as Remote
 
 Http {
     id: root

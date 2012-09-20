@@ -26,3 +26,6 @@ DEPLOYMENTFOLDERS = contents
 
 include(./deployment.pri)
 qtcAddDeployment()
+
+OTHER_FILES += \
+    contents/examples/components/qmldir
