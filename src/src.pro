@@ -10,11 +10,13 @@ include(./imports/imports.pri)
 
 SOURCES += main.cpp \
     silk.cpp \
-    silkservice.cpp
+    silkservice.cpp \
+    silkconfig.cpp
 
 HEADERS += \
     silk.h \
-    silkservice.h
+    silkservice.h \
+    silkconfig.h
 
 RESOURCES += \
     src.qrc
@@ -28,4 +30,5 @@ include(./deployment.pri)
 qtcAddDeployment()
 
 OTHER_FILES += \
-    contents/examples/components/qmldir
+    contents/examples/components/qmldir \
+    silkrc.default

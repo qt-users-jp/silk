@@ -37,16 +37,7 @@ public:
     explicit SilkService(int argc, char **argv, const QString &name)
         : QtService<QCoreApplication>(argc, argv, name)
         , server(0)
-        , address(QHostAddress::Any)
-        , port(0)
     {
-    }
-
-    void setServerInfo(const QMap<QString, QString> &documentRoots, const QHostAddress &address = QHostAddress::Any, quint16 port = 0)
-    {
-        this->documentRoots = documentRoots;
-        this->address = address;
-        this->port = port;
     }
 
 protected:
@@ -54,8 +45,6 @@ protected:
     {
         QCoreApplication *app = application();
         server = new Silk(app);
-        server->setDocumentRoots(documentRoots);
-        server->listen(address, port);
     }
 
     void stop()
@@ -65,9 +54,6 @@ protected:
 
 private:
     Silk *server;
-    QMap<QString, QString> documentRoots;
-    QHostAddress address;
-    int port;
 };
 
 #endif // SILKSERVICE_H

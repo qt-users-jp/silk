@@ -25,6 +25,7 @@
  */
 
 #include "silk.h"
+#include "silkconfig.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
@@ -61,6 +62,7 @@ private slots:
     void statusChanged();
     void loadingChanged(bool loading);
     void componentDestroyed(QObject *object);
+    void clearQmlCache();
 
 private:
     QString documentRootForRequest(const QHttpRequest *request) const;
@@ -74,6 +76,8 @@ private:
     Silk *q;
     QMimeDatabase mimeDatabase;
     QQmlEngine engine;
+    QVariantMap defaultConfig;
+    QVariantMap config;
     QMap<QObject*, QString> component2root;
     QMap<QObject*, QHttpRequest*> component2request;
     QMap<QObject*, QHttpReply*> component2reply;
@@ -90,7 +94,6 @@ Silk::Private::Private(Silk *parent)
     : QObject(parent)
     , q(parent)
 {
-    documentRoots.insert("*", ":/contents");
     qmlRegisterType<QtQuickHttpAbstractObject>();
     qmlRegisterType<QtQuickHttpObject>("QtQuick.HTTP", 1, 1, "Http");
     qmlRegisterType<QtQuickHttpTextObject>("QtQuick.HTTP", 1, 1, "Text");
@@ -106,6 +109,29 @@ Silk::Private::Private(Silk *parent)
     engine.addImportPath(":/imports");
 
     connect(q, SIGNAL(incomingConnection(QHttpRequest *, QHttpReply *)), this, SLOT(incomingConnection(QHttpRequest *, QHttpReply *)));
+
+    QHostAddress address;
+    if (SilkConfig::value("address").toString() == QLatin1String("*")) {
+        address = QHostAddress::Any;
+    } else if (SilkConfig::value("address").toString() == QLatin1String("localhost")) {
+        address = QHostAddress::LocalHost;
+    } else if (!address.setAddress(SilkConfig::value("address").toString())) {
+        qWarning() << "The address" << SilkConfig::value("address").toString() << "is not available.";
+        QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
+        return;
+    }
+
+    int port = SilkConfig::value("port").toInt();
+
+    QVariantMap roots = SilkConfig::value("roots").toMap();
+    foreach (const QString &key, roots.keys()) {
+        documentRoots.insert(key, roots.value(key).toString());
+    }
+
+    if (!q->listen(address, port)) {
+        qWarning() << q->errorString();
+        QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
+    }
 }
 
 QString Silk::Private::documentRootForRequest(const QHttpRequest *request) const
@@ -175,6 +201,7 @@ void Silk::Private::loadQml(const QFileInfo &fileInfo, QHttpRequest *request, QH
 
 void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
+    static bool cache = SilkConfig::value("cache").toBool();
     switch (component->status()) {
     case QQmlComponent::Null:
         // TODO: any check?
@@ -191,6 +218,8 @@ void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHt
         break;
     case QQmlComponent::Ready: {
         QtQuickHttpObject *http = qobject_cast<QtQuickHttpObject *>(component->create());
+        if (!cache)
+            connect(http, SIGNAL(destroyed()), this, SLOT(clearQmlCache()), Qt::QueuedConnection);
         http->method(QString::fromLatin1(request->method()));
         QUrl url(request->url());
         QString query(url.query());
@@ -268,6 +297,11 @@ void Silk::Private::close(QtQuickHttpObject *http)
         reply->close();
     }
     http->deleteLater();
+}
+
+void Silk::Private::clearQmlCache()
+{
+    engine.trimComponentCache();
 }
 
 void Silk::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply)

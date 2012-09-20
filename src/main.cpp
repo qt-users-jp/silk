@@ -26,65 +26,18 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QJsonDocument>
 #include <QtCore/QStringList>
 
 #include "silkservice.h"
 #include "silk.h"
-
-QVariantMap readConfigFile(const QString &fileName)
-{
-    QVariantMap ret;
-    QFile file(fileName);
-    if (file.open(QFile::ReadOnly)) {
-        QJsonParseError error;
-        QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
-        file.close();
-        if (error.error == QJsonParseError::NoError) {
-            ret = doc.toVariant().toMap();
-        } else {
-            qWarning() << error.offset << error.errorString();
-        }
-    } else {
-        qWarning() << file.error() << file.errorString();
-    }
-    return ret;
-}
-
-QVariantMap readConfig(int argc, char **argv)
-{
-    QVariantMap ret;
-    QString fileName = QDir::home().absoluteFilePath(".silkrc");
-    for (int i = 1; i < argc; i++) {
-        if (QString::fromUtf8(argv[i]) == QLatin1String("--config")) {
-            if (argc - i > 1) {
-                fileName = argv[++i];
-                break;
-            }
-        }
-    }
-
-    if (QFile::exists(fileName)) {
-        QVariantMap ret2 = readConfigFile(fileName);
-        foreach (const QString &key, ret2.keys()) {
-            ret.insert(key, ret2.value(key));
-        }
-    } else {
-        qWarning() << fileName;
-    }
-    return ret;
-}
+#include "silkconfig.h"
 
 int main(int argc, char *argv[])
 {
     int ret = 0;
-    QVariantMap defaultConfig = readConfigFile(":/silkrc.default");
-    QVariantMap config = readConfig(argc, argv);
-    QString serviceName("SilkServer");
-    if (config.contains("name")) {
-        serviceName.append("-").append(config.value("name").toString());
-    }
+    SilkConfig::initialize(argc, argv);
+
+    QString serviceName = SilkConfig::value("service").toString();
 
     QString serviceFilePath;
     bool install = false;
@@ -119,31 +72,6 @@ int main(int argc, char *argv[])
         }
 
         SilkService service(argc, argv, serviceName);
-        QMap<QString, QString> documentRoots;
-        int port = defaultConfig.value("port").toInt();
-        if (config.contains("port")) {
-            bool ok;
-            port = config.value("port").toInt(&ok);
-            if (!ok) {
-                port = defaultConfig.value("port").toInt();
-            }
-        }
-        if (config.contains("roots")) {
-            QVariant roots = config.value("roots");
-            if (roots.type() == QVariant::Map) {
-                QVariantMap rootsMap = config.value("roots").toMap();
-                foreach (const QString &key, rootsMap.keys()) {
-                    documentRoots.insert(key, rootsMap.value(key).toString());
-                }
-            }
-        }
-        if (documentRoots.isEmpty()) {
-            QVariantMap rootsMap = defaultConfig.value("roots").toMap();
-            foreach (const QString &key, rootsMap.keys()) {
-                documentRoots.insert(key, rootsMap.value(key).toString());
-            }
-        }
-        service.setServerInfo(documentRoots, QHostAddress::Any, port);
         ret = service.exec();
     } else if (install) {
         if (controller.isInstalled()) {
@@ -161,33 +89,9 @@ int main(int argc, char *argv[])
     } else {
         QCoreApplication app(argc, argv);
 
-        Silk server;
-        QMap<QString, QString> documentRoots;
-        int port = 8080;
-        if (config.contains("port")) {
-            bool ok;
-            port = config.value("port").toInt(&ok);
-            if (!ok) {
-                port = 8080;
-            }
-        }
+        new Silk(&app);
 
-        if (config.contains("roots")) {
-            QVariantMap roots = config.value("roots").toMap();
-            foreach (const QString &key, roots.keys()) {
-                documentRoots.insert(key, roots.value(key).toString());
-            }
-        }
-        if (documentRoots.isEmpty()) {
-            documentRoots.insert("*", ":/contents");
-        }
-        server.setDocumentRoots(documentRoots);
-        if (server.listen(QHostAddress::Any, port)) {
-            ret = app.exec();
-        } else {
-            qWarning() << server.errorString();
-            ret = -1;
-        }
+        ret = app.exec();
     }
     return ret;
 }

@@ -1,5 +1,7 @@
 {
-    "port": 8080
-    , "roots": {"*": ":/contents/" }
+    "service": "silk"
+    , "address": "*"
+    , "port": 8080
+    , "roots": {"*": ":/contents/"}
     , "cache": true
 }
