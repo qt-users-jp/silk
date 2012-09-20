@@ -106,25 +106,28 @@ Silk::Private::Private(Silk *parent)
 
     qmlRegisterType<QtQuickHttpJson>("QtQuick.JSON", 1, 0, "Json");
 
-    engine.setOfflineStoragePath(SilkConfig::value("storage").toString());
+    engine.setOfflineStoragePath(SilkConfig::value("storage_path").toString());
     engine.addImportPath(":/imports");
-
+    qDebug() << SilkConfig::value("import_path").toStringList();
+    foreach (const QString &importPath, SilkConfig::value("import_path").toStringList()) {
+        engine.addImportPath(importPath);
+    }
     connect(q, SIGNAL(incomingConnection(QHttpRequest *, QHttpReply *)), this, SLOT(incomingConnection(QHttpRequest *, QHttpReply *)));
 
     QHostAddress address;
-    if (SilkConfig::value("address").toString() == QLatin1String("*")) {
+    if (SilkConfig::value("listen_address").toString() == QLatin1String("*")) {
         address = QHostAddress::Any;
-    } else if (SilkConfig::value("address").toString() == QLatin1String("localhost")) {
+    } else if (SilkConfig::value("listen_address").toString() == QLatin1String("localhost")) {
         address = QHostAddress::LocalHost;
-    } else if (!address.setAddress(SilkConfig::value("address").toString())) {
-        qWarning() << "The address" << SilkConfig::value("address").toString() << "is not available.";
+    } else if (!address.setAddress(SilkConfig::value("listen_address").toString())) {
+        qWarning() << "The address" << SilkConfig::value("listen_address").toString() << "is not available.";
         QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
         return;
     }
 
-    int port = SilkConfig::value("port").toInt();
+    int port = SilkConfig::value("listen_port").toInt();
 
-    QVariantMap roots = SilkConfig::value("roots").toMap();
+    QVariantMap roots = SilkConfig::value("root_path").toMap();
     foreach (const QString &key, roots.keys()) {
         documentRoots.insert(key, roots.value(key).toString());
     }
@@ -202,7 +205,7 @@ void Silk::Private::loadQml(const QFileInfo &fileInfo, QHttpRequest *request, QH
 
 void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    static bool cache = SilkConfig::value("cache").toBool();
+    static bool cache = SilkConfig::value("qml_cache").toBool();
     switch (component->status()) {
     case QQmlComponent::Null:
         // TODO: any check?

@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     int ret = 0;
     SilkConfig::initialize(argc, argv);
 
-    QString serviceName = SilkConfig::value("service").toString();
+    QString serviceName = SilkConfig::value("service_name").toString();
 
     QString serviceFilePath;
     bool install = false;
