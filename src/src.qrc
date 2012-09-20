@@ -30,5 +30,6 @@
         <file>contents/examples/repeater.qml</file>
         <file>contents/examples/stylesheet1.qml</file>
         <file>contents/examples/stylesheet2.qml</file>
+        <file>silkrc.default</file>
     </qresource>
 </RCC>
