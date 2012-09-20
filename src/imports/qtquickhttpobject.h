@@ -34,6 +34,8 @@
 class QtQuickHttpObject : public QtQuickHttpAbstractObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString method READ method NOTIFY methodChanged)
+    ADDPROPERTY(const QString &, method, QString)
     Q_PROPERTY(QUrl url READ url NOTIFY urlChanged)
     ADDPROPERTY(const QUrl &, url, QUrl)
     Q_PROPERTY(QVariant requestHeader READ requestHeader NOTIFY requestHeaderChanged)
@@ -58,6 +60,7 @@ public:
 
 signals:
     void ready();
+    void methodChanged(const QString &method);
     void urlChanged(const QUrl &url);
     void requestHeaderChanged(const QVariant &requestHeader);
     void queryChanged(const QString &query);

@@ -79,6 +79,7 @@ private:
     QMap<QObject*, QHttpReply*> component2reply;
     QMap<QObject*, QString> component2message;
     QMap<QObject*, QtQuickHttpObject*> component2http;
+    QMap<QObject*, QHttpRequest*> http2request;
     QMap<QObject*, QHttpReply*> http2reply;
 
 public:
@@ -190,6 +191,7 @@ void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHt
         break;
     case QQmlComponent::Ready: {
         QtQuickHttpObject *http = qobject_cast<QtQuickHttpObject *>(component->create());
+        http->method(QString::fromLatin1(request->method()));
         QUrl url(request->url());
         QString query(url.query());
         url.setQuery(QString());
@@ -205,6 +207,7 @@ void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHt
         QMetaObject::invokeMethod(http, "ready");
 
         component2http.insert(component, http);
+        http2request.insert(http, request);
         http2reply.insert(http, reply);
         if (!http->loading()) {
             close(http);
@@ -228,6 +231,7 @@ void Silk::Private::componentDestroyed(QObject *object)
     }
     if (component2http.contains(object)) {
         QtQuickHttpObject *http = component2http.take(object);
+        http2request.remove(http);
         http2reply.remove(http);
     }
 }
@@ -248,7 +252,8 @@ void Silk::Private::loadingChanged(bool loading)
 
 void Silk::Private::close(QtQuickHttpObject *http)
 {
-    if (http2reply.contains(http)) {
+    if (http2request.contains(http) && http2reply.contains(http)) {
+        QHttpRequest *request = http2request.take(http);
         QHttpReply *reply = http2reply.take(http);
         reply->setStatus(http->status());
 
@@ -257,7 +262,9 @@ void Silk::Private::close(QtQuickHttpObject *http)
             QString value = header.value(key).toString();
             reply->setRawHeader(key.toUtf8(), value.toUtf8());
         }
-        reply->write(http->out());
+        if (request->method() == "GET" || request->method() == "POST") {
+            reply->write(http->out());
+        }
         reply->close();
     }
     http->deleteLater();
