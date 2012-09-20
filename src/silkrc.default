@@ -3,5 +3,6 @@
     , "address": "*"
     , "port": 8080
     , "roots": {"*": ":/contents/"}
+    , "storage": "../"
     , "cache": true
 }

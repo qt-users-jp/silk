@@ -106,6 +106,7 @@ Silk::Private::Private(Silk *parent)
 
     qmlRegisterType<QtQuickHttpJson>("QtQuick.JSON", 1, 0, "Json");
 
+    engine.setOfflineStoragePath(SilkConfig::value("storage").toString());
     engine.addImportPath(":/imports");
 
     connect(q, SIGNAL(incomingConnection(QHttpRequest *, QHttpReply *)), this, SLOT(incomingConnection(QHttpRequest *, QHttpReply *)));

@@ -116,7 +116,5 @@ Http {
         } else {
             lis.model = ret;
         }
-
-        console.debug(lis.model.length)
     }
 }
