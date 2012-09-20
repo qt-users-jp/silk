@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>contents/index.qml</file>
+        <file>contents/favicon.ico</file>
+        <file>contents/qt-logo.png</file>
+        <file>errors/403.qml</file>
+        <file>errors/404.qml</file>
+        <file>errors/500.qml</file>
+        <file>contents/examples/enabled.qml</file>
+        <file>contents/examples/index.qml</file>
+        <file>contents/examples/timer.qml</file>
+        <file>contents/examples/components/Rectangle.qml</file>
+        <file>contents/examples/class.qml</file>
+        <file>contents/examples/get.qml</file>
+        <file>contents/examples/javascript.qml</file>
+        <file>contents/examples/post.qml</file>
+        <file>contents/examples/reverse.js</file>
+        <file>contents/examples/remote.qml</file>
+        <file>contents/examples/chat.js</file>
+        <file>contents/examples/chat.qml</file>
+        <file>contents/examples/comment.qml</file>
+        <file>contents/examples/css.qml</file>
+        <file>contents/examples/file.qml</file>
+        <file>contents/examples/header.qml</file>
+        <file>contents/examples/iphone.qml</file>
+        <file>contents/examples/IPhoneCSS.qml</file>
+        <file>contents/examples/json.js</file>
+        <file>contents/examples/json.qml</file>
+        <file>contents/examples/jsondata.qml</file>
+        <file>contents/examples/repeater.qml</file>
+        <file>contents/examples/stylesheet1.qml</file>
+        <file>contents/examples/stylesheet2.qml</file>
+    </qresource>
+</RCC>
