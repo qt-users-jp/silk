@@ -428,7 +428,6 @@ QtServiceBasePrivate::QtServiceBasePrivate(const QString &name)
 
 QtServiceBasePrivate::~QtServiceBasePrivate()
 {
-
 }
 
 void QtServiceBasePrivate::startService()
@@ -460,10 +459,10 @@ int QtServiceBasePrivate::run(bool asService, const QStringList &argList)
     QtServiceStarter starter(this);
     QTimer::singleShot(0, &starter, SLOT(slotStart()));
     int res = q_ptr->executeApplication();
-    delete app;
 
     if (asService)
         sysCleanup();
+    delete app;
     return res;
 }
 

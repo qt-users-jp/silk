@@ -28,30 +28,30 @@
 #include <QtCore/QStringList>
 #include <QtCore/QDebug>
 
-#include "qhttpservice.h"
+#include "silkservice.h"
 #include "silk.h"
 
-int setupServer(Silk *server) {
+int setupServerInfo(int argc, char **argv, QMap<QString, QString> *documentRoots) {
     int ret = 8080;
-    QStringList args = QCoreApplication::arguments();
 
-    int i = args.indexOf(QLatin1String("--root"));
-    QMap<QString, QString> documentRoots;
-    while (i > -1 && args.length() > i + 1) {
-        QString key = args.at(++i);
-        QString value = args.at(++i);
-        documentRoots.insert(key, value);
-        i = args.indexOf(QLatin1String("--root"), i);
+    for (int i = 0; i < argc; i++) {
+        if (QString::fromUtf8(argv[i]) == QLatin1String("--root")) {
+            if (argc - i > 2) {
+                QString key = QString::fromUtf8(argv[++i]);
+                QString value = QString::fromUtf8(argv[++i]);
+                documentRoots->insert(key, value);
+            }
+        } else if (QString::fromUtf8(argv[i]) == QLatin1String("--port")) {
+            if (argc - i > 1) {
+                ret = QString::fromUtf8(argv[++i]).toInt();
+            }
+        }
     }
-    if (documentRoots.isEmpty()) {
-        documentRoots.insert("*", ":/contents");
-    }
-    server->setDocumentRoots(documentRoots);
 
-    i = args.indexOf(QLatin1String("--port"));
-    if (i > -1 && args.length() > i) {
-        ret = args.at(++i).toInt();
+    if (documentRoots->isEmpty()) {
+        documentRoots->insert("*", ":/contents");
     }
+
     return ret;
 }
 
@@ -65,8 +65,6 @@ int main(int argc, char *argv[])
     bool uninstall = false;
     bool daemon = false;
     bool kill = false;
-    bool pause = false;
-    bool resume = false;
     for (int i = 1; i < argc; i++) {
         QString opt(argv[i]);
         if (opt == QLatin1String("-d")) {
@@ -83,10 +81,6 @@ int main(int argc, char *argv[])
             uninstall = true;
         } else if (opt == QLatin1String("-k")) {
             kill = true;
-//        } else if (opt == QLatin1String("-p")) {
-//            pause = true;
-//        } else if (opt == QLatin1String("-r")) {
-//            resume = true;
         }
     }
 
@@ -97,10 +91,11 @@ int main(int argc, char *argv[])
                 controller.install(serviceFilePath);
             }
         }
-        Silk server;
-        int port = setupServer(&server);
 
-        QHttpService service(argc, argv, serviceName, &server, QHostAddress::Any, port);
+        SilkService service(argc, argv, serviceName);
+        QMap<QString, QString> documentRoots;
+        int port = setupServerInfo(argc, argv, &documentRoots);
+        service.setServerInfo(documentRoots, QHostAddress::Any, port);
         ret = service.exec();
     } else if (install) {
         if (controller.isInstalled()) {
@@ -115,15 +110,13 @@ int main(int argc, char *argv[])
         if (controller.isInstalled()) controller.uninstall();
     } else if (kill) {
         if (controller.isRunning()) controller.stop();
-    } else if (pause) {
-        if (controller.isRunning()) controller.pause();
-    } else if (resume) {
-        if (!controller.isRunning()) controller.resume();
     } else {
         QCoreApplication app(argc, argv);
 
+        QMap<QString, QString> documentRoots;
+        int port = setupServerInfo(argc, argv, &documentRoots);
         Silk server;
-        int port = setupServer(&server);
+        server.setDocumentRoots(documentRoots);
         server.listen(QHostAddress::Any, port);
 
         ret = app.exec();

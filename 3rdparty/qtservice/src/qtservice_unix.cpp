@@ -39,8 +39,6 @@
 
 #include "qtservice.h"
 #include "qtservice_p.h"
-#include "qtunixsocket.h"
-#include "qtunixserversocket.h"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QStringList>
 #include <QtCore/QFile>
@@ -57,6 +55,8 @@
 #include <QtCore/QMap>
 #include <QtCore/QSettings>
 #include <QtCore/QProcess>
+#include <QtNetwork/QLocalServer>
+#include <QtNetwork/QLocalSocket>
 
 static QString encodeName(const QString &name, bool allowUpper = false)
 {
@@ -84,26 +84,21 @@ static QString login()
     return l;
 }
 
-static QString socketPath(const QString &serviceName)
-{
-    QString sn = encodeName(serviceName);
-    return QString(QLatin1String("/var/tmp/") + sn + QLatin1String(".") + login());
-}
-
 static bool sendCmd(const QString &serviceName, const QString &cmd)
 {
-    bool retValue = false;
-    QtUnixSocket sock;
-    if (sock.connectTo(socketPath(serviceName))) {
-        sock.write(QString(cmd+"\r\n").toLatin1().constData());
+    bool ret = false;
+    QLocalSocket sock;
+    sock.connectToServer(serviceName);
+    if (sock.waitForConnected()) {
+        sock.write(QString(cmd+"\r\n").toLatin1());
         sock.flush();
         sock.waitForReadyRead(-1);
-        QString reply = sock.readAll();
+        QString reply = QString::fromLatin1(sock.readAll());
         if (reply == QLatin1String("true"))
-            retValue = true;
+            ret = true;
         sock.close();
     }
-    return retValue;
+    return ret;
 }
 
 static QString absPath(const QString &path)
@@ -148,7 +143,7 @@ QString QtServiceBasePrivate::filePath() const
 
 QString QtServiceController::serviceDescription() const
 {
-    QSettings settings(QSettings::SystemScope, "QtSoftware");
+    QSettings settings(QSettings::SystemScope, "QtProject");
     settings.beginGroup("services");
     settings.beginGroup(serviceName());
 
@@ -162,7 +157,7 @@ QString QtServiceController::serviceDescription() const
 
 QtServiceController::StartupType QtServiceController::startupType() const
 {
-    QSettings settings(QSettings::SystemScope, "QtSoftware");
+    QSettings settings(QSettings::SystemScope, "QtProject");
     settings.beginGroup("services");
     settings.beginGroup(serviceName());
 
@@ -176,7 +171,7 @@ QtServiceController::StartupType QtServiceController::startupType() const
 
 QString QtServiceController::serviceFilePath() const
 {
-    QSettings settings(QSettings::SystemScope, "QtSoftware");
+    QSettings settings(QSettings::SystemScope, "QtProject");
     settings.beginGroup("services");
     settings.beginGroup(serviceName());
 
@@ -190,7 +185,7 @@ QString QtServiceController::serviceFilePath() const
 
 bool QtServiceController::uninstall()
 {
-    QSettings settings(QSettings::SystemScope, "QtSoftware");
+    QSettings settings(QSettings::SystemScope, "QtProject");
     settings.beginGroup("services");
 
     settings.remove(serviceName());
@@ -219,7 +214,8 @@ bool QtServiceController::start(const QStringList &arguments)
 
 bool QtServiceController::stop()
 {
-    return sendCmd(serviceName(), QLatin1String("terminate"));
+    bool ret = sendCmd(serviceName(), QLatin1String("terminate"));
+    return ret;
 }
 
 bool QtServiceController::pause()
@@ -239,7 +235,7 @@ bool QtServiceController::sendCommand(int code)
 
 bool QtServiceController::isInstalled() const
 {
-    QSettings settings(QSettings::SystemScope, "QtSoftware");
+    QSettings settings(QSettings::SystemScope, "QtProject");
     settings.beginGroup("services");
 
     QStringList list = settings.childGroups();
@@ -257,10 +253,10 @@ bool QtServiceController::isInstalled() const
 
 bool QtServiceController::isRunning() const
 {
-    QtUnixSocket sock;
-    if (sock.connectTo(socketPath(serviceName())))
-        return true;
-    return false;
+    QLocalSocket sock;
+    sock.connectToServer(serviceName());
+    bool ret = sock.waitForConnected();
+    return ret;
 }
 
 
@@ -268,7 +264,7 @@ bool QtServiceController::isRunning() const
 
 ///////////////////////////////////
 
-class QtServiceSysPrivate : public QtUnixServerSocket
+class QtServiceSysPrivate : public QLocalServer
 {
     Q_OBJECT
 public:
@@ -280,23 +276,19 @@ public:
     QtServiceBase::ServiceFlags serviceFlags;
 
 protected:
-#if QT_VERSION < 0x050000
-    void incomingConnection(int socketDescriptor);
-#else
-    void incomingConnection(qintptr socketDescriptor);
-#endif
+    void incomingConnection(quintptr socketDescriptor);
 
 private slots:
     void slotReady();
     void slotClosed();
 
 private:
-    QString getCommand(const QTcpSocket *socket);
-    QMap<const QTcpSocket *, QString> cache;
+    QString getCommand(const QLocalSocket *socket);
+    QMap<const QLocalSocket *, QString> cache;
 };
 
 QtServiceSysPrivate::QtServiceSysPrivate()
-    : QtUnixServerSocket(), ident(0), serviceFlags(0)
+    : QLocalServer(), ident(0), serviceFlags(0)
 {
 }
 
@@ -304,15 +296,12 @@ QtServiceSysPrivate::~QtServiceSysPrivate()
 {
     if (ident)
         delete[] ident;
+    close();
 }
 
-#if QT_VERSION < 0x050000
-void QtServiceSysPrivate::incomingConnection(int socketDescriptor)
-#else
-void QtServiceSysPrivate::incomingConnection(qintptr socketDescriptor)
-#endif
+void QtServiceSysPrivate::incomingConnection(quintptr socketDescriptor)
 {
-    QTcpSocket *s = new QTcpSocket(this);
+    QLocalSocket *s = new QLocalSocket(this);
     s->setSocketDescriptor(socketDescriptor);
     connect(s, SIGNAL(readyRead()), this, SLOT(slotReady()));
     connect(s, SIGNAL(disconnected()), this, SLOT(slotClosed()));
@@ -320,8 +309,8 @@ void QtServiceSysPrivate::incomingConnection(qintptr socketDescriptor)
 
 void QtServiceSysPrivate::slotReady()
 {
-    QTcpSocket *s = (QTcpSocket *)sender();
-    cache[s] += QString(s->readAll());
+    QLocalSocket *s = qobject_cast<QLocalSocket *>(sender());
+    cache[s] += QString::fromUtf8(s->readAll());
     QString cmd = getCommand(s);
     while (!cmd.isEmpty()) {
         bool retValue = false;
@@ -361,11 +350,10 @@ void QtServiceSysPrivate::slotReady()
 
 void QtServiceSysPrivate::slotClosed()
 {
-    QTcpSocket *s = (QTcpSocket *)sender();
-    s->deleteLater();
+    sender()->deleteLater();
 }
 
-QString QtServiceSysPrivate::getCommand(const QTcpSocket *socket)
+QString QtServiceSysPrivate::getCommand(const QLocalSocket *socket)
 {
     int pos = cache[socket].indexOf("\r\n");
     if (pos >= 0) {
@@ -390,8 +378,8 @@ bool QtServiceBasePrivate::sysInit()
 
 void QtServiceBasePrivate::sysSetPath()
 {
-    if (sysd)
-        sysd->setPath(socketPath(controller.serviceName()));
+    controller.serviceName();
+    sysd->listen(controller.serviceName());
 }
 
 void QtServiceBasePrivate::sysCleanup()
@@ -419,7 +407,7 @@ bool QtServiceBasePrivate::install(const QString &account, const QString &passwo
 {
     Q_UNUSED(account)
     Q_UNUSED(password)
-    QSettings settings(QSettings::SystemScope, "QtSoftware");
+    QSettings settings(QSettings::SystemScope, "QtProject");
 
     settings.beginGroup("services");
     settings.beginGroup(controller.serviceName());

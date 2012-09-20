@@ -10,11 +10,11 @@ include(./imports/imports.pri)
 
 SOURCES += main.cpp \
     silk.cpp \
-    qhttpservice.cpp
+    silkservice.cpp
 
 HEADERS += \
     silk.h \
-    qhttpservice.h
+    silkservice.h
 
 RESOURCES += \
     src.qrc

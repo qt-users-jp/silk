@@ -25,45 +25,49 @@
  */
 
 
-#ifndef QHTTPSERVICE_H
-#define QHTTPSERVICE_H
+#ifndef SILKSERVICE_H
+#define SILKSERVICE_H
 
 #include <QtServiceBase>
-#include "qhttpserver.h"
+#include "silk.h"
 
-class QHttpService : public QtService<QCoreApplication>
+class SilkService : public QtService<QCoreApplication>
 {
 public:
-    explicit QHttpService(int argc, char **argv, const QString &name, QHttpServer *server, const QHostAddress &address = QHostAddress::Any, quint16 port = 0)
+    explicit SilkService(int argc, char **argv, const QString &name)
         : QtService<QCoreApplication>(argc, argv, name)
-        , server(server)
-        , address(address)
-        , port(port)
+        , server(0)
+        , address(QHostAddress::Any)
+        , port(0)
     {
-        setServiceDescription("A test server.");
-        setServiceFlags(CanBeSuspended);
+    }
+
+    void setServerInfo(const QMap<QString, QString> &documentRoots, const QHostAddress &address = QHostAddress::Any, quint16 port = 0)
+    {
+        this->documentRoots = documentRoots;
+        this->address = address;
+        this->port = port;
     }
 
 protected:
     void start()
     {
+        QCoreApplication *app = application();
+        server = new Silk(app);
+        server->setDocumentRoots(documentRoots);
         server->listen(address, port);
     }
 
-    void pause()
+    void stop()
     {
-
-    }
-
-    void resume()
-    {
-
+        server->close();
     }
 
 private:
-    QHttpServer *server;
+    Silk *server;
+    QMap<QString, QString> documentRoots;
     QHostAddress address;
     int port;
 };
 
-#endif // QHTTPSERVICE_H
+#endif // SILKSERVICE_H
