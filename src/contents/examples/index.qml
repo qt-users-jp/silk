@@ -25,84 +25,81 @@
  */
 
 import QtQuick.HTTP 1.1
-import QtQuick.HTML 4.01
+import QtQuick.HTML 5.0
+import '../'
 
-Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+SilkPageTemplate {
+    id: page
 
-    Html {
-        Head {
-            Title { id: title; text: "Examples" }
+    subtitle: 'Examples'
+
+    Article {
+        Header {
+            H2 { text: "silk qml examples" }
         }
 
-        Body {
-            H1 { text: title.text }
+        Section {
+            H3 { text: "Basic HTML" }
             Ul {
+                Li { A { href: "%1.qml".arg(text); text: "class" } }
+                Li { A { href: "%1.qml".arg(text); text: "repeater" } }
+                Li { A { href: "%1.qml".arg(text); text: "comment" } }
                 Li {
-                    Text { text: "HTML Basics" }
+                    A { href: "%1.qml".arg(text); text: "json" }
                     Ul {
-                        Li { A { href: "%1.qml".arg(text); text: "class" } }
-                        Li { A { href: "%1.qml".arg(text); text: "repeater" } }
-                        Li { A { href: "%1.qml".arg(text); text: "comment" } }
-                        Li {
-                            A { href: "%1.qml".arg(text); text: "json" }
-                            Ul {
-                                Li { A { href: "%1.qml".arg(text); text: "jsondata" } }
-                            }
-                        }
+                        Li { A { href: "%1.qml".arg(text); text: "jsondata" } }
                     }
                 }
-                Li {
-                    Text { text: "CSS Basics" }
-                    Ul {
-                        Li { A { href: "%1.qml".arg(text); text: "stylesheet1" } }
-                        Li {
-                            A { href: "%1.qml".arg(text); text: "stylesheet2" }
-                            Ul {
-                                Li { A { href: "%1.qml".arg(text); text: "css" } }
-                            }
-                        }
-                    }
-                }
-                Li {
-                    Text { text: "CGI Basics" }
-                    Ul {
-                        Li { A { href: "%1.qml".arg(text); text: "header" } }
-                        Li { A { href: "%1.qml".arg(text); text: "get" } }
-                        Li { A { href: "%1.qml".arg(text); text: "post" } }
-                        Li { A { href: "%1.qml".arg(text); text: "enabled" } }
-                    }
-                }
+            }
+        }
 
+        Section {
+            H3 { text: "Basic CSS" }
+            Ul {
+                Li { A { href: "%1.qml".arg(text); text: "stylesheet1" } }
                 Li {
-                    Text { text: 'Advanced' }
+                    A { href: "%1.qml".arg(text); text: "stylesheet2" }
                     Ul {
-                        Li { A { href: "%1.qml".arg(text); text: "timer" } }
-                        Li { A { href: "%1.qml".arg(text); text: "file" } }
-                        Li { A { href: "%1.qml".arg(text); text: "remote" } }
-                        Li {
-                            A { href: "%1.qml".arg(text); text: "javascript" }
-                            Ul {
-                                Li { A { href: "%1.js".arg(text); text: "reverse" } }
-                            }
-                        }
-                        Li {
-                            A { href: "%1.qml".arg(text); text: "chat" }
-                            Ul {
-                                Li { A { href: "%1.js".arg(text); text: "chat" } }
-                            }
-                        }
-                        Li {
-                            A { href: "%1.qml".arg(text); text: "iphone" }
-                            Ul {
-                                Li { A { href: "%1.qml".arg(text); text: "IPhoneCSS" } }
-                            }
-                        }
+                        Li { A { href: "%1.qml".arg(text); text: "css" } }
                     }
                 }
+            }
+        }
 
+        Section {
+            H3 { text: "Basic CGI" }
+            Ul {
+                Li { A { href: "%1.qml".arg(text); text: "header" } }
+                Li { A { href: "%1.qml".arg(text); text: "get" } }
+                Li { A { href: "%1.qml".arg(text); text: "post" } }
+                Li { A { href: "%1.qml".arg(text); text: "enabled" } }
+            }
+        }
+
+        Section {
+            H3 { text: "Advanced" }
+            Ul {
+                Li { A { href: "%1.qml".arg(text); text: "timer" } }
+                Li { A { href: "%1.qml".arg(text); text: "file" } }
+                Li { A { href: "%1.qml".arg(text); text: "remote" } }
+                Li {
+                    A { href: "%1.qml".arg(text); text: "javascript" }
+                    Ul {
+                        Li { A { href: "%1.js".arg(text); text: "reverse" } }
+                    }
+                }
+                Li {
+                    A { href: "%1.qml".arg(text); text: "chat" }
+                    Ul {
+                        Li { A { href: "%1.js".arg(text); text: "chat" } }
+                    }
+                }
+                Li {
+                    A { href: "%1.qml".arg(text); text: "iphone" }
+                    Ul {
+                        Li { A { href: "%1.qml".arg(text); text: "IPhoneCSS" } }
+                    }
+                }
             }
         }
     }

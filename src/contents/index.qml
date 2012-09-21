@@ -28,12 +28,49 @@ import QtQuick.HTTP 1.1
 import QtQuick.HTML 5.0
 
 SilkPageTemplate {
-    id: root
+    id: page
 
-    Div {
-        property int __width: 200
-        property int __height: 200
-        property string __color: 'red'
-        property string style: "width: %1px; height: %2px; background-color: %3".arg(__width).arg(__height).arg(__color)
+    subtitle: "a simple web framework"
+
+    Article {
+        Header {
+            H2 { text: "Requirements" }
+            Ul {
+                Li {
+                    A { href: "http://qt-project.org/wiki/Qt_5.0"; text: "Qt5" }
+                    Ul {
+                        Li { text: "QtCore" }
+                        Li { text: "QtNetwork" }
+                        Li { text: "QtQml" }
+                    }
+                }
+            }
+        }
+
+        Section {
+            H2 { text: "Clone source code" }
+            Pre { text: "$ git clone git://git.qtquick.me/silk.git" }
+            Pre { text: "$ cd silk" }
+            Pre { text: "$ git submodule update --init" }
+        }
+
+        Section {
+            H2 { text: "Build" }
+            Pre { text: "$ qt5/bin/qmake" }
+            Pre { text: "$ make" }
+        }
+
+        Section {
+            H2 { text: "Run" }
+            Pre { text: "$ ./bin/silk" }
+            P {
+                Text { text: "open&nbsp;" }
+                A { href: "http://localhost:8080/"; text: "http://localhost:8080/" }
+            }
+        }
+
+        Footer {
+            H2 { A { href: "./examples/"; text: "Examples" } }
+        }
     }
 }

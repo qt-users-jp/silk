@@ -207,7 +207,6 @@ CSSRule {
     property string font
     property string font_synthesis
     property string src
-    property string font_style
     property string unicode_range
     property string font_variant
     property string font_feature_settings

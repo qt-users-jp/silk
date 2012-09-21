@@ -32,66 +32,109 @@ Http {
     status: 200
     responseHeader: {"Content-Type": "text/html; charset=utf-8;"}
 
-    default property alias contents: body.contents
+    property string subtitle
+    default property alias contents: main.contents
 
     DocType {}
 
-    Html {
-        Head { Title { id: title; text: "silk - a http server for QML" } }
+    Comment { text: '[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]' } Text { text: "\n" }
+    Comment { text: '[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]' } Text { text: "\n" }
+    Comment { text: '[if IE 8]><html class="no-js lt-ie9"> <![endif]' } Text { text: "\n" }
+    Comment { text: '[if gt IE 8]><!' } Text { text: '<html class="no-js">' } Comment { text: '<![endif]' } Text { text: "\n" }
 
-        Body {
-            id: body
-            Aside {
-                Ul {
-                    Li { text: "Introduction" }
-                    Li { text: "Examples and Demos" }
-                    Li {
-                        Text { text: "Getting Started" }
-                        Ul {
-                            Li { text: "Download" }
-                            Li { text: "Installation" }
-                        }
+    Head {
+        Meta { charset: "utf-8" }
+        Meta { http_equiv: "X-UA-Compatible"; content: "IE=edge,chrome=1" }
+        Title { text: 'silk - %1'.arg(root.subtitle) }
+        Meta { name: "description"; content: "" }
+        Meta { name: "viewport"; content: "width=device-width" }
+        Link { rel: "stylesheet"; href: "/3rdparty/css/normalize.min.css" }
+        Link { rel: "stylesheet"; href: "/css.qml" }
+        Script { src: "/3rdparty/js/modernizr-2.6.1-respond-1.1.0.min.js" }
+    }
+
+    Body {
+        Comment { text: '[if lt IE 7]' +
+            '<p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>' +
+        '<![endif]' }
+
+        Div {
+            _class: "header-container"
+            Header {
+                _class: "wrapper clearfix"
+                H1 {
+                    _class: "title"
+                    A {
+                        href: '/'
+                        text: 'silk'
                     }
-                    Li {
-                        Text { text: "Tutorials" }
-                        Ul {
-                            Li { text: "Contents" }
-                            Li { text: "Service" }
-                        }
+
+                    Text {
+                        enabled: root.subtitle.length > 0
+                        text: ' - %1'.arg(root.subtitle)
                     }
                 }
-            }
 
-            H1 { text: title.text }
-
-            H2 { text: "Requirements" }
-            Ul {
-                Li {
-                    A { href: "http://qt-project.org/wiki/Qt_5.0"; text: "Qt5" }
+                Nav {
                     Ul {
-                        Li { text: "QtCore" }
-                        Li { text: "QtNetwork" }
-                        Li { text: "QtQml" }
+                        Li { A { href: "#"; text: "Download" } }
+                        Li { A { href: "/examples/"; text: "Examples" } }
+                        Li { A { href: "#"; text: "Tutorials" } }
                     }
                 }
             }
+        }
 
-            H2 { text: "Clone source code" }
-            Pre { text: "$ git clone git://git.qtquick.me/silk.git" }
-            Pre { text: "$ cd silk" }
-            Pre { text: "$ git submodule update --init" }
+        Div {
+            _class: "main-container"
+            Div {
+                id: main
+                _class: "main wrapper clearfix"
 
-            H2 { text: "Build" }
-            Pre { text: "$ qt5/bin/qmake" }
-            Pre { text: "$ make" }
-
-            H2 { text: "Run" }
-            Pre { text: "$ ./bin/silk" }
-            P {
-                Text { text: "open&nbsp;" }
-                A { href: "http://localhost:8080/"; text: "http://localhost:8080/" }
+                Aside {
+                    H3 { text: "Contents" }
+                    Ul {
+                        Li { text: "Introduction" }
+                        Li { text: "Examples" }
+                        Li {
+                            Text { text: "Getting Started" }
+                            Ul {
+                                Li { text: "Download" }
+                                Li { text: "Installation" }
+                            }
+                        }
+                        Li {
+                            Text { text: "Tutorials" }
+                            Ul {
+                                Li { text: "Contents" }
+                                Li { text: "Service" }
+                            }
+                        }
+                    }
+                }
             }
-            H2 { A { href: "./examples/"; text: "Examples" } }
+        }
+
+        Div {
+            _class: "footer-container"
+            Footer {
+                _class: "wrapper"
+                H3 {
+                    A {
+                        href: 'http://silk.qtquick.me/'
+                        text: "Copyright (c) 2012 Silk Project. All rights reserved."
+                    }
+                }
+            }
+        }
+
+        Script {
+            src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'
+        }
+
+        Script {
+            text: "window.jQuery || document.write('<script src=\"/3rdparty/js/jquery-1.8.1.min.js\"><\\/script>')"
         }
     }
+    Text { text: "\n</html>" }
 }

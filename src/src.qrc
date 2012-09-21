@@ -32,5 +32,11 @@
         <file>contents/examples/stylesheet2.qml</file>
         <file>silkrc.default</file>
         <file>contents/test.qml</file>
+        <file>contents/css.qml</file>
+        <file>contents/SilkPageTemplate.qml</file>
+        <file>contents/3rdparty/css/normalize.css</file>
+        <file>contents/3rdparty/css/normalize.min.css</file>
+        <file>contents/3rdparty/js/jquery-1.8.1.min.js</file>
+        <file>contents/3rdparty/js/modernizr-2.6.1-respond-1.1.0.min.js</file>
     </qresource>
 </RCC>

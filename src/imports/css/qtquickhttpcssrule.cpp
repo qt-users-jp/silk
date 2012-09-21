@@ -61,31 +61,55 @@ void QtQuickHttpCssRule::generate(QList<QByteArray>& list, const QStringList &se
 
     QStringList newSelectors;
     if (selectors.isEmpty()) {
-        if (!attributes.isEmpty()) {
-            list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(m_selector).arg(attributes.join("\r\n    ")).toUtf8());
+        if (m_selector.startsWith("@media ")) {
+            QList<QByteArray> list2;
+            foreach (const QObject *child, contentsList()) {
+                const QtQuickHttpCssRule *css = qobject_cast<const QtQuickHttpCssRule *>(child);
+                if (css && css->enabled() && !css->selector().isEmpty()) {
+                    css->generate(list2);
+                }
+            }
+            QString ret;
+            foreach (const QByteArray &l, list2) {
+                ret.append(QString::fromUtf8(l));
+            }
+            ret.replace("\r\n", "\r\n    ");
+            list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(m_selector).arg(ret).toUtf8());
+        } else {
+            if (!attributes.isEmpty()) {
+                list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(m_selector).arg(attributes.join("\r\n    ")).toUtf8());
+            }
+            newSelectors.append(m_selector);
+            foreach (const QObject *child, contentsList()) {
+                const QtQuickHttpCssRule *css = qobject_cast<const QtQuickHttpCssRule *>(child);
+                if (css && css->enabled() && !css->selector().isEmpty()) {
+                    css->generate(list, newSelectors);
+                }
+            }
         }
-        newSelectors.append(m_selector);
     } else {
         foreach (const QString &s, selectors) {
             QString newSelector;
-            if (m_selector.startsWith(" ") || m_selector.startsWith(".") || m_selector.startsWith("#") || m_selector.startsWith(":") || m_selector.startsWith("[")) {
-                newSelector = QString("%1%2").arg(s).arg(m_selector);
-            } else if (m_selector.startsWith("+")) {
-                    newSelector = QString("%1 %2").arg(s).arg(m_selector);
-            } else {
-                newSelector = QString("%1 > %2").arg(s).arg(m_selector);
-            }
-            if (!attributes.isEmpty()) {
-                list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(newSelector).arg(attributes.join("\r\n    ")).toUtf8());
+            foreach (const QString &s2, m_selector.split(',')) {
+                if (s2.startsWith(".") || s2.startsWith("#") || s2.startsWith(":") || s2.startsWith("[")) {
+                    newSelector = QString("%1%2").arg(s).arg(s2);
+                } else if (s2.startsWith(">") || s2.startsWith("+")) {
+                        newSelector = QString("%1 %2").arg(s).arg(s2);
+                } else {
+                    newSelector = QString("%1 %2").arg(s).arg(s2);
+                }
+                if (!attributes.isEmpty()) {
+                    list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(newSelector).arg(attributes.join("\r\n    ")).toUtf8());
+                }
             }
             newSelectors.append(newSelector);
         }
-    }
 
-    foreach (const QObject *child, contentsList()) {
-        const QtQuickHttpCssRule *css = qobject_cast<const QtQuickHttpCssRule *>(child);
-        if (css && css->enabled() && !css->selector().isEmpty()) {
-            css->generate(list, newSelectors);
+        foreach (const QObject *child, contentsList()) {
+            const QtQuickHttpCssRule *css = qobject_cast<const QtQuickHttpCssRule *>(child);
+            if (css && css->enabled() && !css->selector().isEmpty()) {
+                css->generate(list, newSelectors);
+            }
         }
     }
 }
@@ -99,6 +123,7 @@ QStringList QtQuickHttpCssRule::parseAttributes(const QtQuickHttpCssRule *css) c
         QMetaProperty p = css->metaObject()->property(i);
         QString key(p.name());
         if (key.startsWith("__")) continue;
+        if (key.startsWith("_float")) key = key.mid(1);
         key.replace('_', "-");
 
         switch (p.type()) {

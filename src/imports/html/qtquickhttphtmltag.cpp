@@ -50,7 +50,7 @@ QByteArray QtQuickHttpHtmlTag::out() const
         if (key.startsWith("__")) continue;
         if (key.startsWith("_"))
             key = key.mid(1);
-        key.replace('__', ":");
+        key.replace("__", ":");
         key.replace('_', "-");
 
         switch (p.type()) {

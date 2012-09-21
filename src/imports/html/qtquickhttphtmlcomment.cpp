@@ -33,7 +33,7 @@ QtQuickHttpHtmlComment::QtQuickHttpHtmlComment(QObject *parent)
 
 QByteArray QtQuickHttpHtmlComment::out() const
 {
-    QByteArray ret("<!-- ");
+    QByteArray ret("<!--");
     if (m_text.isNull()) {
         foreach (const QObject *child, contentsList()) {
             const QtQuickHttpAbstractObject *object = qobject_cast<const QtQuickHttpAbstractObject *>(child);
@@ -44,6 +44,6 @@ QByteArray QtQuickHttpHtmlComment::out() const
     } else {
         ret.append(m_text.toUtf8());
     }
-    ret.append(" -->");
+    ret.append("-->");
     return ret;
 }
