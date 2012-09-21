@@ -99,16 +99,24 @@ Silk::Private::Private(Silk *parent)
     qmlRegisterType<QtQuickHttpTextObject>("QtQuick.HTTP", 1, 1, "Text");
     qmlRegisterType<QtQuickHttpRepeater>("QtQuick.HTTP", 1, 1, "Repeater");
 
+    /* HTML 4.01 */
     qmlRegisterType<QtQuickHttpHtmlTag>("QtQuick.HTML", 4, 01, "Tag");
     qmlRegisterType<QtQuickHttpHtmlComment>("QtQuick.HTML", 4, 01, "Comment");
 
+    /* HTML 5.0 */
+    qmlRegisterType<QtQuickHttpHtmlTag>("QtQuick.HTML", 5, 0, "Tag");
+    qmlRegisterType<QtQuickHttpHtmlComment>("QtQuick.HTML", 5, 0, "Comment");
+
+    /* CSS 2.1 */
     qmlRegisterType<QtQuickHttpCssRule>("QtQuick.CSS", 2, 1, "CSSRule");
+
+    /* CSS 3.0 */
+    qmlRegisterType<QtQuickHttpCssRule>("QtQuick.CSS", 3, 0, "CSSRule");
 
     qmlRegisterType<QtQuickHttpJson>("QtQuick.JSON", 1, 0, "Json");
 
     engine.setOfflineStoragePath(SilkConfig::value("storage_path").toString());
     engine.addImportPath(":/imports");
-    qDebug() << SilkConfig::value("import_path").toStringList();
     foreach (const QString &importPath, SilkConfig::value("import_path").toStringList()) {
         engine.addImportPath(importPath);
     }

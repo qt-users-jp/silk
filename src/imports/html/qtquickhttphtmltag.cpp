@@ -50,6 +50,7 @@ QByteArray QtQuickHttpHtmlTag::out() const
         if (key.startsWith("__")) continue;
         if (key.startsWith("_"))
             key = key.mid(1);
+        key.replace('__', ":");
         key.replace('_', "-");
 
         switch (p.type()) {
@@ -61,8 +62,12 @@ QByteArray QtQuickHttpHtmlTag::out() const
             } else if (key == QLatin1String("text")) {
                 text = value;
             } else if (key == QLatin1String("objectName")) {
-            } else if (!value.isEmpty()){
-                attributes.append(QString(" %1=\"%2\"").arg(key).arg(value));
+            } else if (!value.isNull()){
+                if (value.isEmpty()) {
+                    attributes.append(QString(" %1").arg(key));
+                } else {
+                    attributes.append(QString(" %1=\"%2\"").arg(key).arg(value));
+                }
             }
             break; }
         case QVariant::Bool: {

@@ -25,47 +25,15 @@
  */
 
 import QtQuick.HTTP 1.1
-import QtQuick.HTML 4.01
+import QtQuick.HTML 5.0
 
-Http {
+SilkPageTemplate {
     id: root
-    status: 200
-    responseHeader: {"Content-Type": "text/html; charset=utf-8;"}
 
-    Html {
-        Head { Title { id: title; text: "silk - a http server for QML" } }
-
-        Body {
-            H1 { text: title.text }
-
-            H2 { text: "Requirements" }
-            Ul {
-                Li {
-                    A { href: "http://qt-project.org/wiki/Qt_5.0"; text: "Qt 5" }
-                    Ul {
-                        Li { text: "QtCore" }
-                        Li { text: "QtNetwork" }
-                        Li { text: "QtQml" }
-                    }
-                }
-            }
-
-            H2 { text: "Clone source code" }
-            Pre { text: "$ git clone git://git.qtquick.me/silk.git" }
-            Pre { text: "$ cd silk" }
-            Pre { text: "$ git submodule update --init" }
-
-            H2 { text: "Build" }
-            Pre { text: "$ qt5/bin/qmake" }
-            Pre { text: "$ make" }
-
-            H2 { text: "Run" }
-            Pre { text: "$ ./bin/silk" }
-            P {
-                Text { text: "open&nbsp;" }
-                A { href: "http://localhost:8080/"; text: "http://localhost:8080/" }
-            }
-            H2 { A { href: "./examples/"; text: "Examples" } }
-        }
+    Div {
+        property int __width: 200
+        property int __height: 200
+        property string __color: 'red'
+        property string style: "width: %1px; height: %2px; background-color: %3".arg(__width).arg(__height).arg(__color)
     }
 }

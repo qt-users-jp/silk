@@ -31,5 +31,6 @@
         <file>contents/examples/stylesheet1.qml</file>
         <file>contents/examples/stylesheet2.qml</file>
         <file>silkrc.default</file>
+        <file>contents/test.qml</file>
     </qresource>
 </RCC>

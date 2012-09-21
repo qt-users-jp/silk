@@ -22,7 +22,7 @@ RESOURCES += \
     src.qrc
 
 contents.source = contents
-contents.target = .
+contents.target = ..
 
 DEPLOYMENTFOLDERS = contents
 
@@ -31,4 +31,5 @@ qtcAddDeployment()
 
 OTHER_FILES += \
     contents/examples/components/qmldir \
-    silkrc.default
+    silkrc.default \
+    contents/SilkPageTemplate.qml

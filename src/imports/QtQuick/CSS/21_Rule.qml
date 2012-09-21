@@ -102,7 +102,7 @@ CSSRule {
     property string page_break_after
     property string page_break_inside
     property string orphans
-    property string windows
+    property string widows
 
     property string color
     property string background
