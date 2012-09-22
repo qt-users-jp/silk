@@ -1,0 +1,6 @@
+isEmpty(SILKROOT_PRI) { SILKROOT_PRI = 1
+
+	SILKROOT=$$PWD
+
+}
+

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/imports/Silk/CSS">
+        <file>21_Rule.qml</file>
+        <file>30_Rule.qml</file>
+        <file>qmldir</file>
+    </qresource>
+</RCC>
