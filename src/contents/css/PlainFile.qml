@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,33 +24,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "qtquickhttpobject.h"
+import QtQuick.CSS 3.0
 
-#include <QtCore/QDebug>
-
-QtQuickHttpObject::QtQuickHttpObject(QObject *parent)
-    : QtQuickHttpAbstractObject(parent)
-    , m_loading(false)
-    , m_status(200)
-    , m_escape(false)
-{
-}
-
-QByteArray QtQuickHttpObject::out() const
-{
-    QByteArray ret;
-    foreach (const QObject *child, contentsList()) {
-        const QtQuickHttpAbstractObject *object = qobject_cast<const QtQuickHttpAbstractObject *>(child);
-        if (object && object->enabled()) {
-            ret.append(object->out());
-        }
-    }
-    if (m_escape) {
-        QString str = QString::fromUtf8(ret);
-        str.replace("&", "&amp;");
-        str.replace("<", "&lt;");
-        str.replace(">", "&gt;");
-        ret = str.toUtf8();
-    }
-    return ret;
+Rule {
+    selector: '.file'
+    font_size: '0.75em'
+    property string line_height: '1.0'
+    border: '4px solid %1'.arg(root.darkColor)
+    background: 'white'
+    property string padding: '10px'
+    property string _webkit_box_shadow: '0 5px 10px #aaa'
+    property string _moz_box_shadow: _webkit_box_shadow
+    property string box_shadow: _webkit_box_shadow
 }

@@ -32,8 +32,10 @@ Http {
     status: 200
     responseHeader: {'Content-Type': 'text/css; charset=utf-8;'}
 
-    property string darkColor: '#80C342'
-    property string lightColor: '#006225'
+    property string whiteColor: '#f0ffe1'
+    property string lightColor: '#80C342'
+    property string darkColor: '#006225'
+    property string blackColor: '#003212'
 
     /* ==========================================================================
        HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
@@ -48,17 +50,18 @@ Http {
         selector: 'body'
         font_size: '1em'
         property string line_height: '1.4'
+        background: root.whiteColor
     }
 
     Rule {
         selector: '::-moz-selection'
-        background: root.darkColor
+        background: root.lightColor
         property string text_shadow: 'none'
     }
 
     Rule {
         selector: '::selection'
-        background: root.darkColor
+        background: root.lightColor
         property string text_shadow: 'none'
     }
 
@@ -119,28 +122,35 @@ Http {
     Rule {
         id: header_container
         selector: '.header-container'
-        border_bottom: '20px solid %1'.arg(root.darkColor)
+        border_bottom: '20px solid %1'.arg(root.lightColor)
+        background: root.darkColor
+    }
+
+    Rule {
+        selector: '.main aside'
+        border_bottom: '10px solid %1'.arg(root.darkColor)
         background: root.lightColor
     }
 
     Rule {
-        selector: '.footer-container, .main aside'
-        border_top: '20px solid %1'.arg(root.darkColor)
-        background: header_container.background
+        selector: '.footer-container'
+        border_top: '20px solid %1'.arg(root.lightColor)
+        background: root.darkColor
     }
 
     Rule {
         selector: '.title'
-        color: 'white'
+        color: root.whiteColor
+        font_size: '2.25em'
 
         Rule {
             selector: 'a'
-            color: 'white'
+            color: root.whiteColor
             text_decoration: 'none'
 
             Rule {
                 selector: ':hover,:visit'
-                color: 'white'
+                color: root.whiteColor
             }
 
             Rule {
@@ -172,12 +182,12 @@ Http {
             text_decoration: 'none'
             font_weight: 'bold'
 
-            color: 'white'
-            background: root.darkColor
+            color: root.whiteColor
+            background: root.lightColor
 
             Rule {
                 selector: ':hover,:visit'
-                color: 'white'
+                color: root.whiteColor
             }
 
             Rule {
@@ -193,19 +203,31 @@ Http {
 
     Rule {
         selector: '.main'
-        property string padding: '30px 0'
 
         Rule {
             selector: 'article'
+            property string padding: '30px 0'
+            color: root.blackColor
+
             Rule {
                 selector: 'h1'
                 font_size: '2em'
+            }
+
+            Rule {
+                selector: 'a'
+                color: root.darkColor
+
+                Rule {
+                    selector: ':hover,:visit'
+                    color: root.darkColor
+                }
             }
         }
 
         Rule {
             selector: 'aside'
-            color: 'white'
+            color: root.whiteColor
             property string padding: '0px 5% 10px'
         }
     }
@@ -217,12 +239,12 @@ Http {
             property string padding: '20px 0'
             Rule {
                 selector: 'a'
-                color: 'white'
+                color: root.whiteColor
                 text_decoration: 'none'
 
                 Rule {
                     selector: ':hover,:visit'
-                    color: 'white'
+                    color: root.whiteColor
                 }
 
                 Rule {
@@ -249,16 +271,20 @@ Http {
        Author's custom styles
        ========================================================================== */
 
-    Rule {
-
-    }
-
-    Rule {
-
-    }
+    PlainFile {}
+    Button {}
+    Terminal {}
 
     Rule {
-
+        selector: '.main'
+        Rule {
+            selector: 'article'
+            Rule {
+                selector: 'footer'
+                text_align: 'right'
+                border_top: '1px solid %1'.arg(root.darkColor)
+            }
+        }
     }
 
     /* ==========================================================================
@@ -279,7 +305,7 @@ Http {
                 selector: 'a'
                 property string _float: 'left'
                 property string width: '27%'
-                property string margin: '0 1.7%'
+                property string margin: '10px 1.7%'
                 property string padding: '25px 2%'
                 property string margin_bottom: '0'
             }
@@ -331,6 +357,7 @@ Http {
         Rule {
             selector: '.title'
             property string _float: 'left'
+            property string padding_top: '10px'
         }
 
         Rule {
@@ -463,6 +490,7 @@ Http {
 
         Rule {
             selector: 'a'
+            color: 'blue'
             text_decoration: 'underline'
 
             Rule {
@@ -486,7 +514,7 @@ Http {
          */
 
         Rule {
-            selector: '.ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after'
+            selector: '.ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after, a[href^="/"]:after'
             content: '""'
         }
 
@@ -525,6 +553,30 @@ Http {
         Rule {
             selector: 'h2,h3'
             property string page_break_after: "avoid"
+        }
+
+        Rule {
+            selector: '.header-container'
+            border_bottom: '2px solid #333'
+        }
+
+        Rule {
+            selector: '.main'
+            property string padding: '0'
+        }
+
+        Rule {
+            selector: 'aside,nav'
+            display: 'none'
+        }
+
+        Rule {
+            selector: '.footer-container'
+            border_top: '2px solid #333'
+            Rule {
+                selector: 'footer'
+                property string padding: '0'
+            }
         }
     }
 }

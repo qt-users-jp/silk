@@ -53,6 +53,8 @@ class QtQuickHttpObject : public QtQuickHttpAbstractObject
     ADDPROPERTY(int, status, int)
     Q_PROPERTY(QVariantMap responseHeader READ responseHeader WRITE responseHeader NOTIFY responseHeaderChanged)
     ADDPROPERTY(const QVariantMap &, responseHeader, QVariantMap)
+    Q_PROPERTY(bool escape READ escape WRITE escape NOTIFY escapeChanged)
+    ADDPROPERTY(bool, escape, bool)
 public:
     explicit QtQuickHttpObject(QObject *parent = 0);
 
@@ -69,6 +71,7 @@ signals:
     void loadingChanged(bool loading);
     void statusChanged(int status);
     void responseHeaderChanged(const QVariantMap &responseHeader);
+    void escapeChanged(bool escape);
 };
 
 #endif // QTQUICKHTTPELEMENT_H

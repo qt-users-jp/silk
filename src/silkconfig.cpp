@@ -16,10 +16,12 @@ void SilkConfig::initialize(int argc, char **argv)
 {
     config = readConfigFile(":/silkrc.default");
     QString fileName = QDir::home().absoluteFilePath(".silkrc");
+    bool userConfig = false;
     for (int i = 1; i < argc; i++) {
         if (QString::fromUtf8(argv[i]) == QLatin1String("--config")) {
             if (argc - i > 1) {
                 fileName = argv[++i];
+                userConfig = true;
                 break;
             }
         }
@@ -44,8 +46,8 @@ void SilkConfig::initialize(int argc, char **argv)
             }
             config.insert(key, override.value(key));
         }
-    } else {
-        qWarning() << fileName;
+    } else if (userConfig){
+        qWarning() << fileName << "not found.";
     }
 }
 

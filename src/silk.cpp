@@ -76,8 +76,6 @@ private:
     Silk *q;
     QMimeDatabase mimeDatabase;
     QQmlEngine engine;
-    QVariantMap defaultConfig;
-    QVariantMap config;
     QMap<QObject*, QString> component2root;
     QMap<QObject*, QHttpRequest*> component2request;
     QMap<QObject*, QHttpReply*> component2reply;

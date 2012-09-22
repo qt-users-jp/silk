@@ -49,7 +49,7 @@ Http {
         Meta { name: "description"; content: "" }
         Meta { name: "viewport"; content: "width=device-width" }
         Link { rel: "stylesheet"; href: "/3rdparty/css/normalize.min.css" }
-        Link { rel: "stylesheet"; href: "/css.qml" }
+        Link { rel: "stylesheet"; href: "/css/" }
         Script { src: "/3rdparty/js/modernizr-2.6.1-respond-1.1.0.min.js" }
     }
 
@@ -77,9 +77,9 @@ Http {
 
                 Nav {
                     Ul {
-                        Li { A { href: "#"; text: "Download" } }
-                        Li { A { href: "/examples/"; text: "Examples" } }
-                        Li { A { href: "#"; text: "Tutorials" } }
+                        Li { A { href: "/try/"; text: "1. Try now!" } }
+                        Li { A { href: "#"; text: "2. Tutorials" } }
+                        Li { A { href: "/examples/"; text: "3. Examples" } }
                     }
                 }
             }
@@ -135,6 +135,8 @@ Http {
         Script {
             text: "window.jQuery || document.write('<script src=\"/3rdparty/js/jquery-1.8.1.min.js\"><\\/script>')"
         }
+
+        GoogleAnalytics { __trackingCode: 'UA-33461556-1' }
     }
     Text { text: "\n</html>" }
 }

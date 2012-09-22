@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>contents/index.qml</file>
         <file>contents/favicon.ico</file>
-        <file>contents/qt-logo.png</file>
         <file>errors/403.qml</file>
         <file>errors/404.qml</file>
         <file>errors/500.qml</file>
@@ -32,11 +31,23 @@
         <file>contents/examples/stylesheet2.qml</file>
         <file>silkrc.default</file>
         <file>contents/test.qml</file>
-        <file>contents/css.qml</file>
         <file>contents/SilkPageTemplate.qml</file>
         <file>contents/3rdparty/css/normalize.css</file>
         <file>contents/3rdparty/css/normalize.min.css</file>
         <file>contents/3rdparty/js/jquery-1.8.1.min.js</file>
         <file>contents/3rdparty/js/modernizr-2.6.1-respond-1.1.0.min.js</file>
+        <file>contents/components/Button.qml</file>
+        <file>contents/css/Button.qml</file>
+        <file>contents/css/index.qml</file>
+        <file>contents/try/qt-logo.png</file>
+        <file>contents/try/index.qml</file>
+        <file>contents/components/ButtonGroup.qml</file>
+        <file>contents/components/PlainFile.qml</file>
+        <file>contents/components/Terminal.qml</file>
+        <file>contents/GoogleAnalytics.qml</file>
+        <file>contents/example.qml</file>
+        <file>contents/ExampleSource.qml</file>
+        <file>contents/css/PlainFile.qml</file>
+        <file>contents/css/Terminal.qml</file>
     </qresource>
 </RCC>

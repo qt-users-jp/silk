@@ -32,4 +32,8 @@ qtcAddDeployment()
 OTHER_FILES += \
     contents/examples/components/qmldir \
     silkrc.default \
-    contents/SilkPageTemplate.qml
+    contents/SilkPageTemplate.qml \
+    contents/example.qml \
+    contents/ExampleSource.qml \
+    contents/css/index.qml \
+    contents/components/PlainFile.qml
