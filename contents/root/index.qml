@@ -27,6 +27,7 @@
 import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 5.0
+import Silk.Cache 1.0
 import "./components/"
 
 SilkPageTemplate {
@@ -81,17 +82,26 @@ SilkPageTemplate {
         }
     }
 
+    Cache { id: cache }
+
     Component.onCompleted: {
-        var request = new XMLHttpRequest()
-        request.onreadystatechange = function() {
-            switch (request.readyState) {
-            case 4: // Done
-                input.text = request.responseText
-                page.loading = false
-                break
+        var value = cache.fetch("ExampleSource.qml")
+        if (typeof value !== 'undefined') {
+            input.text = value
+            page.loading = false
+        } else {
+            var request = new XMLHttpRequest()
+            request.onreadystatechange = function() {
+                switch (request.readyState) {
+                case 4: // Done
+                    cache.add("ExampleSource.qml", request.responseText)
+                    input.text = request.responseText
+                    page.loading = false
+                    break
+                }
             }
+            request.open("GET", "./ExampleSource.qml")
+            request.send()
         }
-        request.open("GET", "./ExampleSource.qml")
-        request.send()
     }
 }
