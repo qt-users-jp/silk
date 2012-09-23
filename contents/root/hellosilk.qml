@@ -34,7 +34,7 @@ SilkPageTemplate {
     id: page
 
     subtitle: "Hello silk world"
-    loading: true
+    loading: hello_qml.text.length === 0 || hellocss_qml.text.length === 0
 
     Article {
         Header {
@@ -42,11 +42,11 @@ SilkPageTemplate {
         }
 
         Section {
-            H3 { text: "hello.qml - source code" }
+            H3 { text: "HTML" }
             PlainFile {
-                id: input
+                id: hello_qml
             }
-            H3 { text: "hello.qml - output" }
+            P { text: "silk generates following HTML" }
             PlainFile {
                 HelloSource { escape: true }
             }
@@ -70,6 +70,35 @@ SilkPageTemplate {
             }
         }
 
+        Section {
+            H3 { text: "CSS" }
+            PlainFile {
+                id: hellocss_qml
+            }
+            P { text: "silk generates following CSS" }
+            PlainFile {
+                HelloCssSource { escape: true }
+            }
+
+            ButtonGroup {
+                Button {
+                    __text: "Output"
+                    href: './hellocss.qml'
+                }
+
+                Button {
+                    __text: "Source"
+                    href: './HelloCssSource.qml'
+                }
+
+                Button {
+                    __text: "Details"
+                    __disabled: true
+//                    href: '#'
+                }
+            }
+        }
+
         Footer {
             Nav {
                 A { href: "/"; text: "Introduction" }
@@ -81,24 +110,31 @@ SilkPageTemplate {
 
     Cache { id: cache }
 
-    Component.onCompleted: {
-        var value = cache.fetch("HelloSource.qml")
+    function loadQml(file, callback) {
+        var value = cache.fetch(file)
         if (typeof value !== 'undefined') {
-            input.text = value
-            page.loading = false
+            callback(value)
         } else {
             var request = new XMLHttpRequest()
             request.onreadystatechange = function() {
                 switch (request.readyState) {
                 case 4: // Done
-                    cache.add("HelloSource.qml", request.responseText)
-                    input.text = request.responseText
-                    page.loading = false
+                    cache.add(file, request.responseText)
+                    callback(request.responseText)
                     break
                 }
             }
-            request.open("GET", "./HelloSource.qml")
+            request.open("GET", file)
             request.send()
         }
+    }
+
+    Component.onCompleted: {
+        loadQml("HelloSource.qml", function(ret) {
+            hello_qml.text = ret
+        })
+        loadQml("HelloCssSource.qml", function(ret) {
+            hellocss_qml.text = ret
+        })
     }
 }

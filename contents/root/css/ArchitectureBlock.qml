@@ -59,7 +59,7 @@ Rule {
 
     Rule {
         selector: '.arch_qml'
-        background: '-webkit-gradient(linear, center top, right bottom, from(#80C342), to(#029A9C) )'
+        background: '-webkit-gradient(linear, center center, right center, from(#80C342), to(#029A9C) )'
         color: 'white'
     }
 

@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
 SUBDIRS = Silk
+QML_IMPORT_PATH += $$PWD

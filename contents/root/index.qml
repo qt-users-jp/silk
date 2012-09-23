@@ -68,7 +68,7 @@ SilkPageTemplate {
                 Li { text: "(HTML)" }
                 Li { text: "..." }
             }
-            Strong { text: "Seems like something should be improved. so..." }
+            Strong { text: "Seems like something should be improved. and..." }
         }
 
         Section {

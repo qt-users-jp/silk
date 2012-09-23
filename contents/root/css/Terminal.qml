@@ -29,7 +29,7 @@ import Silk.CSS 3.0
 Rule {
     selector: '.terminal'
 
-    border_top: '15px solid %1'.arg(root.lightColor)
+    border_top: '25px solid %1'.arg(root.lightColor)
     border_left: '4px solid %1'.arg(root.lightColor)
     border_bottom: border_left
     border_right: border_left
@@ -44,5 +44,10 @@ Rule {
         font_family: 'monospace'
         color: root.whiteColor
         property string line_height: '1.0'
+
+        Rule {
+            selector: 'a,a:visited'
+            color: 'white'
+        }
     }
 }

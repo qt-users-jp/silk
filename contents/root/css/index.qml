@@ -210,6 +210,10 @@ Http {
             color: root.blackColor
 
             Rule {
+                selector: 'h1,h2,h3,h4,h5,h6'
+                property string margin: '5px 0px'
+            }
+            Rule {
                 selector: 'h1'
                 font_size: '2em'
                 property string line_height: '2em'
@@ -225,6 +229,12 @@ Http {
                 selector: 'h3'
                 font_size: '1.5em'
                 property string line_height: '1.25em'
+            }
+
+            Rule {
+                selector: 'h4'
+                font_size: '1.25em'
+                property string line_height: '1.125em'
             }
 
             Rule {
@@ -294,9 +304,33 @@ Http {
         Rule {
             selector: 'article'
             Rule {
+                selector: 'section'
+                property string margin_bottom: '20px'
+                border_bottom: '1px solid %1'.arg(root.darkColor)
+            }
+
+            Rule {
                 selector: 'footer'
                 text_align: 'right'
-                border_top: '1px solid %1'.arg(root.darkColor)
+            }
+        }
+
+        Rule {
+            selector: 'aside'
+            Rule {
+                selector: 'a'
+                color: root.whiteColor
+                text_decoration: 'none'
+
+                Rule {
+                    selector: ':visited'
+                    color: root.whiteColor
+                }
+
+                Rule {
+                    selector: ':hover'
+                    text_decoration: 'underline'
+                }
             }
         }
     }

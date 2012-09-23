@@ -94,13 +94,16 @@ Http {
                 Aside {
                     H3 { text: "Contents" }
                     Ul {
-                        Li { text: "Introduction" }
-                        Li { text: "Examples" }
                         Li {
-                            Text { text: "Getting Started" }
+                            A { href: '/'; text: "Introduction" }
                             Ul {
-                                Li { text: "Download" }
-                                Li { text: "Installation" }
+                                Li { A { href: '/hellosilk.qml'; text: "Hello silk world" } }
+                            }
+                        }
+                        Li {
+                            A { href: '/try.qml'; text: "Installation" }
+                            Ul {
+                                Li { text: "Configuration" }
                             }
                         }
                         Li {
@@ -110,6 +113,7 @@ Http {
                                 Li { text: "Service" }
                             }
                         }
+                        Li { A { href: '/examples/'; text: "Examples" } }
                     }
                 }
             }

@@ -28,8 +28,8 @@ import Silk.CSS 3.0
 
 Rule {
     selector: '.file'
-    font_size: '0.75em'
-    property string line_height: '1.0'
+    font_family: 'monospace'
+    property string line_height: '1.2'
     border: '4px solid %1'.arg(root.darkColor)
     background: 'white'
     property string padding: '10px'

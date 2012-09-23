@@ -54,7 +54,7 @@ SilkPageTemplate {
         Section {
             H2 { text: "Clone source code" }
             Terminal {
-                Kbd { text: "$ git clone git://git.qtquick.me/silk.git\n" }
+                Kbd { text: '$ git clone <a href="http://git.qtquick.me/?p=silk.git;a=tree">git://git.qtquick.me/silk.git</a>\n' }
                 Kbd { text: "$ cd silk\n" }
                 Kbd { text: "$ git submodule update --init" }
             }
