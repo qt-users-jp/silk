@@ -26,7 +26,7 @@
 
 import Silk.HTTP 1.1
 import Silk.HTML 4.01
-import "http://git.qtquick.me/?p=silk.git;a=blob_plain;f=src/contents/examples/components/" as Remote
+import "http://git.qtquick.me/?p=silk.git;a=blob_plain;f=contents/root/examples/components/" as Remote
 
 Http {
     id: root
