@@ -77,7 +77,7 @@ Http {
 
                 Nav {
                     Ul {
-                        Li { A { href: "/try/"; text: "1. Try now!" } }
+                        Li { A { href: "/try.qml"; text: "1. Try now!" } }
                         Li { A { href: "#"; text: "2. Tutorials" } }
                         Li { A { href: "/examples/"; text: "3. Examples" } }
                     }

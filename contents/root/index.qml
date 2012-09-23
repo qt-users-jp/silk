@@ -24,84 +24,91 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 5.0
-import Silk.Cache 1.0
 import "./components/"
 
 SilkPageTemplate {
     id: page
 
     subtitle: "a simple web framework"
-    loading: true
 
     Article {
-        Header {
+        Section {
+            H2 { text: "How many languages are you <em>writing</em> to develop a web service?" }
+            Table {
+                property string style: "width: 100%; border-collapse: separate; border-spacing: 5px; table-layout: fixed;"
+                Tr {
+                    ArchitectureBlock { text: "HTML"; rowspan: "2"; __class: "arch_html arch_op50" }
+                    ArchitectureBlock { text: "HTML"; colspan: "2"; __class: "arch_html arch_op50" }
+                    ArchitectureBlock { text: "XML / JSON"; colspan: "2"; __class: "arch_js arch_op50" }
+                    ArchitectureBlock { text: "CSS"; rowspan: "2"; __class: "arch_css" }
+                    ArchitectureBlock { text: "Java<br />Script"; rowspan: "2"; __class: "arch_js" }
+                }
+                Tr {
+                    ArchitectureBlock {
+                        text: "Ruby / PHP / Java / ..."
+                        colspan: "4"
+                        __class: "arch_plangs"
+                    }
+                }
+                Tr {
+                    ArchitectureBlock {
+                        text: "Apache / IIS / nginx / ..."
+                        colspan: "7"
+                        __class: "arch_server arch_op50"
+                    }
+                }
+            }
+            Strong { text: "You may have to write them in:" }
+            Ol {
+                Li { text: "Ruby / PHP / Java / ..." }
+                Li { text: "JavaScript" }
+                Li { text: "(S)CSS" }
+                Li { text: "(HTML)" }
+                Li { text: "..." }
+            }
+            Strong { text: "Seems like something should be improved. so..." }
         }
 
         Section {
-            H2 { text: "Building Web Contents in a simple language!" }
-            H3 { text: "example.qml - source code" }
-            PlainFile {
-                id: input
+            H2 { text: "We did it!" }
+            Table {
+                property string style: "width: 100%; border-collapse: separate; border-spacing: 5px; table-layout: fixed;"
+                Tr {
+                    ArchitectureBlock { text: "HTML"; rowspan: "2"; __class: "arch_html arch_op50" }
+                    ArchitectureBlock { text: "HTML"; colspan: "2"; __class: "arch_html arch_op50" }
+                    ArchitectureBlock { text: "JSON"; colspan: "2"; __class: "arch_js arch_op50" }
+                    ArchitectureBlock { text: "CSS"; __class: "arch_css arch_op50" }
+                    ArchitectureBlock { text: "Java<br />Script"; rowspan: "2"; __class: "arch_js" }
+                }
+                Tr {
+                    ArchitectureBlock {
+                        text: "QML with JavaScript"
+                        colspan: "5"
+                        __class: "arch_qml"
+                    }
+                }
+                Tr {
+                    ArchitectureBlock {
+                        text: "Silk"
+                        colspan: "7"
+                        __class: "arch_qt arch_op50"
+                    }
+                }
             }
-            H3 { text: "example.qml - output" }
-            PlainFile {
-                ExampleSource { escape: true }
-            }
-
-            ButtonGroup {
-                Button {
-                    __text: "Output"
-                    href: './example.qml'
-                }
-
-                Button {
-                    __text: "Source"
-                    href: './ExampleSource.qml'
-                }
-
-                Button {
-                    __text: "Details"
-                    __disabled: true
-//                    href: '#'
-                }
+            Strong { text: "You are able to write everything in:" }
+            Ol {
+                Li { text: "QML and JavaScript" }
+                Li { text: "(HTML)" }
             }
         }
-
-//        Section {
-//            H2 { text: "silk is a web server" }
-//        }
 
         Footer {
-            H3 {
+            Nav {
                 Text { text: "Next &gt;&gt; " }
-                A { href: "/try/"; text: "Try now!" }
+                A { href: "/hellosilk.qml"; text: "Hello silk world" }
             }
-        }
-    }
-
-    Cache { id: cache }
-
-    Component.onCompleted: {
-        var value = cache.fetch("ExampleSource.qml")
-        if (typeof value !== 'undefined') {
-            input.text = value
-            page.loading = false
-        } else {
-            var request = new XMLHttpRequest()
-            request.onreadystatechange = function() {
-                switch (request.readyState) {
-                case 4: // Done
-                    cache.add("ExampleSource.qml", request.responseText)
-                    input.text = request.responseText
-                    page.loading = false
-                    break
-                }
-            }
-            request.open("GET", "./ExampleSource.qml")
-            request.send()
         }
     }
 }

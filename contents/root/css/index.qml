@@ -165,7 +165,7 @@ Http {
        ============== */
 
     Rule {
-        selector: 'nav'
+        selector: '.header-container nav'
         Rule {
             selector: 'ul'
             property string margin: '0'
@@ -206,12 +206,25 @@ Http {
 
         Rule {
             selector: 'article'
-            property string padding: '30px 0'
+//            property string padding: '30px 0'
             color: root.blackColor
 
             Rule {
                 selector: 'h1'
                 font_size: '2em'
+                property string line_height: '2em'
+            }
+
+            Rule {
+                selector: 'h2'
+                font_size: '2em'
+                property string line_height: '1.5em'
+            }
+
+            Rule {
+                selector: 'h3'
+                font_size: '1.5em'
+                property string line_height: '1.25em'
             }
 
             Rule {
@@ -274,6 +287,7 @@ Http {
     PlainFile {}
     Button {}
     Terminal {}
+    ArchitectureBlock {}
 
     Rule {
         selector: '.main'
@@ -299,7 +313,7 @@ Http {
            ==================== */
 
         Rule {
-            selector: 'nav'
+            selector: '.header-container nav'
 
             Rule {
                 selector: 'a'
@@ -326,12 +340,12 @@ Http {
            ======================== */
 
         Rule {
-            selector: 'nav ul li'
+            selector: '.header-container nav ul li'
             display: 'inline'
         }
 
         Rule {
-            selector: '.oldie nav a'
+            selector: '.oldie .header-container nav a'
             property string margin: '0 0.7%'
         }
     }
@@ -361,7 +375,7 @@ Http {
         }
 
         Rule {
-            selector: 'nav'
+            selector: '.header-container nav'
             property string _float: 'right'
             property string width: '38%'
         }
@@ -566,7 +580,7 @@ Http {
         }
 
         Rule {
-            selector: 'aside,nav'
+            selector: 'aside,.header-container nav'
             display: 'none'
         }
 

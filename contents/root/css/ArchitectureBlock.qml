@@ -24,64 +24,63 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 5.0
-import "../"
-import "../components/"
+import Silk.CSS 3.0
 
-SilkPageTemplate {
-    id: page
+Rule {
+    Rule {
+        selector: '.architecture_block'
 
-    subtitle: "Try now!"
+        property string margin: '10px'
+        property string padding: '1.0em 0em'
+        property string border_radius: '.3em'
+        property string _moz_border_radius: border_radius
 
-    Article {
-//        Header {
-//            H2 { text: "Building Web Contents in a simple language!" }
-//        }
+        font: "bold 1.5em 'Trebuchet MS',Arial, Helvetica"
+        text_align: 'center'
+    }
 
-        Section {
-            H2 { text: "Requirements" }
-            P {
-                A {
-                    href: "http://qt-project.org/wiki/Qt_5.0"
-                    Img { src: "./qt-logo.png" }
-                }
-                Text { text: " " }
-                A { href: "http://releases.qt-project.org/qt5.0/beta1/"; text: "5.0 beta1" }
-                Text { text: " or later" }
-            }
-        }
+    Rule {
+        selector: '.arch_html'
+        background: '#F16427'
+        color: 'white'
+    }
 
-        Section {
-            H2 { text: "Clone source code" }
-            Terminal {
-                Kbd { text: "$ git clone git://git.qtquick.me/silk.git\n" }
-                Kbd { text: "$ cd silk\n" }
-                Kbd { text: "$ git submodule update --init" }
-            }
-        }
+    Rule {
+        selector: '.arch_js'
+        background: '#029A9C'
+        color: 'white'
+    }
 
-        Section {
-            H2 { text: "Build" }
-            Terminal {
-                Kbd { text: "$ qt5/bin/qmake\n" }
-                Kbd { text: "$ make" }
-            }
-        }
+    Rule {
+        selector: '.arch_css'
+        background: '#27A7E2'
+        color: 'white'
+    }
 
-        Section {
-            H2 { text: "Run" }
-            Terminal {
-                Kbd { text: "$ ./bin/silk" }
-            }
-            P {
-                Text { text: "open&nbsp;" }
-                A { href: "http://localhost:8080/"; text: "http://localhost:8080/" }
-            }
-        }
+    Rule {
+        selector: '.arch_qml'
+        background: '-webkit-gradient(linear, center top, right bottom, from(#80C342), to(#029A9C) )'
+        color: 'white'
+    }
 
-//        Footer {
-//            H2 { A { href: "./examples/"; text: "Examples" } }
-//        }
+    Rule {
+        selector: '.arch_plangs'
+        background: '-webkit-gradient(linear, left top, right bottom, from(#B60800), to(#F30100) )'
+        color: 'white'
+    }
+    Rule {
+        selector: '.arch_server'
+        background: '-webkit-gradient(linear, left top, right bottom, from(#FD00CB), to(#1A3F98) )'
+        color: 'white'
+    }
+    Rule {
+        selector: '.arch_qt'
+        background: '#80C342'
+        color: 'white'
+    }
+    Rule {
+        selector: '.arch_op50'
+        opacity: '0.50'
+        color: '#ccc'
     }
 }
