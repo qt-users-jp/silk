@@ -82,8 +82,8 @@ SilkPageTemplate {
         Footer {
             Nav {
                 A { href: "/hellosilk.qml"; text: "Hello silk world" }
-                Text { text: " &lt;&lt; Previous / Next &gt;&gt; Configuration" }
-//                A { href: "/config.qml"; text: "Configuration" }
+                Text { text: " &lt;&lt; Previous / Next &gt;&gt; " }
+                A { href: "/config.qml"; text: "Configuration" }
             }
         }
     }

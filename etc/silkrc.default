@@ -1,9 +1,7 @@
 {
-    "service_name": "silk"
-    , "listen_address": "*"
-    , "listen_port": 8080
-    , "root_path": {"*": "../contents/root/"}
-    , "storage_path": "../"
-    , "import_path": []
-    , "qml_cache": true
+    "listen": { "address": "*", "port": 8080 }
+    , "contents": { "*": "../contents/root/" }
+    , "storage": { "path": "../" }
+    , "import": { "path": [] }
+    , "cache": { "qml": true }
 }

@@ -103,7 +103,7 @@ Http {
                         Li {
                             A { href: '/try.qml'; text: "Installation" }
                             Ul {
-                                Li { text: "Configuration" }
+                                Li { A { href: '/config.qml'; text: "Configration" } }
                             }
                         }
                         Li {

@@ -89,7 +89,8 @@ Silk::Private::Private(Silk *parent)
     qmlRegisterType<SilkAbstractHttpObject>();
     qmlRegisterType<SilkHttpObject>("Silk.HTTP", 1, 1, "Http");
 
-    QDir importsDir = QCoreApplication::applicationDirPath();
+    QDir appDir = QCoreApplication::applicationDirPath();
+    QDir importsDir = appDir;
     QString appPath(SILK_APP_PATH);
     // up to system root path
     for (int i = 0; i < appPath.count(QLatin1Char('/')) + 1; i++) {
@@ -115,29 +116,30 @@ Silk::Private::Private(Silk *parent)
         }
     }
 
-    engine.setOfflineStoragePath(SilkConfig::value("storage_path").toString());
+    engine.setOfflineStoragePath(appDir.absoluteFilePath(SilkConfig::value("storage").toMap().value("path").toString()));
     engine.addImportPath(":/imports");
-    foreach (const QString &importPath, SilkConfig::value("import_path").toStringList()) {
-        engine.addImportPath(importPath);
+    foreach (const QString &importPath, SilkConfig::value("import").toMap().value("path").toStringList()) {
+        engine.addImportPath(appDir.absoluteFilePath(importPath));
     }
     connect(q, SIGNAL(incomingConnection(QHttpRequest *, QHttpReply *)), this, SLOT(incomingConnection(QHttpRequest *, QHttpReply *)));
 
+    QString listenAddress = SilkConfig::value("listen").toMap().value("address").toString();
     QHostAddress address;
-    if (SilkConfig::value("listen_address").toString() == QLatin1String("*")) {
+    if (listenAddress == QLatin1String("*")) {
         address = QHostAddress::Any;
-    } else if (SilkConfig::value("listen_address").toString() == QLatin1String("localhost")) {
+    } else if (listenAddress == QLatin1String("localhost")) {
         address = QHostAddress::LocalHost;
-    } else if (!address.setAddress(SilkConfig::value("listen_address").toString())) {
-        qWarning() << "The address" << SilkConfig::value("listen_address").toString() << "is not available.";
+    } else if (!address.setAddress(listenAddress)) {
+        qWarning() << "The address" << listenAddress << "is not available.";
         QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
         return;
     }
 
-    int port = SilkConfig::value("listen_port").toInt();
+    int port = SilkConfig::value("listen").toMap().value("port").toInt();
 
-    QVariantMap roots = SilkConfig::value("root_path").toMap();
+    QVariantMap roots = SilkConfig::value("contents").toMap();
     foreach (const QString &key, roots.keys()) {
-        documentRoots.insert(key, roots.value(key).toString());
+        documentRoots.insert(key, appDir.absoluteFilePath(roots.value(key).toString()));
     }
 
     if (!q->listen(address, port)) {
@@ -213,7 +215,7 @@ void Silk::Private::loadQml(const QFileInfo &fileInfo, QHttpRequest *request, QH
 
 void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    static bool cache = SilkConfig::value("qml_cache").toBool();
+    static bool cache = SilkConfig::value("cache").toMap().value("qml").toBool();
     switch (component->status()) {
     case QQmlComponent::Null:
         // TODO: any check?
