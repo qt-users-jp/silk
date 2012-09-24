@@ -21,10 +21,3 @@ DEPLOYMENTFOLDERS = root
 
 include(../silkdeployment.pri)
 qtcAddDeployment()
-
-OTHER_FILES += \
-    root/try.qml \
-    root/qt-logo.png \
-    root/HelloSource.qml \
-    root/hello.qml \
-    root/hellosilk.qml

@@ -34,6 +34,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QMimeDatabase>
 #include <QtCore/QPluginLoader>
+#include <QtNetwork/QNetworkCookie>
 #include <QtQml/qqml.h>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
@@ -244,6 +245,20 @@ void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHt
             requestHeader.insert(QString(key), QString(request->rawHeader(key)));
         }
         http->requestHeader(requestHeader);
+
+        QVariantMap cookies;
+        foreach (const QNetworkCookie &cookie, request->cookies()) {
+            QVariantMap c;
+            c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
+            c.insert(QLatin1String("expires"), cookie.expirationDate());
+            c.insert(QLatin1String("domain"), cookie.domain());
+            c.insert(QLatin1String("path"), cookie.path());
+            c.insert(QLatin1String("secure"), cookie.isSecure());
+            c.insert(QLatin1String("session"), cookie.isSessionCookie());
+            cookies.insert(QString::fromUtf8(cookie.name()), c);
+        }
+        http->requestCookies(cookies);
+
         http->query(query);
         http->data(QString(request->readAll()));
         if (!message.isEmpty()) http->message(message);
@@ -305,6 +320,21 @@ void Silk::Private::close(SilkHttpObject *http)
             QString value = header.value(key).toString();
             reply->setRawHeader(key.toUtf8(), value.toUtf8());
         }
+
+        QList<QNetworkCookie> cookies;
+        foreach (const QString &name, http->responseCookies().keys()) {
+            QVariantMap c = http->responseCookies().value(name).toMap();
+            QNetworkCookie cookie;
+            cookie.setName(name.toUtf8());
+            if (c.contains("value")) cookie.setValue(c.value("value").toString().toUtf8());
+            if (c.contains("expires")) cookie.setExpirationDate(c.value("expires").toDateTime());
+            if (c.contains("domain")) cookie.setDomain(c.value("domain").toString());
+            if (c.contains("path")) cookie.setPath(c.value("path").toString());
+            if (c.contains("secure")) cookie.setSecure(c.value("secure").toBool());
+            cookies.append(cookie);
+        }
+        reply->setCookies(cookies);
+
         if (request->method() == "GET" || request->method() == "POST") {
             reply->write(http->out());
         }

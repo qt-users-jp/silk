@@ -73,6 +73,7 @@ SilkPageTemplate {
                 Li { A { href: "%1.qml".arg(text); text: "get" } }
                 Li { A { href: "%1.qml".arg(text); text: "post" } }
                 Li { A { href: "%1.qml".arg(text); text: "enabled" } }
+                Li { A { href: "%1.qml".arg(text); text: "cookies" } }
             }
         }
 

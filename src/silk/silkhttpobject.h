@@ -40,6 +40,8 @@ class SilkHttpObject : public SilkAbstractHttpObject
     SILK_ADD_PROPERTY(const QUrl &, url, QUrl)
     Q_PROPERTY(QVariant requestHeader READ requestHeader NOTIFY requestHeaderChanged)
     SILK_ADD_PROPERTY(const QVariant &, requestHeader, QVariant)
+    Q_PROPERTY(QVariantMap requestCookies READ requestCookies NOTIFY requestCookiesChanged)
+    SILK_ADD_PROPERTY(const QVariantMap &, requestCookies, QVariantMap)
     Q_PROPERTY(QString query READ query NOTIFY queryChanged)
     SILK_ADD_PROPERTY(const QString &, query, QString)
     Q_PROPERTY(QString data READ data NOTIFY dataChanged)
@@ -53,6 +55,8 @@ class SilkHttpObject : public SilkAbstractHttpObject
     SILK_ADD_PROPERTY(int, status, int)
     Q_PROPERTY(QVariantMap responseHeader READ responseHeader WRITE responseHeader NOTIFY responseHeaderChanged)
     SILK_ADD_PROPERTY(const QVariantMap &, responseHeader, QVariantMap)
+    Q_PROPERTY(QVariantMap responseCookies READ responseCookies WRITE responseCookies NOTIFY responseCookiesChanged)
+    SILK_ADD_PROPERTY(const QVariantMap &, responseCookies, QVariantMap)
     Q_PROPERTY(bool escape READ escape WRITE escape NOTIFY escapeChanged)
     SILK_ADD_PROPERTY(bool, escape, bool)
 public:
@@ -65,12 +69,14 @@ signals:
     void methodChanged(const QString &method);
     void urlChanged(const QUrl &url);
     void requestHeaderChanged(const QVariant &requestHeader);
+    void requestCookiesChanged(const QVariantMap &requestHeader);
     void queryChanged(const QString &query);
     void dataChanged(const QString &data);
     void messageChanged(const QString &message);
     void loadingChanged(bool loading);
     void statusChanged(int status);
     void responseHeaderChanged(const QVariantMap &responseHeader);
+    void responseCookiesChanged(const QVariantMap &responseHeader);
     void escapeChanged(bool escape);
 };
 
