@@ -239,7 +239,12 @@ void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHt
         QUrl url(request->url());
         QString query(url.query());
         url.setQuery(QString());
-        http->url(url);
+        http->scheme(url.scheme());
+        http->host(url.host());
+        http->path(url.path());
+        http->query(query);
+        http->data(QString(request->readAll()));
+
         QVariantMap requestHeader;
         foreach (const QByteArray &key, request->rawHeaderList()) {
             requestHeader.insert(QString(key), QString(request->rawHeader(key)));
@@ -259,8 +264,6 @@ void Silk::Private::execQml(QQmlComponent *component, QHttpRequest *request, QHt
         }
         http->requestCookies(cookies);
 
-        http->query(query);
-        http->data(QString(request->readAll()));
         if (!message.isEmpty()) http->message(message);
         QMetaObject::invokeMethod(http, "ready");
 

@@ -75,7 +75,7 @@ Http {
                     Dt { id: name; text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? decodeURI(model.key) : '' }
                     Dd {
                         Form {
-                            action: "./cookies.qml"
+                            action: http.path
                             method: "POST"
                             Input { type: "hidden"; name: "action"; value: "remove" }
                             Input { type: "hidden"; name: "name"; value: name.text }
@@ -87,7 +87,7 @@ Http {
             }
 
             Form {
-                action: "./cookies.qml"
+                action: http.path
                 method: "POST"
                 Input { type: "text"; name: "name" }
                 Text { text: '=' }

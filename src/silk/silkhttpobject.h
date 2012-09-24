@@ -36,16 +36,20 @@ class SilkHttpObject : public SilkAbstractHttpObject
     Q_OBJECT
     Q_PROPERTY(QString method READ method NOTIFY methodChanged)
     SILK_ADD_PROPERTY(const QString &, method, QString)
-    Q_PROPERTY(QUrl url READ url NOTIFY urlChanged)
-    SILK_ADD_PROPERTY(const QUrl &, url, QUrl)
-    Q_PROPERTY(QVariant requestHeader READ requestHeader NOTIFY requestHeaderChanged)
-    SILK_ADD_PROPERTY(const QVariant &, requestHeader, QVariant)
-    Q_PROPERTY(QVariantMap requestCookies READ requestCookies NOTIFY requestCookiesChanged)
-    SILK_ADD_PROPERTY(const QVariantMap &, requestCookies, QVariantMap)
+    Q_PROPERTY(QString scheme READ scheme NOTIFY schemeChanged)
+    SILK_ADD_PROPERTY(const QString &, scheme, QString)
+    Q_PROPERTY(QString host READ host NOTIFY hostChanged)
+    SILK_ADD_PROPERTY(const QString &, host, QString)
+    Q_PROPERTY(QString path READ path NOTIFY pathChanged)
+    SILK_ADD_PROPERTY(const QString &, path, QString)
     Q_PROPERTY(QString query READ query NOTIFY queryChanged)
     SILK_ADD_PROPERTY(const QString &, query, QString)
     Q_PROPERTY(QString data READ data NOTIFY dataChanged)
     SILK_ADD_PROPERTY(const QString &, data, QString)
+    Q_PROPERTY(QVariant requestHeader READ requestHeader NOTIFY requestHeaderChanged)
+    SILK_ADD_PROPERTY(const QVariant &, requestHeader, QVariant)
+    Q_PROPERTY(QVariantMap requestCookies READ requestCookies NOTIFY requestCookiesChanged)
+    SILK_ADD_PROPERTY(const QVariantMap &, requestCookies, QVariantMap)
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     SILK_ADD_PROPERTY(const QString &, message, QString)
 
@@ -67,11 +71,13 @@ public:
 signals:
     void ready();
     void methodChanged(const QString &method);
-    void urlChanged(const QUrl &url);
-    void requestHeaderChanged(const QVariant &requestHeader);
-    void requestCookiesChanged(const QVariantMap &requestHeader);
+    void schemeChanged(const QString &scheme);
+    void hostChanged(const QString &host);
+    void pathChanged(const QString &path);
     void queryChanged(const QString &query);
     void dataChanged(const QString &data);
+    void requestHeaderChanged(const QVariant &requestHeader);
+    void requestCookiesChanged(const QVariantMap &requestHeader);
     void messageChanged(const QString &message);
     void loadingChanged(bool loading);
     void statusChanged(int status);
