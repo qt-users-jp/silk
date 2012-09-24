@@ -33,7 +33,7 @@ Http {
     status: 200
     responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
-    property string source: typeof root.data !== 'undefined' && root.data.indexOf("=") > 0 ? decodeURIComponent(root.data.substring(root.data.indexOf("=") + 1).replace('+', ' ')) : ''
+    property string source: root.data.indexOf("=") > 0 ? decodeURIComponent(root.data.substring(root.data.indexOf("=") + 1).replace('+', ' ')) : ''
     Html {
         Head {
             Title { id: title; text: "post" }
@@ -45,7 +45,7 @@ Http {
             Form {
                 action: "./post.qml"
                 method: "POST"
-                Input { type: "text"; name: "source"; value: root.source }
+                Input { type: "text"; name: "source"; value: root.source.replace(/"/g, '&quot;') }
                 Input { type: "submit" }
             }
         }

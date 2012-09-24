@@ -24,10 +24,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 4.01
 import Silk.JSON 1.0
+import Silk.Utils 1.0
 import QtQuick.LocalStorage 2.0
 
 Http {
@@ -35,7 +35,7 @@ Http {
     status: 200
     responseHeader: {'Content-Type': root.post ? 'text/json; charset=utf-8;' : 'text/html; charset=utf-8;'}
 
-    property bool post: typeof root.data !== 'undefined' && root.data.length > 0
+    property bool post: root.data.length > 0
 
     Html {
         id: html
@@ -63,7 +63,7 @@ Http {
                     model: []
                     Li {
                         title: typeof model !== 'undefined' ? model.id : ''
-                        text: typeof model !== 'undefined' ? model.message : ''
+                        text: typeof model !== 'undefined' ? model.message.replace(/&/g, '&amp;') : ''
                     }
                 }
             }
@@ -78,11 +78,10 @@ Http {
     onReady: {
         var ret = []
         var db = LocalStorage.openDatabaseSync("chat.qml", "1.0", "chat", 1000000);
-        var isPost = (root.data.length > 0);
         var where = ''
         var hasMessage = false;
 
-        if (isPost) {
+        if (root.post) {
             var data = JSON.parse(root.data)
             if (typeof data.message !== 'undefined') {
                 hasMessage = true;
@@ -111,7 +110,7 @@ Http {
                         }
                         )
         } catch (e) {}
-        if (isPost) {
+        if (root.post) {
             json.object = ret;
         } else {
             lis.model = ret;

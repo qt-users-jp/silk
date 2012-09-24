@@ -46,7 +46,7 @@ Http {
                     Li { A { href: "?%1".arg(text); text: "query%1".arg(typeof model !== 'undefined' ? model.modelData : '') } }
                 }
             }
-            BlockQuote { text: "root.query=%1".arg(decodeURI(root.query.replace('+', ' '))) }
+            BlockQuote { text: "root.query=%1".arg(root.query.replace('+', ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) }
         }
     }
 }
