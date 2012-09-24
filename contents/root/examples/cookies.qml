@@ -72,14 +72,14 @@ Http {
             Dl {
                 Repeater {
                     model: http.cookies
-                    Dt { id: name; text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? model.key : '' }
+                    Dt { id: name; text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? decodeURI(model.key) : '' }
                     Dd {
                         Form {
                             action: "./cookies.qml"
                             method: "POST"
                             Input { type: "hidden"; name: "action"; value: "remove" }
                             Input { type: "hidden"; name: "name"; value: name.text }
-                            Text { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? model.value.value : '' } Br {}
+                            Text { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? decodeURI(model.value.value) : '' } Br {}
                             Input { type: "submit"; value: "Remove" }
                         }
                     }
