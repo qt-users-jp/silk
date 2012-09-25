@@ -53,7 +53,7 @@ Rule {
         property string border_radius: '.3em'
         property string _moz_border_radius: border_radius
 
-        background: '-webkit-gradient(linear, left top, left bottom, from(#80C342), to(#006225) )'
+        background: http.firefox ? '-moz-linear-gradient(top, #80C342, #006225)' : '-webkit-gradient(linear, left top, left bottom, from(#80C342), to(#006225) )'
 
         Rule {
             selector: 'span'
@@ -70,7 +70,7 @@ Rule {
         Rule {
             selector: ':hover'
 
-            background: '-webkit-gradient(linear, left top, left bottom, from(#006225), to(#80C342) )'
+            background: http.firefox ? '-moz-linear-gradient(top, #006225, #80C342)' : '-webkit-gradient(linear, left top, left bottom, from(#006225), to(#80C342) )'
             property string box_shadow: '0 0 .1em rgba(0,0,0,0.4)'
             property string _moz_box_shadow: box_shadow
             property string _webkit_box_shadow: box_shadow
@@ -107,7 +107,7 @@ Rule {
         property string border_radius: '.3em'
         property string _moz_border_radius: border_radius
 
-        background: '-webkit-gradient(linear, left top, left bottom, from(#C3C3C3), to(#626262) )'
+        background: http.firefox ? '-moz-linear-gradient(top, #C3C3C3, #626262)' : '-webkit-gradient(linear, left top, left bottom, from(#C3C3C3), to(#626262) )'
 
         Rule {
             selector: 'span'

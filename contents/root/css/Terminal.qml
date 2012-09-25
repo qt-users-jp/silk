@@ -29,11 +29,11 @@ import Silk.CSS 3.0
 Rule {
     selector: '.terminal'
 
-    border_top: '25px solid %1'.arg(root.lightColor)
-    border_left: '4px solid %1'.arg(root.lightColor)
+    border_top: '25px solid %1'.arg(http.lightColor)
+    border_left: '4px solid %1'.arg(http.lightColor)
     border_bottom: border_left
     border_right: border_left
-    background: root.blackColor
+    background: http.blackColor
     property string padding: '10px'
 
     property string _webkit_box_shadow: '0 5px 10px #aaa'
@@ -42,7 +42,7 @@ Rule {
     Rule {
         selector: 'kbd'
         font_family: 'monospace'
-        color: root.whiteColor
+        color: http.whiteColor
         property string line_height: '1.0'
 
         Rule {

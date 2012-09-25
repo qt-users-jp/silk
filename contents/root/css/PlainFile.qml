@@ -30,7 +30,7 @@ Rule {
     selector: '.file'
     font_family: 'monospace'
     property string line_height: '1.2'
-    border: '4px solid %1'.arg(root.darkColor)
+    border: '4px solid %1'.arg(http.darkColor)
     background: 'white'
     property string padding: '10px'
     property string _webkit_box_shadow: '0 5px 10px #aaa'
