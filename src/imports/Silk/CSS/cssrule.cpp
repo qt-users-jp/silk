@@ -74,10 +74,10 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
                 ret.append(QString::fromUtf8(l));
             }
             ret.replace("\r\n", "\r\n    ");
-            list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(m_selector).arg(ret).toUtf8());
+            list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(m_selector).arg(ret).toUtf8());
         } else {
             if (!attributes.isEmpty()) {
-                list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(m_selector).arg(attributes.join("\r\n    ")).toUtf8());
+                list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(m_selector).arg(attributes.join("\r\n    ")).toUtf8());
             }
             newSelectors.append(m_selector);
             foreach (const QObject *child, contentsList()) {
@@ -99,7 +99,7 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
                     newSelector = QString("%1 %2").arg(s).arg(s2);
                 }
                 if (!attributes.isEmpty()) {
-                    list.append(QString("%1 {\r\n    %2\r\n}\r\n\r\n").arg(newSelector).arg(attributes.join("\r\n    ")).toUtf8());
+                    list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(newSelector).arg(attributes.join("\r\n    ")).toUtf8());
                 }
             }
             newSelectors.append(newSelector);

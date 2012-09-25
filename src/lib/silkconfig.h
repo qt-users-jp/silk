@@ -1,9 +1,11 @@
 #ifndef SILKCONFIG_H
 #define SILKCONFIG_H
 
+#include "silkglobal.h"
+
 #include <QtCore/QVariant>
 
-class SilkConfig
+class SILK_EXPORT SilkConfig
 {
 public:
     static void initialize(int argc, char **argv);

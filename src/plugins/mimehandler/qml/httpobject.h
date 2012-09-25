@@ -24,14 +24,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKHTTPOBJECT_H
-#define SILKHTTPOBJECT_H
+#ifndef HTTPOBJECT_H
+#define HTTPOBJECT_H
 
 #include <silkabstracthttpobject.h>
 
 #include <QtCore/QUrl>
 
-class SilkHttpObject : public SilkAbstractHttpObject
+class HttpObject : public SilkAbstractHttpObject
 {
     Q_OBJECT
     Q_PROPERTY(QString method READ method NOTIFY methodChanged)
@@ -64,7 +64,7 @@ class SilkHttpObject : public SilkAbstractHttpObject
     Q_PROPERTY(bool escape READ escape WRITE escape NOTIFY escapeChanged)
     SILK_ADD_PROPERTY(bool, escape, bool)
 public:
-    explicit SilkHttpObject(QObject *parent = 0);
+    explicit HttpObject(QObject *parent = 0);
 
     virtual QByteArray out() const;
 
@@ -86,4 +86,4 @@ signals:
     void escapeChanged(bool escape);
 };
 
-#endif // SILKHTTPOBJECT_H
+#endif // HTTPOBJECT_H
