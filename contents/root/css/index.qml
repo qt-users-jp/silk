@@ -251,7 +251,12 @@ Http {
         Rule {
             selector: 'aside'
             color: root.whiteColor
-            property string padding: '0px 5% 10px'
+            property string padding: '0px 0% 10px'
+
+            Rule {
+                selector: 'h3,ul'
+                property string padding: '0px 10% 10px'
+            }
         }
     }
 
@@ -317,6 +322,7 @@ Http {
 
         Rule {
             selector: 'aside'
+
             Rule {
                 selector: 'a'
                 color: root.whiteColor
@@ -428,7 +434,7 @@ Http {
             Rule {
                 selector: 'aside'
                 property string _float: 'right'
-                property string width: '28%'
+                property string width: '38%'
             }
         }
     }

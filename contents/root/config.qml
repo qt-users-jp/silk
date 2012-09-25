@@ -32,7 +32,7 @@ import Silk.Cache 1.0
 import "./components/"
 
 SilkPageTemplate {
-    id: page
+    id: http
 
     subtitle: "Configuration"
     loading: silkrc.text.length == 0

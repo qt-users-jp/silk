@@ -29,7 +29,7 @@ import Silk.HTML 5.0
 import "./components/"
 
 SilkPageTemplate {
-    id: page
+    id: http
 
     subtitle: "a simple web framework"
 

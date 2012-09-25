@@ -31,7 +31,7 @@ import Silk.Cache 1.0
 import "./components/"
 
 SilkPageTemplate {
-    id: page
+    id: http
 
     subtitle: "Hello silk world"
     loading: hello_qml.text.length === 0 || hellocss_qml.text.length === 0

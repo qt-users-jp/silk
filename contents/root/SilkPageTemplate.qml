@@ -88,10 +88,15 @@ Http {
         Div {
             _class: "main-container"
             Div {
-                id: main
                 _class: "main wrapper clearfix"
 
+                Div {
+                    id: main
+                    property string style: "width: 100%"
+                }
+
                 Aside {
+
                     H3 { text: "Contents" }
                     Ul {
                         Li {
@@ -115,6 +120,24 @@ Http {
                         }
                         Li { A { href: '/examples/'; text: "Examples" } }
                     }
+                }
+
+                Section {
+                    Div { _id: "disqus_thread" }
+                    Script {
+                        type: 'text/javascript'
+                        text: "/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'silkqml'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();"
+                    }
+                    NoScript { text: 'Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>' }
+                    A { href: "http://disqus.com"; _class: "dsq-brlink"; text: 'comments powered by <span class="logo-disqus">Disqus</span>' }
                 }
             }
         }
