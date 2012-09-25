@@ -24,9 +24,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import Silk.HTTP 1.1
 import Silk.HTML 5.0
+import "./components/"
 
-Pre {
-    property string __class
-    _class: "file %1".arg(__class)
+SilkPageTemplate {
+    id: http
+
+    subtitle: "Tutorials"
+
+    Article {
+//        Header {
+//            H2 { text: "Building Web Contents in a simple language!" }
+//        }
+
+        Section {
+            H2 { text: "QML Basics" }
+            Ol {
+                Li { A { href: '/tutorials/helloqml.qml'; text: "Hello QML" } }
+            }
+        }
+
+        Footer {
+            Nav {
+                A { href: "/config.qml"; text: "Configuration" }
+                Text { text: " &lt;&lt; Previous / Next &gt;&gt; " }
+                A { href: "/tutorials/helloqml.qml"; text: "Hello QML" }
+            }
+        }
+    }
 }

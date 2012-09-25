@@ -50,10 +50,13 @@ Http {
         Meta { name: "viewport"; content: "width=device-width" }
         Link { rel: "stylesheet"; href: "/3rdparty/css/normalize.min.css" }
         Link { rel: "stylesheet"; href: "/css/" }
-        Script { src: "/3rdparty/js/modernizr-2.6.1-respond-1.1.0.min.js" }
+        Script { type: 'text/javascript'; src: "/3rdparty/js/modernizr-2.6.1-respond-1.1.0.min.js" }
+        Script { type: 'text/javascript'; src: "/js/gin.js" }
+        Script { type: 'text/javascript'; src: "/js/highlighter.js" }
     }
 
     Body {
+        onload: "highlight()"
         Comment { text: '[if lt IE 7]' +
             '<p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>' +
         '<![endif]' }
@@ -78,7 +81,7 @@ Http {
                 Nav {
                     Ul {
                         Li { A { href: "/try.qml"; text: "1. Try now!" } }
-                        Li { A { href: "#"; text: "2. Tutorials" } }
+                        Li { A { href: "/tutorials.qml"; text: "2. Tutorials" } }
                         Li { A { href: "/examples/"; text: "3. Examples" } }
                     }
                 }
@@ -112,7 +115,7 @@ Http {
                             }
                         }
                         Li {
-                            Text { text: "Tutorials" }
+                            A { href: '/tutorials.qml'; text: "Tutorials" }
                             Ul {
                                 Li { text: "Contents" }
                                 Li { text: "Service" }
@@ -123,6 +126,7 @@ Http {
                 }
 
                 Section {
+                    enabled: http.host == "silk.qtquick.me"
                     Div { _id: "disqus_thread" }
                     Script {
                         type: 'text/javascript'
@@ -155,15 +159,10 @@ var disqus_shortname = 'silkqml'; // required: replace example with your forum s
             }
         }
 
-        Script {
-            src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'
+        GoogleAnalytics {
+            enabled: http.host == "silk.qtquick.me"
+            __trackingCode: 'UA-33461556-1'
         }
-
-        Script {
-            text: "window.jQuery || document.write('<script src=\"/3rdparty/js/jquery-1.8.1.min.js\"><\\/script>')"
-        }
-
-        GoogleAnalytics { __trackingCode: 'UA-33461556-1' }
     }
     Text { text: "\n</html>" }
 }

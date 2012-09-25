@@ -46,6 +46,7 @@ SilkPageTemplate {
             H2 { text: "Default configuration values" }
             PlainFile {
                 id: silkrc
+                __class: 'json'
             }
             Dl {
                 Dt { text: "listen.address" }
@@ -72,8 +73,8 @@ SilkPageTemplate {
         Section {
             H2 { text: "Run with your config" }
             PlainFile {
-                text: '/* my silkrc */
-{
+                __class: 'json'
+                text: '{
     "listen": { "address": "localhost", "port": 8081 }
     , "contents": { "*": "/home/silk/contents" }
     , "storage": { "path": "/home/silk/storage" }
@@ -94,8 +95,8 @@ SilkPageTemplate {
         Footer {
             Nav {
                 A { href: "/try.qml"; text: "Try now!" }
-                Text { text: " &lt;&lt; Previous / Next &gt;&gt; Tutorial" }
-//                A { href: "/config.qml"; text: "Configuration" }
+                Text { text: " &lt;&lt; Previous / Next &gt;&gt; " }
+                A { href: "/tutorials.qml"; text: "Tutorials" }
             }
         }
     }

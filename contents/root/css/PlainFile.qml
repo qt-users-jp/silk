@@ -36,4 +36,47 @@ Rule {
     property string _webkit_box_shadow: '0 5px 10px #aaa'
     property string _moz_box_shadow: _webkit_box_shadow
     property string box_shadow: _webkit_box_shadow
+
+    Rule {
+        selector: ' .number'
+        color: '#000000'
+    }
+    Rule {
+        selector: ' .string'
+        color: '#339933'
+    }
+    Rule {
+        selector: ' .key'
+        color: '#993333'
+    }
+
+    Rule {
+        selector: ' .keyword'
+        color: '#999933'
+    }
+
+    Rule {
+        selector: ' .element'
+        color: '#993399'
+    }
+
+    Rule {
+        selector: ' .namespace'
+        color: '#993399'
+    }
+
+    Rule {
+        selector: ' .property'
+        color: '#993333'
+    }
+
+    Rule {
+        selector: ' .comment'
+        color: '#339933'
+    }
+
+    Rule {
+        selector: ' .blah3'
+        color: '#339933'
+    }
 }

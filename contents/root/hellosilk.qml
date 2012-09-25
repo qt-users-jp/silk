@@ -45,6 +45,7 @@ SilkPageTemplate {
             H3 { text: "HTML" }
             PlainFile {
                 id: hello_qml
+                __class: 'qml'
             }
             P { text: "silk generates following HTML" }
             PlainFile {
