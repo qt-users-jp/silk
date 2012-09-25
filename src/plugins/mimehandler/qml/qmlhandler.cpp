@@ -108,9 +108,9 @@ QmlHandler::Private::Private(QmlHandler *parent)
         }
     }
 
-    engine.setOfflineStoragePath(appDir.absoluteFilePath(SilkConfig::value("storage").toMap().value("path").toString()));
+    engine.setOfflineStoragePath(appDir.absoluteFilePath(SilkConfig::value("storage.path").toString()));
     engine.addImportPath(":/imports");
-    foreach (const QString &importPath, SilkConfig::value("import").toMap().value("path").toStringList()) {
+    foreach (const QString &importPath, SilkConfig::value("import.path").toStringList()) {
         engine.addImportPath(appDir.absoluteFilePath(importPath));
     }
 }
@@ -131,7 +131,7 @@ void QmlHandler::Private::load(const QFileInfo &fileInfo, QHttpRequest *request,
 
 void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    static bool cache = SilkConfig::value("cache").toMap().value("qml").toBool();
+    static bool cache = SilkConfig::value("cache.qml").toBool();
     switch (component->status()) {
     case QQmlComponent::Null:
         // TODO: any check?

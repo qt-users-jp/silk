@@ -7,8 +7,22 @@
 
 QVariantMap SilkConfig::config;
 
+QVariant SilkConfig::value(const QVariant &v, const QString &key)
+{
+    int index = key.indexOf(QLatin1Char('.'));
+    if (index > 0) {
+        return value(v.toMap().value(key.left(index)), key.mid(index + 1));
+    }
+    return v.toMap().value(key);
+}
+
 QVariant SilkConfig::value(const QString &key)
 {
+    int index = key.indexOf(QLatin1Char('.'));
+    if (index > 0) {
+        QVariant ret = value(config.value(key.left(index)), key.mid(index + 1));
+        return ret;
+    }
     return config.value(key);
 }
 

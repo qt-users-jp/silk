@@ -106,7 +106,7 @@ Silk::Private::Private(Silk *parent)
 
     connect(q, SIGNAL(incomingConnection(QHttpRequest *, QHttpReply *)), this, SLOT(incomingConnection(QHttpRequest *, QHttpReply *)));
 
-    QString listenAddress = SilkConfig::value("listen").toMap().value("address").toString();
+    QString listenAddress = SilkConfig::value("listen.address").toString();
     QHostAddress address;
     if (listenAddress == QLatin1String("*")) {
         address = QHostAddress::Any;
@@ -118,7 +118,7 @@ Silk::Private::Private(Silk *parent)
         return;
     }
 
-    int port = SilkConfig::value("listen").toMap().value("port").toInt();
+    int port = SilkConfig::value("listen.port").toInt();
 
     QVariantMap roots = SilkConfig::value("contents").toMap();
     foreach (const QString &key, roots.keys()) {

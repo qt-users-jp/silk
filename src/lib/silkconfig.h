@@ -14,6 +14,7 @@ private:
     SilkConfig() {}
 
     static QVariantMap readConfigFile(const QString &fileName);
+    static QVariant value(const QVariant &v, const QString &key);
 
     static QVariantMap config;
 };
