@@ -6,7 +6,3 @@ HEADERS += \
 
 SOURCES += \
     text.cpp
-
-OTHER_FILES += \
-    HTTP.json
-

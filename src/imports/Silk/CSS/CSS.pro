@@ -7,8 +7,5 @@ HEADERS += \
 SOURCES += \
     cssrule.cpp
 
-OTHER_FILES += \
-    CSS.json
-
 RESOURCES += \
     CSS.qrc

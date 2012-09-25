@@ -39,7 +39,7 @@ Http {
         enabled: root.mode != "css"
         Head {
             Title { id: title; text: "Creating Single Element iPhone using CSS3" }
-            Link { rel: "stylesheet"; type: "text/css"; href: "%1?mode=%2".arg(root.url).arg("css") }
+            Link { rel: "stylesheet"; type: "text/css"; href: "%1?mode=%2".arg(root.path).arg("css") }
         }
 
         Body {

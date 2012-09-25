@@ -6,6 +6,3 @@ HEADERS += \
 
 SOURCES += \
     repeater.cpp
-
-OTHER_FILES += \
-    Utils.json

@@ -6,6 +6,3 @@ HEADERS += \
 
 SOURCES += \
     cacheobject.cpp
-
-OTHER_FILES += \
-    Cache.json

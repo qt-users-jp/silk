@@ -9,8 +9,5 @@ SOURCES += \
     htmltag.cpp \
     htmlcomment.cpp
 
-OTHER_FILES += \
-    HTML.json
-
 RESOURCES += \
     HTML.qrc

@@ -36,7 +36,7 @@
 class CssPlugin : public QObject, SilkImportsInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports" FILE "CSS.json")
+    Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
     virtual void silkRegisterObject()

@@ -6,6 +6,3 @@ HEADERS += \
 
 SOURCES += \
     jsonobject.cpp
-
-OTHER_FILES += \
-    JSON.json
