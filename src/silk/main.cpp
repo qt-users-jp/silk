@@ -25,74 +25,18 @@
  */
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
-#include <QtCore/QStringList>
 
-#include "silkservice.h"
 #include "silk.h"
 #include "silkconfig.h"
 
 int main(int argc, char *argv[])
 {
-    int ret = 0;
+    QCoreApplication app(argc, argv);
+
     SilkConfig::initialize(argc, argv);
-
-//    QString serviceName = SilkConfig::value("service_name").toString();
-    QString serviceName("silk");
-
-    QString serviceFilePath;
-    bool install = false;
-    bool uninstall = false;
-    bool daemon = false;
-    bool kill = false;
-    for (int i = 1; i < argc; i++) {
-        QString opt(argv[i]);
-        if (opt == QLatin1String("-d")) {
-            daemon = true;
-        } else if (opt == QLatin1String("-i")) {
-            if (i < argc) {
-                install = true;
-                i++;
-                serviceFilePath = QString(argv[i]);
-            } else {
-                // error
-            }
-        } else if (opt == QLatin1String("-u")) {
-            uninstall = true;
-        } else if (opt == QLatin1String("-k")) {
-            kill = true;
-        }
+    Silk silk;
+    if (!silk.isListening()) {
+        return -1;
     }
-
-    QtServiceController controller(serviceName);
-    if (daemon) {
-        if (!controller.isInstalled()) {
-            if (install) {
-                controller.install(serviceFilePath);
-            }
-        }
-
-        SilkService service(argc, argv, serviceName);
-        ret = service.exec();
-    } else if (install) {
-        if (controller.isInstalled()) {
-            if (controller.serviceFilePath() != serviceFilePath) {
-                controller.uninstall();
-            } else {
-                return ret;
-            }
-        }
-        controller.install(serviceFilePath);
-    } else if (uninstall) {
-        if (controller.isInstalled()) controller.uninstall();
-    } else if (kill) {
-        if (controller.isRunning()) controller.stop();
-    } else {
-        QCoreApplication app(argc, argv);
-
-        new Silk(&app);
-
-        ret = app.exec();
-    }
-    return ret;
+    return app.exec();
 }
