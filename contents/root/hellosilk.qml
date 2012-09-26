@@ -74,6 +74,7 @@ SilkPageTemplate {
             H3 { text: "CSS" }
             PlainFile {
                 id: hellocss_qml
+                __class: 'qml'
             }
             P { text: "silk generates following CSS" }
             PlainFile {
