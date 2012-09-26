@@ -24,7 +24,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 5.0
 import Silk.Cache 1.0
@@ -103,7 +102,7 @@ SilkPageTemplate {
 
     Cache { id: cache }
 
-    Component.onCompleted: {
+    onReady: {
         var file = "qrc:/silkrc.default"
         var value = cache.fetch(file)
         if (typeof value !== 'undefined') {

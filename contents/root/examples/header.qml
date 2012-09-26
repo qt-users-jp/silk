@@ -24,7 +24,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 4.01
 import Silk.Utils 1.0

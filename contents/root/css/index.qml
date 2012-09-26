@@ -36,7 +36,7 @@ Http {
     property string lightColor: '#80C342'
     property string darkColor: '#006225'
     property string blackColor: '#003212'
-    property bool firefox: http.requestHeader['user-agent'].indexOf('firefox') > -1
+    property bool firefox: typeof http.requestHeader !== 'undefined' && typeof http.requestHeader['user-agent'] !== 'undefined' ? http.requestHeader['user-agent'].indexOf('firefox') > -1 : false
 
     /* ==========================================================================
        HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
