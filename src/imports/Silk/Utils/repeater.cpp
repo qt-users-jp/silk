@@ -27,6 +27,7 @@
 #include "repeater.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QAbstractListModel>
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
@@ -79,6 +80,20 @@ QByteArray Repeater::out() const
             list.append(model);
         }
         break; }
+    case QMetaType::QObjectStar: {
+        QAbstractListModel *m = qobject_cast<QAbstractListModel*>(qvariant_cast<QObject*>(m_model));
+        if (m) {
+            QHash<int, QByteArray> roleNames = m->roleNames();
+            for (int i = 0; i < m->rowCount(); i++) {
+                QVariantMap model;
+                foreach (int role, roleNames.keys()) {
+                    QVariant data = m->data(m->index(i), role);
+                    model.insert(roleNames.value(role), data);
+                }
+                list.append(model);
+            }
+        }
+        break; }
     default: {
         qDebug() << Q_FUNC_INFO << __LINE__ << m_model.type() << m_model;
 //        QObject *object = qvariant_cast<QObject*>(model);
@@ -91,8 +106,8 @@ QByteArray Repeater::out() const
 
     QQmlContext *context = qmlEngine(this)->rootContext();
     QVariant model = context->contextProperty("model");
-    foreach (const QVariant &model, list) {
-        context->setContextProperty("model", model);
+    foreach (const QVariant &m, list) {
+        context->setContextProperty("model", m);
 
         // TODO: workaround for duplication of Component
         QList<QObject *> done;

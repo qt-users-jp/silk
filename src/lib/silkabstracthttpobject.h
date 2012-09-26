@@ -27,10 +27,8 @@
 #ifndef SILKABSTRACTHTTPOBJECT_H
 #define SILKABSTRACTHTTPOBJECT_H
 
-#include <QtCore/QObject>
-#include <QtQml/QQmlListProperty>
-
 #include "silkglobal.h"
+#include "silkabstractobject.h"
 
 #define SILK_ADD_PROPERTY(type, name, type2) \
 public: \
@@ -43,31 +41,19 @@ public: \
 private: \
     type2 m_##name;
 
-class SILK_EXPORT SilkAbstractHttpObject : public QObject
+class SILK_EXPORT SilkAbstractHttpObject : public SilkAbstractObject
 {
     Q_OBJECT
-
-    Q_PROPERTY(QQmlListProperty<QObject> contents READ contents)
-    Q_CLASSINFO("DefaultProperty", "contents")
 
     Q_PROPERTY(bool enabled READ enabled WRITE enabled NOTIFY enabledChanged)
     SILK_ADD_PROPERTY(bool, enabled, bool)
 public:
     explicit SilkAbstractHttpObject(QObject *parent = 0);
 
-    QQmlListProperty<QObject> contents();
-
     virtual QByteArray out() const = 0;
 
 signals:
     void enabledChanged(bool enabled);
-
-protected:
-    void childEvent(QChildEvent *event);
-    QList<QObject *> contentsList() const;
-
-private:
-    QList<QObject *> m_contents;
 };
 
 

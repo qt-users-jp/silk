@@ -33,7 +33,7 @@
 #include <silkimportsinterface.h>
 #include "cacheobject.h"
 
-class JsonPlugin : public QObject, SilkImportsInterface
+class CachePlugin : public QObject, SilkImportsInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")

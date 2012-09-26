@@ -45,9 +45,9 @@ Dt 4.01 401_Dt.qml
 Dd 4.01 401_Dd.qml
 Table 4.01 401_Table.qml
 Caption 4.01 401_Caption.qml
-Thead 4.01 401_Thead.qml
-Tbody 4.01 401_Tbody.qml
-Tfoot 4.01 401_Tfoot.qml
+THead 4.01 401_THead.qml
+TBody 4.01 401_TBody.qml
+TFoot 4.01 401_TFoot.qml
 Colgroup 4.01 401_Colgroup.qml
 Col 4.01 401_Col.qml
 Tr 4.01 401_Tr.qml

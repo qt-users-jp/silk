@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = HTTP HTML CSS JSON Utils Cache
+SUBDIRS = HTTP HTML CSS JSON Utils Cache Database
+

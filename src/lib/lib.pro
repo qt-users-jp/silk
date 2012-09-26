@@ -14,9 +14,11 @@ HEADERS += \
     silkimportsinterface.h \
     silkabstracthttpobject.h \
     silkmimehandlerinterface.h \
-    silkabstractmimehandler.h
+    silkabstractmimehandler.h \
+    silkabstractobject.h
 
 SOURCES += \
     silkconfig.cpp \
     silkabstracthttpobject.cpp \
-    silkabstractmimehandler.cpp
+    silkabstractmimehandler.cpp \
+    silkabstractobject.cpp

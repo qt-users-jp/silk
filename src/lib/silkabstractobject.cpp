@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,10 +24,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silkabstracthttpobject.h"
+#include "silkabstractobject.h"
 
-SilkAbstractHttpObject::SilkAbstractHttpObject(QObject *parent)
-    : SilkAbstractObject(parent)
-    , m_enabled(true)
+#include <QtCore/QChildEvent>
+
+SilkAbstractObject::SilkAbstractObject(QObject *parent)
+    : QObject(parent)
 {
+}
+
+QQmlListProperty<QObject> SilkAbstractObject::contents()
+{
+    return QQmlListProperty<QObject>(this, m_contents);
+}
+
+QList<QObject *> SilkAbstractObject::contentsList() const
+{
+    return m_contents;
+}
+
+void SilkAbstractObject::childEvent(QChildEvent *event)
+{
+    if (event->added()) {
+        if (!m_contents.contains(event->child())) {
+            m_contents.append(event->child());
+        }
+    }
+    QObject::childEvent(event);
 }
