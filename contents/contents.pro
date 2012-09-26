@@ -21,4 +21,3 @@ DEPLOYMENTFOLDERS = root
 
 include(../silkdeployment.pri)
 qtcAddDeployment()
-

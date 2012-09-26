@@ -103,7 +103,7 @@ SilkPageTemplate {
             Nav {
                 A { href: "/"; text: "Introduction" }
                 Text { text: " &lt;&lt; Previous / Next &gt;&gt; " }
-                A { href: "/try.qml"; text: "Try now!" }
+                A { href: "/features.qml"; text: "Features" }
             }
         }
     }
