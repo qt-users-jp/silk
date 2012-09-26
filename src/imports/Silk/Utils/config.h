@@ -24,28 +24,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef UTILSPLUGIN_H
-#define UTILSPLUGIN_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
-#include <QtCore/QDebug>
 #include <QtCore/QObject>
-#include <QtCore/QtPlugin>
-#include <silkimportsinterface.h>
+#include <QtCore/QVariantMap>
 
-#include "repeater.h"
-#include "config.h"
-
-class UtilsPlugin : public QObject, SilkImportsInterface
+class Config : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
-    Q_INTERFACES(SilkImportsInterface)
+    Q_PROPERTY(QVariantMap data READ data NOTIFY dataChanged)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<Repeater>("Silk.Utils", 1, 0, "Repeater");
-        qmlRegisterType<Config>("Silk.Utils", 1, 0, "SilkConfig");
-    }
+    explicit Config(QObject *parent = 0);
+
+    const QVariantMap &data() const;
+    
+signals:
+    void dataChanged(const QVariantMap &data);
 };
 
-#endif // UTILSPLUGIN_H
+#endif // CONFIG_H

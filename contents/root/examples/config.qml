@@ -24,28 +24,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef UTILSPLUGIN_H
-#define UTILSPLUGIN_H
+import Silk.HTTP 1.1
+import Silk.HTML 4.01
+import Silk.Utils 1.0
+import "./components"
 
-#include <QtCore/QDebug>
-#include <QtCore/QObject>
-#include <QtCore/QtPlugin>
-#include <silkimportsinterface.h>
+Http {
+    id: http
+    status: 200
+    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
-#include "repeater.h"
-#include "config.h"
-
-class UtilsPlugin : public QObject, SilkImportsInterface
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
-    Q_INTERFACES(SilkImportsInterface)
-public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<Repeater>("Silk.Utils", 1, 0, "Repeater");
-        qmlRegisterType<Config>("Silk.Utils", 1, 0, "SilkConfig");
+    SilkConfig {
+        id: config
     }
-};
 
-#endif // UTILSPLUGIN_H
+    Html {
+        Head {
+            Title { id: title; text: "Config" }
+        }
+
+        Body {
+            H1 { text: title.text }
+            P {
+                text: 'SilkConfig element in Silk.Utils 1.0 allows you to get <a href="/config.qml">config values</a> in QML'
+            }
+
+            Dl {
+                Dt { text: 'listen.address' }
+                Dd { text: config.data.listen.address }
+                Dt { text: 'listen.port' }
+                Dd { text: config.data.listen.port }
+            }
+        }
+    }
+}

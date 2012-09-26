@@ -2,7 +2,9 @@ include(../../../../silkimports.pri)
 
 HEADERS += \
     utilsplugin.h \
-    repeater.h
+    repeater.h \
+    config.h
 
 SOURCES += \
-    repeater.cpp
+    repeater.cpp \
+    config.cpp

@@ -151,6 +151,11 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "file.qml" }
                 }
                 Li {
+                    A { href: "%1.qml".arg(text); text: "config" }
+                    Text { text: " / " }
+                    A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "config.qml" }
+                }
+                Li {
                     A { href: "%1.qml".arg(text); text: "remote" }
                     Text { text: " / " }
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "remote.qml" }

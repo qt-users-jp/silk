@@ -5,7 +5,12 @@
 #include <QtCore/QFile>
 #include <QtCore/QJsonDocument>
 
-QVariantMap SilkConfig::config;
+QVariantMap SilkConfig::m_config;
+
+const QVariantMap &SilkConfig::config()
+{
+    return m_config;
+}
 
 QVariant SilkConfig::value(const QVariant &v, const QString &key)
 {
@@ -20,15 +25,15 @@ QVariant SilkConfig::value(const QString &key)
 {
     int index = key.indexOf(QLatin1Char('.'));
     if (index > 0) {
-        QVariant ret = value(config.value(key.left(index)), key.mid(index + 1));
+        QVariant ret = value(m_config.value(key.left(index)), key.mid(index + 1));
         return ret;
     }
-    return config.value(key);
+    return m_config.value(key);
 }
 
 void SilkConfig::initialize(int argc, char **argv)
 {
-    config = readConfigFile(":/silkrc.default");
+    m_config = readConfigFile(":/silkrc.default");
     QString fileName = QDir::home().absoluteFilePath(".silkrc");
     bool userConfig = false;
     for (int i = 1; i < argc; i++) {
@@ -44,21 +49,19 @@ void SilkConfig::initialize(int argc, char **argv)
     if (QFile::exists(fileName)) {
         QVariantMap override = readConfigFile(fileName);
         foreach (const QString &key, override.keys()) {
-            if (!config.contains(key)) {
-                qWarning() << "Configuration:" << key << "is ignored because of invalid key.";
-                continue;
+            if (m_config.contains(key)) {
+                if (override.value(key).isNull()) {
+                    qWarning() << "Configuration:" << key << "is ignored because of no value.";
+                    qWarning() << "Expected:" << m_config.value(key);
+                    continue;
+                }
+                if (m_config.value(key).type() != override.value(key).type()) {
+                    qWarning() << "Configuration:" << key << "is ignored because of type mismatch.";
+                    qWarning() << "Expected:" << m_config.value(key).type() << "Actual:" << override.value(key).type();
+                    continue;
+                }
             }
-            if (override.value(key).isNull()) {
-                qWarning() << "Configuration:" << key << "is ignored because of no value.";
-                qWarning() << "Expected:" << config.value(key);
-                continue;
-            }
-            if (config.value(key).type() != override.value(key).type()) {
-                qWarning() << "Configuration:" << key << "is ignored because of type mismatch.";
-                qWarning() << "Expected:" << config.value(key).type() << "Actual:" << override.value(key).type();
-                continue;
-            }
-            config.insert(key, override.value(key));
+            m_config.insert(key, override.value(key));
         }
     } else if (userConfig){
         qWarning() << fileName << "not found.";
