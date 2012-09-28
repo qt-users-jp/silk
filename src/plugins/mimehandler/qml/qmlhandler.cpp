@@ -36,6 +36,7 @@
 #include <QtQml/qqml.h>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
+#include <QtQml/QQmlContext>
 
 #include <qhttprequest.h>
 #include <qhttpreply.h>
@@ -44,6 +45,7 @@
 #include <silkimportsinterface.h>
 
 #include "httpobject.h"
+#include "silk.h"
 
 class QmlHandler::Private : public QObject
 {
@@ -78,6 +80,9 @@ QmlHandler::Private::Private(QmlHandler *parent)
     : QObject(parent)
     , q(parent)
 {
+    QQmlContext *context = engine.rootContext();
+    context->setContextProperty(QLatin1String("Silk"), new Silk(this));
+
     qmlRegisterType<SilkAbstractHttpObject>();
     qmlRegisterType<HttpObject>("Silk.HTTP", 1, 1, "Http");
 

@@ -6,8 +6,10 @@ QT += network qml
 HEADERS += \
     qmlplugin.h \
     qmlhandler.h \
-    httpobject.h
+    httpobject.h \
+    silk.h
 
 SOURCES += \
     qmlhandler.cpp \
-    httpobject.cpp
+    httpobject.cpp \
+    silk.cpp

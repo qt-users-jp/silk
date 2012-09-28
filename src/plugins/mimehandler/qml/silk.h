@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,11 +24,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
+#ifndef SILK_H
+#define SILK_H
 
-Http {
-    id: root
-    status: 301
-    responseHeader: {'Location': root.message}
-}
+#include <QObject>
+
+class Silk : public QObject
+{
+    Q_OBJECT
+public:
+    explicit Silk(QObject *parent = 0);
+    
+    Q_INVOKABLE QString uuid();
+};
+
+#endif // SILK_H

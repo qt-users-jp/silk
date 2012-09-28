@@ -157,6 +157,18 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "smtp.qml" }
                 }
             }
+            Ul {
+                Li {
+                    A { href: "%1.qml".arg(text); text: "oauth" }
+                    Text { text: " / " }
+                    A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "oauth.qml" }
+                    Ul {
+                        Li {
+                            A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/components/%1".arg(text); text: "Twitter.qml" }
+                        }
+                    }
+                }
+            }
         }
 
         Section {

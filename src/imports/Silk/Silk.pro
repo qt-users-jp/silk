@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = HTTP HTML CSS JSON Utils Cache Database SMTP
+SUBDIRS = HTTP HTML CSS JSON Utils Cache Database SMTP OAuth
 
