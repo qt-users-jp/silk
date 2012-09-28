@@ -55,6 +55,7 @@ private:
     QString documentRootForRequest(const QHttpRequest *request) const;
     void load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void loadFile(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply);
+    void loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
 
 private:
@@ -122,7 +123,12 @@ Silk::Private::Private(Silk *parent)
 
     QVariantMap roots = SilkConfig::value("contents").toMap();
     foreach (const QString &key, roots.keys()) {
-        documentRoots.insert(key, appDir.absoluteFilePath(roots.value(key).toString()));
+        QString value = roots.value(key).toString();
+        if (value.contains(":/")) {
+            documentRoots.insert(key, value);
+        } else {
+            documentRoots.insert(key, appDir.absoluteFilePath(value));
+        }
     }
 
     if (!q->listen(address, port)) {
@@ -134,8 +140,8 @@ Silk::Private::Private(Silk *parent)
 QString Silk::Private::documentRootForRequest(const QHttpRequest *request) const
 {
     QString ret(":/contents");
-    if (documentRoots.contains(request->rawHeader("Host"))) {
-        ret = documentRoots.value(request->rawHeader("Host"));
+    if (documentRoots.contains(request->url().host())) {
+        ret = documentRoots.value(request->url().host());
     } else if (documentRoots.contains("*")) {
         ret = documentRoots.value("*");
     }
@@ -148,24 +154,31 @@ void Silk::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
 
     QString documentRoot = documentRootForRequest(request);
 
-    QString fileName(documentRoot + request->url().path());
-    QFileInfo fileInfo(fileName);
-    if (fileInfo.isDir()) {
-        if (request->url().path().endsWith("/")) {
-            fileName = fileName + QLatin1String("/index.qml");
-            fileInfo = QFileInfo(fileName);
-        } else {
-            QUrl url(request->url());
-            url.setPath(url.path() + "/");
-            error(301, request, reply, url.toString());
-            return;
-        }
-    }
-
-    if (fileInfo.exists()) {
-        load(fileInfo, request, reply);
+    if (documentRoot.indexOf(":/") > 0) {
+        // reverse proxy
+        QUrl url(documentRoot);
+        url.setPath(request->url().path());
+        loadUrl(url, request, reply);
     } else {
-        error(404, request, reply, request->url().toString());
+        QString fileName(documentRoot + request->url().path());
+        QFileInfo fileInfo(fileName);
+        if (fileInfo.isDir()) {
+            if (request->url().path().endsWith("/")) {
+                fileName = fileName + QLatin1String("/index.qml");
+                fileInfo = QFileInfo(fileName);
+            } else {
+                QUrl url(request->url());
+                url.setPath(url.path() + "/");
+                error(301, request, reply, url.toString());
+                return;
+            }
+        }
+
+        if (fileInfo.exists()) {
+            load(fileInfo, request, reply);
+        } else {
+            error(404, request, reply, request->url().toString());
+        }
     }
 }
 
@@ -176,7 +189,13 @@ void Silk::Private::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttp
     reply->setStatus(200);
     reply->setRawHeader("Content-Type", mime.toUtf8());
     if (mimeHandlers.contains(mime)) {
-        bool ret = mimeHandlers[mime]->load(fileInfo, request, reply, message);
+        QUrl url;
+        if (fileInfo.filePath().startsWith(":/")) {
+            url = QUrl("qrc" + fileInfo.absoluteFilePath());
+        } else {
+            url = QUrl::fromLocalFile(fileInfo.absoluteFilePath());
+        }
+        bool ret = mimeHandlers[mime]->load(url, request, reply, message);
         if (!ret) {
             loadFile(fileInfo, request, reply);
         }
@@ -201,6 +220,14 @@ void Silk::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *request, Q
         } else {
             error(403, request, reply, request->url().toString());
         }
+    }
+}
+
+void Silk::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
+{
+    bool ret = mimeHandlers["silk/x-proxy"]->load(url, request, reply, message);
+    if (!ret) {
+        error(403, request, reply, request->url().toString());
     }
 }
 

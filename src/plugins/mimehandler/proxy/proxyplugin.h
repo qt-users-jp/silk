@@ -24,27 +24,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKABSTRACTMIMEHANDLER_H
-#define SILKABSTRACTMIMEHANDLER_H
+#ifndef PROXYPLUGIN_H
+#define PROXYPLUGIN_H
 
+#include <QtCore/QDebug>
 #include <QtCore/QObject>
-#include <QtCore/QFileInfo>
+#include <QtCore/QStringList>
+#include <silkmimehandlerinterface.h>
+#include "proxyhandler.h"
 
-#include "silkglobal.h"
-
-class QHttpRequest;
-class QHttpReply;
-
-class SILK_EXPORT SilkAbstractMimeHandler : public QObject
+class ProxyPlugin : public QObject, SilkMimeHandlerInterface
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "me.qtquick.silk.plugins.mime")
+    Q_INTERFACES(SilkMimeHandlerInterface)
 public:
-    explicit SilkAbstractMimeHandler(QObject *parent = 0);
-    
-    virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString()) = 0;
-    
-signals:
-    void error(int code, QHttpRequest *request, QHttpReply *reply, const QString &errorString = QString());
+    virtual QStringList keys() const {
+        return QStringList() << "silk/x-proxy";
+    }
+
+    virtual SilkAbstractMimeHandler *handler(QObject *parent) {
+        return new ProxyHandler(parent);
+    }
 };
 
-#endif // SILKABSTRACTMIMEHANDLER_H
+#endif // PROXYPLUGIN_H

@@ -51,7 +51,7 @@ class QmlHandler::Private : public QObject
 public:
     Private(QmlHandler *parent);
 
-    void load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message);
+    void load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message);
 private:
     void exec(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void close(HttpObject *http);
@@ -115,15 +115,8 @@ QmlHandler::Private::Private(QmlHandler *parent)
     }
 }
 
-void QmlHandler::Private::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message)
+void QmlHandler::Private::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    QUrl url;
-    if (fileInfo.path().startsWith(':')) {
-        url = QUrl(QString("qrc%1").arg(fileInfo.dir().path()));
-    } else {
-        url = QUrl::fromLocalFile(fileInfo.absoluteDir().path());
-    }
-    url.setPath(url.path() + "/" + fileInfo.fileName());
     QQmlComponent *component = new QQmlComponent(&engine, url, reply);
     connect(component, SIGNAL(destroyed(QObject *)), this, SLOT(componentDestroyed(QObject *)), Qt::QueuedConnection);
     exec(component, request, reply, message);
@@ -272,15 +265,22 @@ QmlHandler::QmlHandler(QObject *parent)
 {
 }
 
-bool QmlHandler::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message)
+bool QmlHandler::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
+    QFileInfo fileInfo;
+    if (url.scheme() == "qrc") {
+        fileInfo = QFileInfo(url.toString().mid(3));
+    } else {
+        fileInfo = QFileInfo(url.toLocalFile());
+    }
+
     if (fileInfo.fileName().at(0).isUpper()) {
         return false;
     } else {
         if (!fileInfo.isReadable()){
             emit error(403, request, reply, request->url().toString());
         } else {
-            d->load(fileInfo, request, reply, message);
+            d->load(url, request, reply, message);
         }
     }
     return true;

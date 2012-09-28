@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,27 +24,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKABSTRACTMIMEHANDLER_H
-#define SILKABSTRACTMIMEHANDLER_H
+#ifndef PROXYHANDLER_H
+#define PROXYHANDLER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QFileInfo>
+#include <silkabstractmimehandler.h>
 
-#include "silkglobal.h"
-
-class QHttpRequest;
-class QHttpReply;
-
-class SILK_EXPORT SilkAbstractMimeHandler : public QObject
+class ProxyHandler : public SilkAbstractMimeHandler
 {
     Q_OBJECT
+
 public:
-    explicit SilkAbstractMimeHandler(QObject *parent = 0);
+    explicit ProxyHandler(QObject *parent = 0);
     
-    virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString()) = 0;
-    
-signals:
-    void error(int code, QHttpRequest *request, QHttpReply *reply, const QString &errorString = QString());
+    virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
+
+private:
+    class Private;
+    Private *d;
 };
 
-#endif // SILKABSTRACTMIMEHANDLER_H
+#endif // PROXYHANDLER_H
