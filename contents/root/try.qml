@@ -74,8 +74,7 @@ SilkPageTemplate {
                 Kbd { text: "$ ./bin/silk" }
             }
             P {
-                Text { text: "open&nbsp;" }
-                A { href: "http://localhost:8080/"; text: "http://localhost:8080/" }
+                Text { text: "open http://localhost:8080/" }
             }
         }
 

@@ -37,9 +37,14 @@ Http {
     Cache { id: cache }
 
     UserInput {
-        onDataChanged: {
+        id: input
+
+        property string action
+        property string oauth_verifier
+
+        onSubmit: {
             var responseCookies = http.responseCookies;
-            switch(data.action) {
+            switch(input.action) {
             case 'authorize':
                 http.loading = true;
                 twitter.requestToken();
@@ -53,12 +58,12 @@ Http {
                 cache.remove(http.requestCookies.session_id);
                 break;
             default:
-                if (typeof data.oauth_verifier !== 'undefined') {
+                if (input.oauth_verifier.length > 0) {
                     http.loading = true;
                     var session_data = cache.fetch(http.requestCookies.session_id.value);
                     twitter.token = session_data.token;
                     twitter.tokenSecret = session_data.tokenSecret;
-                    twitter.accessToken(data.oauth_verifier);
+                    twitter.accessToken(input.oauth_verifier);
                 } else {
                     if (typeof http.requestCookies.session_id !== 'undefined') {
                         var session_data = cache.fetch(http.requestCookies.session_id.value);

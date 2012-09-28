@@ -36,11 +36,16 @@ Http {
     responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
     UserInput {
-        onDataChanged: {
-            switch(data.action) {
+        id: input
+
+        property string action
+        property string email
+
+        onSubmit: {
+            switch(input.action) {
             case 'send':
                 http.loading = true;
-                smtp.send({'to': [decodeURIComponent(data.email)], 'subject': 'smtp test mail', 'body': 'sent in http://silk.qtquick.me/examples/smtp.qml'});
+                smtp.send({'to': [input.email], 'subject': 'smtp test mail', 'body': 'sent in http://silk.qtquick.me/examples/smtp.qml'});
                 break;
             default:
                 break;

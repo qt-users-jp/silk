@@ -106,6 +106,7 @@ Http {
                             A { href: '/'; text: "Introduction" }
                             Ul {
                                 Li { A { href: '/hellosilk.qml'; text: "Hello silk world" } }
+                                Li { A { href: '/features.qml'; text: "Features" } }
                             }
                         }
                         Li {

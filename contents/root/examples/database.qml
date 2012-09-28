@@ -36,8 +36,14 @@ Http {
     responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
     UserInput {
-        onDataChanged: {
-            switch(data.action) {
+        id: input
+
+        property string action
+        property variant keys
+        property string value
+
+        onSubmit: {
+            switch(input.action) {
             case 'remove':
                 for (var i in data) {
                     if (i.substring(0, 'key_'.length) === 'key_') {
@@ -46,7 +52,7 @@ Http {
                 }
                 break;
             case 'insert':
-                chat.insert({'value': data.value});
+                chat.insert({'value': input.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')});
                 break;
             default:
                 break;
@@ -99,7 +105,7 @@ Http {
                             Tr {
                                 Td { Input { type: 'checkbox'; name: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? 'key_%1'.arg(model.key) : '' } }
                                 Td { text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? model.key : '' }
-                                Td { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? decodeURIComponent(model.value.replace(/\+/g, ' ')).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '' }
+                                Td { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? model.value : '' }
                             }
                         }
                     }

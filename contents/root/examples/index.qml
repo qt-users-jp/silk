@@ -69,6 +69,9 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "json.qml" }
                     Ul {
                         Li {
+                            A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "json.js" }
+                        }
+                        Li {
                             A { href: "%1.qml".arg(text); text: "jsondata" }
                             Text { text: " / " }
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "jsondata.qml" }
@@ -128,6 +131,11 @@ SilkPageTemplate {
                     A { href: "%1.qml".arg(text); text: "cookies" }
                     Text { text: " / " }
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "cookies.qml" }
+                    Ul {
+                        Li {
+                            A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/components/%1".arg(text); text: "UserInput.qml" }
+                        }
+                    }
                 }
                 Li {
                     A { href: "%1.qml".arg(text); text: "session" }

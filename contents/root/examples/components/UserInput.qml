@@ -29,7 +29,7 @@ import QtQuick 2.0
 QtObject {
     id: root
 
-    property var data
+    signal submit(variant data)
 
     property Connections onReady: Connections {
         target: http
@@ -39,17 +39,29 @@ QtObject {
                 var arr = http.query.split(/&/);
                 for (var i = 0; i < arr.length; i++) {
                     var arr2 = arr[i].split(/=/);
-                    data[arr2.shift()] = arr2.join('=');
+                    var key = decodeURIComponent(arr2.shift().replace(/\+/g, ' '));
+                    var val = decodeURIComponent(arr2.join('=').replace(/\+/g, ' '))
+
+                    if (typeof root[key] !== 'undefined')
+                        root[key] = val;
+                    else
+                        data[key] = val;
                 }
             }
             if (http.data.length > 0) {
                 var arr = http.data.split(/&/);
                 for (var i = 0; i < arr.length; i++) {
                     var arr2 = arr[i].split(/=/);
-                    data[arr2.shift()] = arr2.join('=');
+                    var key = decodeURIComponent(arr2.shift().replace(/\+/g, ' '));
+                    var val = decodeURIComponent(arr2.join('=').replace(/\+/g, ' '))
+
+                    if (typeof root[key] !== 'undefined')
+                        root[key] = val;
+                    else
+                        data[key] = val;
                 }
             }
-            root.data = data;
+            root.submit(data)
         }
     }
 }

@@ -38,22 +38,26 @@ Http {
     UserInput {
         id: input
 
-        onDataChanged: {
+        property string action
+        property string name
+        property string value
+
+        onSubmit: {
             var cookies = http.cookies;
             var responseCookies = http.responseCookies;
-            switch(data.action) {
+            switch(input.action) {
             case 'remove':
-                responseCookies[data.name] = {value: undefined, expires: new Date(0)};
-                delete cookies[data.name]
+                responseCookies[input.name] = {value: undefined, expires: new Date(0)};
+                delete cookies[input.name]
                 break
             case 'set':
-                responseCookies[data.name] = {value: data.value};
-                var cookie = cookies[data.name];
+                responseCookies[input.name] = {value: input.value};
+                var cookie = cookies[input.name];
                 if (typeof cookie !== 'undefined')
-                    cookie.value = data.value;
+                    cookie.value = input.value;
                 else
-                    cookie = {value: data.value};
-                cookies[data.name] = cookie;
+                    cookie = {value: input.value};
+                cookies[input.name] = cookie;
                 break
             }
             http.responseCookies = responseCookies;
@@ -72,14 +76,14 @@ Http {
             Dl {
                 Repeater {
                     model: http.cookies
-                    Dt { id: name; text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? decodeURI(model.key) : '' }
+                    Dt { id: name; text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '' }
                     Dd {
                         Form {
                             action: http.path
                             method: "POST"
                             Input { type: "hidden"; name: "action"; value: "remove" }
                             Input { type: "hidden"; name: "name"; value: name.text }
-                            Text { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? decodeURI(model.value.value) : '' } Br {}
+                            Text { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? model.value.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '' } Br {}
                             Input { type: "submit"; value: "Remove" }
                         }
                     }

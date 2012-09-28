@@ -80,6 +80,21 @@ SilkPageTemplate {
                         Td { text: "Silk.JSON 1.0" }
                         Td { A { href: "http://www.ietf.org/rfc/rfc4627.txt"; text: "JSON" } }
                     }
+                    Tr {
+                        Td { text: "RDB" }
+                        Td { text: "Silk.Database 1.0" }
+                        Td { text: "&nbsp;" }
+                    }
+                    Tr {
+                        Td { text: "SMTP" }
+                        Td { text: "Silk.SMTP 1.0" }
+                        Td { A { href: "http://www.ietf.org/rfc/rfc5321.txt"; text: "SMTP" } }
+                    }
+                    Tr {
+                        Td { text: "OAuth" }
+                        Td { text: "Silk.OAuth 1.0" }
+                        Td { A { href: "http://www.ietf.org/rfc/rfc5849.txt"; text: "OAuth 1.0" } }
+                    }
                 }
             }
         }

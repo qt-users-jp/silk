@@ -36,15 +36,21 @@ Http {
     property string userName
 
     UserInput {
-        onDataChanged: {
+        id: input
+        property string action
+        property string username
+        property string password
+        property string expires
+
+        onSubmit: {
             var responseCookies = http.responseCookies;
-            switch(data.action) {
+            switch(input.action) {
             case 'login': {
-                if (data.username === 'test' && data.password === 'test') {
-                    http.userName = data.username;
+                if (input.username === 'test' && input.password === 'test') {
+                    http.userName = input.username;
                     var cookie = {};
                     cookie.value = 'logged in';
-                    if (data.expires === 'week') {
+                    if (input.expires === 'week') {
                         var expires = new Date();
                         expires.setTime(expires.getTime() + 7 * 86400000);
                         cookie.expires = expires;
