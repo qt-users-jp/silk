@@ -28,19 +28,18 @@
 #define CONFIG_H
 
 #include <QtCore/QObject>
-#include <QtCore/QVariantMap>
+#include <QtQml/QQmlParserStatus>
 
-class Config : public QObject
+class Config : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_PROPERTY(QVariantMap data READ data NOTIFY dataChanged)
+
+    Q_INTERFACES(QQmlParserStatus)
 public:
     explicit Config(QObject *parent = 0);
 
-    const QVariantMap &data() const;
-    
-signals:
-    void dataChanged(const QVariantMap &data);
+    virtual void classBegin() {}
+    virtual void componentComplete();
 };
 
 #endif // CONFIG_H

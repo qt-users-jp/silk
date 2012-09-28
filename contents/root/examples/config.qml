@@ -36,6 +36,7 @@ Http {
 
     SilkConfig {
         id: config
+        property variant listen: {'address': '', 'port': 0}
     }
 
     Html {
@@ -51,9 +52,9 @@ Http {
 
             Dl {
                 Dt { text: 'listen.address' }
-                Dd { text: config.data.listen.address }
+                Dd { text: config.listen.address }
                 Dt { text: 'listen.port' }
-                Dd { text: config.data.listen.port }
+                Dd { text: config.listen.port }
             }
         }
     }

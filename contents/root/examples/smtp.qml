@@ -53,16 +53,19 @@ Http {
         }
     }
 
-    SilkConfig { id: config }
+    SilkConfig {
+        id: config
+        property variant email: {'host': '', 'encrypt': '', 'port': 0, 'username': '', 'password': '', 'from': '' }
+    }
 
     Smtp {
         id: smtp
-        host: typeof config.data.email !== 'undefined' ? config.data.email.host : ''
-        encrypt: typeof config.data.email !== 'undefined' ? config.data.email.encrypt : ''
-        port: typeof config.data.email !== 'undefined' ? config.data.email.port : 0
-        username: typeof config.data.email !== 'undefined' ? config.data.email.username : ''
-        password: typeof config.data.email !== 'undefined' ? config.data.email.password : ''
-        from: typeof config.data.email !== 'undefined' ? config.data.email.from : ''
+        host: config.email.host
+        encrypt: config.email.encrypt
+        port: config.email.port
+        username: config.email.username
+        password: config.email.password
+        from: config.email.from
         onSent: {
             msg.text = 'Sent to %1'.arg(email.to);
             form.enabled = false;

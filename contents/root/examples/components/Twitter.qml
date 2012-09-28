@@ -32,11 +32,14 @@ OAuth {
     property string user_id
     property string screen_name
 
-    SilkConfig { id: config }
+    SilkConfig {
+        id: config
+        property variant oauth: {'consumerKey': '', 'consumerSecret': ''}
+    }
 
     requestTokenUrl: 'https://api.twitter.com/oauth/request_token'
     authorizeUrl: 'https://api.twitter.com/oauth/authorize'
     accessTokenUrl: 'https://api.twitter.com/oauth/access_token'
-    consumerKey: typeof config.data.oauth !== 'undefined' ? config.data.oauth.consumerKey : ''
-    consumerSecret: typeof config.data.oauth !== 'undefined' ? config.data.oauth.consumerSecret : ''
+    consumerKey: config.oauth.consumerKey
+    consumerSecret: config.oauth.consumerSecret
 }

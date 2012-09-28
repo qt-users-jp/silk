@@ -26,6 +26,9 @@
 
 #include "config.h"
 
+#include <QtCore/QMetaObject>
+#include <QtCore/QMetaProperty>
+
 #include <silkconfig.h>
 
 Config::Config(QObject *parent)
@@ -33,7 +36,15 @@ Config::Config(QObject *parent)
 {
 }
 
-const QVariantMap &Config::data() const
+void Config::componentComplete()
 {
-    return SilkConfig::config();
+    QVariantMap config = SilkConfig::config();
+    const QMetaObject *mo = metaObject();
+    for (int i = 0; i < mo->propertyCount(); i++) {
+        QMetaProperty p = mo->property(i);
+        QString key(p.name());
+        if (config.contains(key)) {
+            p.write(this, config.value(key));
+        }
+    }
 }
