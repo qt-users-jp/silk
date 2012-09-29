@@ -30,7 +30,6 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
-#include <QtCore/QPluginLoader>
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkCookie>
 #include <QtQml/qqml.h>
@@ -42,7 +41,6 @@
 #include <qhttpreply.h>
 
 #include <silkconfig.h>
-#include <silkimportsinterface.h>
 
 #include "httpobject.h"
 #include "silk.h"
@@ -87,31 +85,6 @@ QmlHandler::Private::Private(QmlHandler *parent)
     qmlRegisterType<HttpObject>("Silk.HTTP", 1, 1, "Http");
 
     QDir appDir = QCoreApplication::applicationDirPath();
-    QDir importsDir = appDir;
-    QString appPath(SILK_APP_PATH);
-    // up to system root path
-    for (int i = 0; i < appPath.count(QLatin1Char('/')) + 1; i++) {
-        importsDir.cdUp();
-    }
-    importsDir.cd(SILK_IMPORTS_PATH);
-    foreach (const QString &lib, importsDir.entryList(QDir::Files)) {
-        QPluginLoader pluginLoader(importsDir.absoluteFilePath(lib));
-        if (pluginLoader.load()) {
-            QObject *object = pluginLoader.instance();
-            if (object) {
-                SilkImportsInterface *plugin = qobject_cast<SilkImportsInterface *>(object);
-                if (plugin) {
-                    plugin->silkRegisterObject();
-                } else {
-                    qWarning() << object;
-                }
-            } else {
-                qWarning() << Q_FUNC_INFO << __LINE__;
-            }
-        } else {
-            qWarning() << pluginLoader.errorString() << importsDir.absoluteFilePath(lib);
-        }
-    }
 
     engine.setOfflineStoragePath(appDir.absoluteFilePath(SilkConfig::value("storage.path").toString()));
     engine.addImportPath(":/imports");

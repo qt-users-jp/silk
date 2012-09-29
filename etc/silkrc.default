@@ -1,6 +1,7 @@
 {
     "listen": { "address": "*", "port": 8080 }
     , "contents": { "*": "../contents/root/" }
+    , "tasks": { "*": [] }
     , "storage": { "path": "../" }
     , "import": { "path": [] }
     , "cache": { "qml": true }

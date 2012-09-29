@@ -24,16 +24,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILK_H
-#define SILK_H
+#ifndef SILKSERVER_H
+#define SILKSERVER_H
 
 #include <qhttpserver.h>
 
-class Silk : public QHttpServer
+class SilkServer : public QHttpServer
 {
     Q_OBJECT
 public:
-    explicit Silk(QObject *parent = 0);
+    explicit SilkServer(QObject *parent = 0);
 
     const QMap<QString, QString> &documentRoots() const;
 
@@ -48,4 +48,4 @@ private:
     Private *d;
 };
 
-#endif // SILK_H
+#endif // SILKSERVER_H

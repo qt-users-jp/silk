@@ -3,13 +3,15 @@ TARGET = silk
 include(../../silkapp.pri)
 
 QT -= gui
-QT += network
+QT += network qml
 
 include(../../etc/etc.pri)
 include(../../contents/contents.pri)
 
 SOURCES += main.cpp \
-    silk.cpp
+    silkserver.cpp \
+    silkapplication.cpp
 
 HEADERS += \
-    silk.h
+    silkserver.h \
+    silkapplication.h

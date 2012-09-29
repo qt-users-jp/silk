@@ -17,7 +17,11 @@ QMAKE_EXTRA_COMPILERS += phony_src
 root.source = root
 root.target = .
 
-DEPLOYMENTFOLDERS = root
+tasks.source = tasks
+tasks.target = .
+
+DEPLOYMENTFOLDERS = root tasks
 
 include(../silkdeployment.pri)
 qtcAddDeployment()
+

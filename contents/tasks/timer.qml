@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,21 +24,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <QtCore/QCoreApplication>
+import QtQuick 2.0
 
-#include <silkconfig.h>
-#include "silkserver.h"
-#include "silkapplication.h"
-
-int main(int argc, char *argv[])
-{
-    SilkConfig::initialize(argc, argv);
-
-    SilkApplication app(argc, argv);
-
-    SilkServer server;
-    if (!server.isListening()) {
-        return -1;
-    }
-    return app.exec();
+Timer {
+    triggeredOnStart: true
+    interval: 60000
+    repeat: true
+    running: true
+    onTriggered: console.debug(Qt.formatDateTime("yyyy/MM/dd hh:mm:ss"), new Date())
 }

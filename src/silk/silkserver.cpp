@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+#include "silkserver.h"
 #include "silkconfig.h"
 
 #include <QtCore/QCoreApplication>
@@ -42,11 +42,11 @@
 #include <silkmimehandlerinterface.h>
 #include <silkabstractmimehandler.h>
 
-class Silk::Private : public QObject
+class SilkServer::Private : public QObject
 {
     Q_OBJECT
 public:
-    Private(Silk *parent);
+    Private(SilkServer *parent);
 
 private slots:
     void incomingConnection(QHttpRequest *request, QHttpReply *reply);
@@ -59,7 +59,7 @@ private:
     void error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
 
 private:
-    Silk *q;
+    SilkServer *q;
     QMimeDatabase mimeDatabase;
     QMap<QString, SilkAbstractMimeHandler*> mimeHandlers;
 
@@ -67,7 +67,7 @@ public:
     QMap<QString, QString> documentRoots;
 };
 
-Silk::Private::Private(Silk *parent)
+SilkServer::Private::Private(SilkServer *parent)
     : QObject(parent)
     , q(parent)
 {
@@ -137,7 +137,7 @@ Silk::Private::Private(Silk *parent)
     }
 }
 
-QString Silk::Private::documentRootForRequest(const QHttpRequest *request) const
+QString SilkServer::Private::documentRootForRequest(const QHttpRequest *request) const
 {
     QString ret(":/contents");
     if (documentRoots.contains(request->url().host())) {
@@ -148,7 +148,7 @@ QString Silk::Private::documentRootForRequest(const QHttpRequest *request) const
     return ret;
 }
 
-void Silk::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
+void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
 {
 //    qDebug() << request->url();
 
@@ -182,7 +182,7 @@ void Silk::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
     }
 }
 
-void Silk::Private::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message)
+void SilkServer::Private::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
     QMimeType mimeType = mimeDatabase.mimeTypeForFile(fileInfo.fileName(), QMimeDatabase::MatchExtension);
     QString mime = mimeType.name();
@@ -204,7 +204,7 @@ void Silk::Private::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttp
     }
 }
 
-void Silk::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply)
+void SilkServer::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply)
 {
     if (fileInfo.fileName().startsWith(".")) {
         error(403, request, reply, request->url().toString());
@@ -223,7 +223,7 @@ void Silk::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *request, Q
     }
 }
 
-void Silk::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
+void SilkServer::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
     bool ret = mimeHandlers["silk/x-proxy"]->load(url, request, reply, message);
     if (!ret) {
@@ -231,7 +231,7 @@ void Silk::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *
     }
 }
 
-void Silk::Private::error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message)
+void SilkServer::Private::error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
     QString documentRoot = documentRootForRequest(request);
     if (QFile::exists(QString::fromUtf8("%1/errors/%2.qml").arg(documentRoot).arg(statusCode))) {
@@ -241,22 +241,22 @@ void Silk::Private::error(int statusCode, QHttpRequest *request, QHttpReply *rep
     }
 }
 
-Silk::Silk(QObject *parent)
+SilkServer::SilkServer(QObject *parent)
     : QHttpServer(parent)
     , d(new Private(this))
 {
 }
 
-const QMap<QString, QString> &Silk::documentRoots() const
+const QMap<QString, QString> &SilkServer::documentRoots() const
 {
     return d->documentRoots;
 }
 
-void Silk::setDocumentRoots(const QMap<QString, QString> &documentRoots)
+void SilkServer::setDocumentRoots(const QMap<QString, QString> &documentRoots)
 {
     if (d->documentRoots == documentRoots) return;
     d->documentRoots = documentRoots;
     emit documentRootsChanged(documentRoots);
 }
 
-#include "silk.moc"
+#include "silkserver.moc"
