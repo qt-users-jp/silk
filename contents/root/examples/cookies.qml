@@ -24,6 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 4.01
 import Silk.Utils 1.0
@@ -76,15 +77,19 @@ Http {
             Dl {
                 Repeater {
                     model: http.cookies
-                    Dt { id: name; text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '' }
-                    Dd {
-                        Form {
-                            action: http.path
-                            method: "POST"
-                            Input { type: "hidden"; name: "action"; value: "remove" }
-                            Input { type: "hidden"; name: "name"; value: name.text }
-                            Text { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? model.value.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '' } Br {}
-                            Input { type: "submit"; value: "Remove" }
+                    Component {
+                        Dt { id: name; text: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                    }
+                    Component {
+                        Dd {
+                            Form {
+                                method: "POST"
+                                Input { type: "hidden"; name: "action"; value: "remove" }
+                                Input { type: "hidden"; name: "name"; value: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                                Text { text: model.value.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                                Br {}
+                                Input { type: "submit"; value: "Remove" }
+                            }
                         }
                     }
                 }

@@ -24,6 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 4.01
 import Silk.JSON 1.0
@@ -61,9 +62,11 @@ Http {
                 Repeater {
                     id: lis
                     model: []
-                    Li {
-                        title: typeof model !== 'undefined' ? model.id : ''
-                        text: typeof model !== 'undefined' ? model.message.replace(/&/g, '&amp;') : ''
+                    Component {
+                        Li {
+                            title: model.id
+                            text: model.message.replace(/&/g, '&amp;')
+                        }
                     }
                 }
             }

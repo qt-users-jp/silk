@@ -24,6 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import QtQuick 2.0
 import Silk.HTTP 1.1
 import Silk.HTML 4.01
 import Silk.Utils 1.0
@@ -102,10 +103,12 @@ Http {
                     TBody {
                         Repeater {
                             model: chat
-                            Tr {
-                                Td { Input { type: 'checkbox'; name: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? 'key_%1'.arg(model.key) : '' } }
-                                Td { text: typeof model !== 'undefined' && typeof model.key !== 'undefined' ? model.key : '' }
-                                Td { text: typeof model !== 'undefined' && typeof model.value !== 'undefined' ? model.value : '' }
+                            Component {
+                                Tr {
+                                    Td { Input { type: 'checkbox'; name: 'key_%1'.arg(model.key) } }
+                                    Td { text: model.key }
+                                    Td { text: model.value }
+                                }
                             }
                         }
                     }

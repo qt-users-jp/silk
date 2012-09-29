@@ -28,11 +28,14 @@
 #define REPEATER_H
 
 #include <silkabstracthttpobject.h>
+#include <QtQml/QQmlComponent>
 
 class Repeater : public SilkAbstractHttpObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QQmlListProperty<QQmlComponent> contents READ contents)
+    Q_CLASSINFO("DefaultProperty", "contents")
     Q_PROPERTY(QVariant model READ model WRITE model NOTIFY modelChanged)
     SILK_ADD_PROPERTY(const QVariant &, model, QVariant)
 public:
@@ -40,8 +43,13 @@ public:
     
     virtual QByteArray out() const;
 
+    QQmlListProperty<QQmlComponent> contents();
+
 signals:
     void modelChanged(const QVariant &model);
+
+private:
+    QList<QQmlComponent *> m_contents;
 };
 
 #endif // REPEATER_H

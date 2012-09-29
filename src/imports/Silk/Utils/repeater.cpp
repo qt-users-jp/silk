@@ -42,7 +42,7 @@ QByteArray Repeater::out() const
     QByteArray ret;
     QVariantList list;
 
-    switch (m_model.type()) {
+    switch (static_cast<int>(m_model.type())) {
     case QVariant::Int: {
         int count = m_model.toInt();
         for (int i = 0; i < count; i++) {
@@ -115,19 +115,22 @@ QByteArray Repeater::out() const
         foreach (QObject *object, contentsList()) {
             if (done.contains(object)) continue;
             done.append(object);
-
-            SilkAbstractHttpObject *http = qobject_cast<SilkAbstractHttpObject *>(object);
-            if (!http) {
-                QQmlComponent *component = qobject_cast<QQmlComponent *>(object);
+            QQmlComponent *component = qobject_cast<QQmlComponent *>(object);
+            if (component) {
                 QObject *obj = component->create(context);
-                http = qobject_cast<SilkAbstractHttpObject *>(obj);
-                obj->deleteLater();
-            }
-            if (http) {
-                ret.append(http->out());
+                SilkAbstractHttpObject *http = qobject_cast<SilkAbstractHttpObject *>(obj);
+                if (http) {
+                    ret.append(http->out());
+                }
+                delete obj;
             }
         }
     }
     context->setContextProperty("model", model);
     return ret;
+}
+
+QQmlListProperty<QQmlComponent> Repeater::contents()
+{
+    return QQmlListProperty<QQmlComponent>(this, m_contents);
 }
