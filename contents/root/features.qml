@@ -118,6 +118,11 @@ SilkPageTemplate {
                         Td { text: "Global variant cache for QML" }
                     }
                     Tr {
+                        Td { text: "Process" }
+                        Td { text: "Silk.Process 1.0" }
+                        Td { text: "process programs on server" }
+                    }
+                    Tr {
                         Td { text: "Utils" }
                         Td { text: "Silk.Utils 1.0" }
                         Td { text: "for Repeater element" }

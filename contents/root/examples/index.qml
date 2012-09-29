@@ -47,8 +47,6 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "class.qml" }
                     Ul {
                         Li {
-                            A { href: "components/%1.qml".arg(text); text: "Rectangle" }
-                            Text { text: " / " }
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/components/%1".arg(text); text: "Rectangle.qml" }
                         }
                     }
@@ -72,8 +70,6 @@ SilkPageTemplate {
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "json.js" }
                         }
                         Li {
-                            A { href: "%1.qml".arg(text); text: "jsondata" }
-                            Text { text: " / " }
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "jsondata.qml" }
                         }
                     }
@@ -95,8 +91,6 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "stylesheet2.qml" }
                     Ul {
                         Li {
-                            A { href: "%1.qml".arg(text); text: "css" }
-                            Text { text: " / " }
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "css.qml" }
                         }
                     }
@@ -193,6 +187,11 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "file.qml" }
                 }
                 Li {
+                    A { href: "%1.qml".arg(text); text: "process" }
+                    Text { text: " / " }
+                    A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "process.qml" }
+                }
+                Li {
                     A { href: "%1.qml".arg(text); text: "config" }
                     Text { text: " / " }
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "config.qml" }
@@ -208,8 +207,6 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "javascript.qml" }
                     Ul {
                         Li {
-                            A { href: "%1.js".arg(text); text: "reverse" }
-                            Text { text: " / " }
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "reverse.js" }
                         }
                     }
@@ -220,8 +217,6 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "chat.qml" }
                     Ul {
                         Li {
-                            A { href: "%1.js".arg(text); text: "chat" }
-                            Text { text: " / " }
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "chat.js" }
                         }
                     }
@@ -232,8 +227,6 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "iphone.qml" }
                     Ul {
                         Li {
-                            A { href: "%1.qml".arg(text); text: "IPhoneCSS" }
-                            Text { text: " / " }
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "IPhoneCSS.qml" }
                         }
                     }
