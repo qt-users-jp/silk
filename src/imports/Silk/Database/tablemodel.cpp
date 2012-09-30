@@ -32,6 +32,7 @@
 #include <QtCore/QMetaProperty>
 #include <QtCore/QStringList>
 #include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlDriver>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlQuery>
@@ -74,7 +75,7 @@ TableModel::Private::Private(TableModel *parent)
 {
     ifNotExistsMap.insert("QSQLITE", " IF NOT EXISTS");
     ifNotExistsMap.insert("QMYSQL", " IF NOT EXISTS");
-    ifNotExistsMap.insert("QPSQL", "");
+    ifNotExistsMap.insert("QPSQL", " IF NOT EXISTS");
     autoIncrementMap.insert("QSQLITE", " AUTOINCREMENT");
     autoIncrementMap.insert("QMYSQL", " AUTO_INCREMENT");
     autoIncrementMap.insert("QPSQL", "");
@@ -138,7 +139,9 @@ void TableModel::Private::create()
 {
     if (fieldNames.isEmpty()) return;
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
-    if (db.tables().contains(q->name())) return;
+    qDebug() << Q_FUNC_INFO << __LINE__ << db.tables();
+    if (db.tables().contains(q->name().toLower())) return;
+    qDebug() << Q_FUNC_INFO << __LINE__;
 
     QString type = db.driverName();
 
@@ -152,9 +155,14 @@ void TableModel::Private::create()
             sql.append(QLatin1String(", "));
         sql.append(property.name());
 
+        bool isPrimaryKey = (primaryKey == QString(property.name()));
+
         switch (property.type()) {
         case QVariant::Int:
-            sql += QString(" INTEGER");
+            if (type == QLatin1String("QPSQL") && isPrimaryKey)
+                sql += QString(" SERIAL");
+            else
+                sql += QString(" INTEGER");
             break;
         case QVariant::String:
             sql += QString(" TEXT");
@@ -173,29 +181,32 @@ void TableModel::Private::create()
             break;
         }
 
-        if (primaryKey == QString(property.name())) {
+        if (isPrimaryKey) {
             sql += primaryKeyMap.value(type);
             if (property.type() == QVariant::Int) {
                 sql += autoIncrementMap.value(type);
             }
-        }
-
-        QVariant value = property.read(q);
-        if (!value.isNull()) {
-            if (property.type() == QVariant::String || property.type() == QVariant::DateTime) {
-                sql += QString(" DEFAULT '%1'").arg(value.toString());
-            } else {
-                sql += QString(" DEFAULT %1").arg(value.toString());
+        } else {
+            QVariant value = property.read(q);
+            if (!value.isNull()) {
+                if (property.type() == QVariant::String || property.type() == QVariant::DateTime) {
+                    sql += QString(" DEFAULT '%1'").arg(value.toString());
+                } else {
+                    sql += QString(" DEFAULT %1").arg(value.toString());
+                }
             }
         }
 //        qDebug() << Q_FUNC_INFO << __LINE__ << property.name() << property.typeName() << property.read(q) << property.read(q).isNull();
     }
 
-    sql.append(");");
+    sql.append(")");
+    if (type == QLatin1String("QPSQL"))
+        sql.append(" WITH oids");
     QSqlQuery query(sql, db);
     if (!query.exec()) {
-        qWarning() << query.lastError().text();
+        qWarning() << Q_FUNC_INFO << __LINE__ << sql << query.lastError().text();
     }
+    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
 QString TableModel::Private::selectSql() const
@@ -205,6 +216,7 @@ QString TableModel::Private::selectSql() const
 
 void TableModel::Private::select()
 {
+    qDebug() << Q_FUNC_INFO << __LINE__;
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
 
     q->beginRemoveRows(QModelIndex(), 0, data.count() - 1);
@@ -226,6 +238,7 @@ void TableModel::Private::select()
     }
     q->beginInsertRows(QModelIndex(), 0, data.count() - 1);
     q->endInsertRows();
+    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
 TableModel::TableModel(QObject *parent)
@@ -308,27 +321,37 @@ bool TableModel::insert(const QVariantMap &data)
 {
     QStringList keys;
     QStringList placeHolders;
-    QVariantList values;
+    QVariantMap values;
     foreach (const QByteArray &r, d->roleNames.values()) {
         QString field = QString::fromUtf8(r);
         if (data.contains(field)) {
             keys.append(field);
-            placeHolders.append("?");
-            values.append(data.value(field));
+            placeHolders.append(QString(":%1").arg(field));
+            values.insert(QString(":%1").arg(field), data.value(field));
         }
     }
 
     QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
-    QSqlQuery query(QString("INSERT INTO %1 (%2) VALUES(%3)").arg(name()).arg(keys.join(", ")).arg(placeHolders.join(", ")), db);
-    foreach (const QVariant &value, values) {
-        query.addBindValue(value);
+    QSqlQuery query(db);
+    if (!query.prepare(QString("INSERT INTO %1(%2) VALUES(%3)").arg(name()).arg(keys.join(", ")).arg(placeHolders.join(", ")))) {
+        qWarning() << Q_FUNC_INFO << __LINE__ << query.lastQuery() << query.lastError().text();
+        return false;
     }
+    foreach (const QString &key, values.keys()) {
+        qDebug() << key << values.value(key);
+        query.bindValue(key, values.value(key));
+    }
+    qDebug() << query.boundValues();
 
     bool ret = query.exec();
     if (ret) {
         QString sql = d->selectSql();
-        sql += QString(" WHERE %1=%2").arg(d->primaryKey).arg(query.lastInsertId().toInt());
-//        qDebug() << Q_FUNC_INFO << __LINE__ << sql << query.lastInsertId();
+        if (db.driverName() == QLatin1String("QPSQL")) {
+            sql += QString(" WHERE %1=%2").arg("oid").arg(query.lastInsertId().toInt());
+        } else {
+            sql += QString(" WHERE %1=%2").arg(d->primaryKey).arg(query.lastInsertId().toInt());
+        }
+        qDebug() << Q_FUNC_INFO << __LINE__ << sql << query.lastInsertId() << db.driver()->hasFeature(QSqlDriver::LastInsertId);
         QSqlQuery query2(sql, db);
         if (query2.first()) {
             int row = rowCount();
@@ -341,10 +364,10 @@ bool TableModel::insert(const QVariantMap &data)
             endInsertRows();
             emit countChanged(d->data.count());
         } else {
-            qDebug() << Q_FUNC_INFO << __LINE__ << query2.lastError().text() << query2.boundValues();
+            qDebug() << Q_FUNC_INFO << __LINE__ << query2.lastError().text() << query2.lastQuery() << query2.boundValues();
         }
     } else {
-        qWarning() << Q_FUNC_INFO << __LINE__ << query.lastError().text();
+        qWarning() << Q_FUNC_INFO << __LINE__ << query.lastQuery() << query.boundValues() << query.lastError().text();
     }
     return ret;
 }
