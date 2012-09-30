@@ -24,20 +24,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKAPPLICATION_H
-#define SILKAPPLICATION_H
-
 #include <QtCore/QCoreApplication>
+#include <silkserver.h>
+#include <silkconfig.h>
 
-class SilkApplication : public QCoreApplication
+int main(int argc, char **argv)
 {
-    Q_OBJECT
-public:
-    explicit SilkApplication(int &argc, char **argv);
-    
-private:
-    class Private;
-    Private *d;
-};
+    QCoreApplication app(argc, argv);
 
-#endif // SILKAPPLICATION_H
+    SilkConfig::initialize(argc, argv);
+
+    SilkServer server;
+    if (!server.isListening()) {
+        return -1;
+    }
+
+	return app.exec();
+}
+

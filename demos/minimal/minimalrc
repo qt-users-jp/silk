@@ -1,0 +1,12 @@
+{
+    "listen": {
+            "address": "localhost"
+            , "port": 9100
+        }
+    , "contents": {
+            "*": ":/contents/"
+        }
+    , "cache": {
+            "qml": true
+        }
+}

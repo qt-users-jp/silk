@@ -1,5 +1,6 @@
 #include "silkconfig.h"
 
+#include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -33,8 +34,8 @@ QVariant SilkConfig::value(const QString &key)
 
 void SilkConfig::initialize(int argc, char **argv)
 {
-    m_config = readConfigFile(":/silkrc.default");
-    QString fileName = QDir::home().absoluteFilePath(".silkrc");
+    m_config = readConfigFile(QString(":/%1rc").arg(QCoreApplication::instance()->applicationName()));
+    QString fileName = QDir::home().absoluteFilePath(QString(".%1rc").arg(QCoreApplication::instance()->applicationName()));
     bool userConfig = false;
     for (int i = 1; i < argc; i++) {
         if (QString::fromUtf8(argv[i]) == QLatin1String("--config")) {

@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = src contents
+SUBDIRS = src contents demos

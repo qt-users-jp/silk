@@ -103,7 +103,7 @@ SilkPageTemplate {
     Cache { id: cache }
 
     onReady: {
-        var file = "qrc:/silkrc.default"
+        var file = "qrc:/silkrc"
         var value = cache.fetch(file)
         if (typeof value !== 'undefined') {
             silkrc.text = value

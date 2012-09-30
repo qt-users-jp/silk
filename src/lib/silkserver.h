@@ -24,21 +24,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <QtCore/QCoreApplication>
+#ifndef SILKSERVER_H
+#define SILKSERVER_H
 
-#include <silkconfig.h>
-#include <silkserver.h>
+#include "silkglobal.h"
 
-int main(int argc, char *argv[])
+#include <qhttpserver.h>
+
+class SILK_EXPORT SilkServer : public QHttpServer
 {
-    QCoreApplication app(argc, argv);
+    Q_OBJECT
+public:
+    explicit SilkServer(QObject *parent = 0);
 
-    SilkConfig::initialize(argc, argv);
+    const QMap<QString, QString> &documentRoots() const;
 
-    SilkServer server;
-    if (!server.isListening()) {
-        return -1;
-    }
+public slots:
+    void setDocumentRoots(const QMap<QString, QString> &documentRoots);
 
-    return app.exec();
-}
+signals:
+    void documentRootsChanged(const QMap<QString, QString> &documentRoots);
+
+private:
+    class Private;
+    Private *d;
+};
+
+#endif // SILKSERVER_H

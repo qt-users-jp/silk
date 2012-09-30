@@ -1,6 +1,9 @@
 isEmpty(SILKAPP_PRI) { SILKAPP_PRI = 1
 
     TEMPLATE = app
+    QT -= gui
+    QT += network
+
     include(./silk.pri)
 
     DESTDIR = $$SILK_BUILD_TREE/$$SILK_TARGET_PATH/$$SILK_APP_PATH

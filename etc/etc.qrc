@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>silkrc.default</file>
+        <file>silkrc</file>
     </qresource>
 </RCC>
