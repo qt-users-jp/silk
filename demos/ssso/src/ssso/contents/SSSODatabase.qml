@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,23 +24,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PROXYHANDLER_H
-#define PROXYHANDLER_H
+import Silk.Database 1.0
+import Silk.Utils 1.0
 
-#include <silkabstractmimehandler.h>
+Database {
+    id: root
+    connectionName: config.ssso.database.connectionName
+    type: config.ssso.database.type
+    hostName: config.ssso.database.hostName
+    databaseName: config.ssso.database.databaseName
+    userName: config.ssso.database.userName
+    password: config.ssso.database.password
 
-class ProxyHandler : public SilkAbstractMimeHandler
-{
-    Q_OBJECT
-
-public:
-    explicit ProxyHandler(QObject *parent = 0);
-    
-    virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
-
-private:
-    class Private;
-    Private *d;
-};
-
-#endif // PROXYHANDLER_H
+    SilkConfig {
+        id: config
+        property variant ssso
+    }
+}

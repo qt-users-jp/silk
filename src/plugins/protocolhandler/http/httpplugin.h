@@ -24,18 +24,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+#ifndef HTTPPLUGIN_H
+#define HTTPPLUGIN_H
 
-#include <QtCore/QUuid>
+#include <QtCore/QDebug>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
+#include <silkprotocolhandlerinterface.h>
 
-Silk::Silk(QObject *parent)
-    : QObject(parent)
+#include "httphandler.h"
+
+class HttpPlugin : public QObject, SilkProtocolHandlerInterface
 {
-}
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "me.qtquick.silk.plugins.protocol")
+    Q_INTERFACES(SilkProtocolHandlerInterface)
+public:
+    virtual QStringList keys() const {
+        return QStringList() << "http" << "https";
+    }
 
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
-}
+    virtual SilkAbstractProtocolHandler *handler(QObject *parent) {
+        return new HttpHandler(parent);
+    }
+};
+
+#endif // HTTPPLUGIN_H

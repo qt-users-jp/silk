@@ -24,18 +24,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+import Silk.HTTP 1.1
+import Silk.HTML 5.0
+import Silk.Database 1.0
+import Silk.Utils 1.0
 
-#include <QtCore/QUuid>
+Http {
+    id: http
+    status: 200
+    responseHeader: {"Content-Type": "text/html; charset=utf-8;"}
 
-Silk::Silk(QObject *parent)
-    : QObject(parent)
-{
-}
+    property var account: {'username': ''}
 
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
 }

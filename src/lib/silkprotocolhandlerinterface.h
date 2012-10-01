@@ -24,18 +24,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+#ifndef SILKPROTOCOLHANDLERINTERFACE_H
+#define SILKPROTOCOLHANDLERINTERFACE_H
 
-#include <QtCore/QUuid>
+#include <QtCore/QtPlugin>
 
-Silk::Silk(QObject *parent)
-    : QObject(parent)
+class SilkAbstractProtocolHandler;
+
+class SilkProtocolHandlerInterface
 {
-}
+public:
+    virtual ~SilkProtocolHandlerInterface() {}
+    virtual QStringList keys() const = 0;
+    virtual SilkAbstractProtocolHandler *handler(QObject *parent) = 0;
+};
 
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
-}
+#define SilkProtocolHandlerInterface_iid "me.qtquick.silk.plugins.protocol"
+
+Q_DECLARE_INTERFACE(SilkProtocolHandlerInterface, SilkProtocolHandlerInterface_iid)
+
+#endif // SILKPROTOCOLHANDLERINTERFACE_H

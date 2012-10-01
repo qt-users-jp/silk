@@ -24,18 +24,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+import Silk.Database 1.0
 
-#include <QtCore/QUuid>
-
-Silk::Silk(QObject *parent)
-    : QObject(parent)
-{
-}
-
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
+TableModel {
+    id: root
+    name: 'session'
+    primaryKey: 'key'
+    property string key
+    property int account_id
 }

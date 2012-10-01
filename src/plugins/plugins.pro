@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = mimehandler
+SUBDIRS = mimehandler protocolhandler
 

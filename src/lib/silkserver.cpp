@@ -41,6 +41,8 @@
 
 #include <silkmimehandlerinterface.h>
 #include <silkabstractmimehandler.h>
+#include <silkprotocolhandlerinterface.h>
+#include <silkabstractprotocolhandler.h>
 
 class SilkServer::Private : public QObject
 {
@@ -62,6 +64,7 @@ private:
     SilkServer *q;
     QMimeDatabase mimeDatabase;
     QMap<QString, SilkAbstractMimeHandler*> mimeHandlers;
+    QMap<QString, SilkAbstractProtocolHandler*> protocolHandlers;
 
 public:
     QMap<QString, QString> documentRoots;
@@ -92,6 +95,30 @@ SilkServer::Private::Private(SilkServer *parent)
                         SilkAbstractMimeHandler *handler = plugin->handler(this);
                         foreach (const QString &key, plugin->keys()) {
                             mimeHandlers.insert(key, handler);
+                        }
+                    } else {
+                        qWarning() << object;
+                    }
+                } else {
+                    qWarning() << Q_FUNC_INFO << __LINE__;
+                }
+            } else {
+                qWarning() << pluginLoader.errorString() << pluginsDir.absoluteFilePath(lib);
+            }
+        }
+        pluginsDir.cd("..");
+
+        pluginsDir.cd("protocolhandler");
+        foreach (const QString &lib, pluginsDir.entryList(QDir::Files)) {
+            QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(lib));
+            if (pluginLoader.load()) {
+                QObject *object = pluginLoader.instance();
+                if (object) {
+                    SilkProtocolHandlerInterface *plugin = qobject_cast<SilkProtocolHandlerInterface *>(object);
+                    if (plugin) {
+                        SilkAbstractProtocolHandler *handler = plugin->handler(this);
+                        foreach (const QString &key, plugin->keys()) {
+                            protocolHandlers.insert(key, handler);
                         }
                     } else {
                         qWarning() << object;
@@ -150,12 +177,11 @@ QString SilkServer::Private::documentRootForRequest(const QHttpRequest *request)
 
 void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
 {
-//    qDebug() << request->url();
+//    qDebug() << Q_FUNC_INFO << __LINE__ << request->url();
 
     QString documentRoot = documentRootForRequest(request);
 
-    if (documentRoot.indexOf(":/") > 0) {
-        // reverse proxy
+    if (documentRoot.indexOf("://") > 0) {
         QUrl url(documentRoot);
         url.setPath(request->url().path());
         loadUrl(url, request, reply);
@@ -225,7 +251,10 @@ void SilkServer::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *requ
 
 void SilkServer::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    bool ret = mimeHandlers["silk/x-proxy"]->load(url, request, reply, message);
+    bool ret = false;
+    if (protocolHandlers.contains(url.scheme())) {
+        ret = protocolHandlers[url.scheme()]->load(url, request, reply, message);
+    }
     if (!ret) {
         error(403, request, reply, request->url().toString());
     }

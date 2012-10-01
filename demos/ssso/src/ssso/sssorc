@@ -1,0 +1,27 @@
+{
+    "listen": {
+            "address": "localhost"
+            , "port": 9100
+        }
+    , "contents": {
+            "ssso.qtquick2.me": ":/contents/"
+            , "cr.qtquick2.me": "ssso://localhost:9101"
+            , "ci.qtquick2.me": "ssso://localhost:9102"
+            , "dev.qtquick2.me": "ssso://localhost:9103"
+        }
+    , "ssso": {
+            "domain": ".qtquick2.me"
+            , "loginUrl": "http://ssso.qtquick2.me:9100/"
+            , "database": {
+                    "connectionName": "ssso"
+                    , "type": "QPSQL"
+                    , "hostName": "localhost"
+                    , "databaseName": "ssso"
+                    , "userName": "ssso"
+                    , "password": "ssso"
+                }
+        }
+    , "cache": {
+            "qml": true
+        }
+}

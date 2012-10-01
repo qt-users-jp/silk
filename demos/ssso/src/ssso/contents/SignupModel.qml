@@ -24,28 +24,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PROXYPLUGIN_H
-#define PROXYPLUGIN_H
+import Silk.Database 1.0
 
-#include <QtCore/QDebug>
-#include <QtCore/QObject>
-#include <QtCore/QStringList>
-#include <silkmimehandlerinterface.h>
-#include "proxyhandler.h"
-
-class ProxyPlugin : public QObject, SilkMimeHandlerInterface
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "me.qtquick.silk.plugins.mime")
-    Q_INTERFACES(SilkMimeHandlerInterface)
-public:
-    virtual QStringList keys() const {
-        return QStringList() << "silk/x-proxy";
-    }
-
-    virtual SilkAbstractMimeHandler *handler(QObject *parent) {
-        return new ProxyHandler(parent);
-    }
-};
-
-#endif // PROXYPLUGIN_H
+TableModel {
+    id: root
+    name: 'signup'
+    primaryKey: 'key'
+    property string key
+    property int account_id
+    property string redirect
+    property string remote_addr
+    property string user_agent
+}

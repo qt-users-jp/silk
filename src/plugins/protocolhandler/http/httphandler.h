@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,61 +24,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TABLEMODEL_H
-#define TABLEMODEL_H
+#ifndef HTTPHANDLER_H
+#define HTTPHANDLER_H
 
-#include <QtCore/QAbstractListModel>
+#include <silkabstractprotocolhandler.h>
 
-#include <QtQml/QQmlParserStatus>
-
-class Database;
-
-class TableModel : public QAbstractListModel, public QQmlParserStatus
+class HttpHandler : public SilkAbstractProtocolHandler
 {
     Q_OBJECT
 
-    Q_PROPERTY(int count READ count NOTIFY countChanged)
-    Q_PROPERTY(Database *database READ database WRITE setDatabase NOTIFY databaseChanged)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString primaryKey READ primaryKey WRITE setPrimaryKey NOTIFY primaryKeyChanged)
-
-    Q_INTERFACES(QQmlParserStatus)
 public:
-    explicit TableModel(QObject *parent = 0);
-
-    int count() const;
-    Q_INVOKABLE QVariantMap get(int index) const;
-    Q_INVOKABLE QVariant insert(const QVariantMap &data);
-    Q_INVOKABLE void update(const QVariantMap &data);
-    Q_INVOKABLE bool remove(const QVariantMap &data);
-//    void clear();
-
-    Database *database() const;
-    const QString &name() const;
-    const QString &primaryKey() const;
-
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    virtual QHash<int, QByteArray> roleNames() const;
-
-    virtual void classBegin();
-    virtual void componentComplete();
-
-public slots:
-    void setDatabase(Database *database);
-    void setName(const QString &name);
-    void setPrimaryKey(const QString &primaryKey);
-
-
-signals:
-    void countChanged(int count);
-    void databaseChanged(Database *database);
-    void nameChanged(const QString &name);
-    void primaryKeyChanged(const QString &primaryKey);
+    explicit HttpHandler(QObject *parent = 0);
+    
+    virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
 
 private:
     class Private;
     Private *d;
 };
 
-#endif // TABLEMODEL_H
+#endif // HTTPHANDLER_H

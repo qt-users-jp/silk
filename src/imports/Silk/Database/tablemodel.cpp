@@ -27,6 +27,7 @@
 #include "tablemodel.h"
 #include "database.h"
 
+#include <QtCore/QDateTime>
 #include <QtCore/QDebug>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
@@ -46,6 +47,8 @@ public:
     void init();
 
     QString selectSql() const;
+    QString toSql(const QVariant &value);
+
 private slots:
     void databaseChanged(Database *database);
     void openChanged(bool open);
@@ -139,9 +142,7 @@ void TableModel::Private::create()
 {
     if (fieldNames.isEmpty()) return;
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
-    qDebug() << Q_FUNC_INFO << __LINE__ << db.tables();
     if (db.tables().contains(q->name().toLower())) return;
-    qDebug() << Q_FUNC_INFO << __LINE__;
 
     QString type = db.driverName();
 
@@ -206,7 +207,7 @@ void TableModel::Private::create()
     if (!query.exec()) {
         qWarning() << Q_FUNC_INFO << __LINE__ << sql << query.lastError().text();
     }
-    qDebug() << Q_FUNC_INFO << __LINE__;
+//    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
 QString TableModel::Private::selectSql() const
@@ -216,7 +217,6 @@ QString TableModel::Private::selectSql() const
 
 void TableModel::Private::select()
 {
-    qDebug() << Q_FUNC_INFO << __LINE__;
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
 
     q->beginRemoveRows(QModelIndex(), 0, data.count() - 1);
@@ -238,7 +238,31 @@ void TableModel::Private::select()
     }
     q->beginInsertRows(QModelIndex(), 0, data.count() - 1);
     q->endInsertRows();
-    qDebug() << Q_FUNC_INFO << __LINE__;
+}
+
+QString TableModel::Private::toSql(const QVariant &value)
+{
+    switch (value.type()) {
+    case QVariant::Int:
+        return QString::number(value.toInt());
+        break;
+    case QVariant::Double:
+        return QString::number(value.toDouble());
+        break;
+    case QVariant::Bool:
+        return value.toBool() ? "True" : "False";
+        break;
+    case QVariant::String:
+        return QString("'%1'").arg(value.toString());
+        break;
+    case QVariant::DateTime:
+        // TODO: format
+        return value.toDateTime().toString("'yyyy-MM-dd hh:mm:ss'");
+        break;
+    default:
+        break;
+    }
+    return QString();
 }
 
 TableModel::TableModel(QObject *parent)
@@ -317,8 +341,20 @@ int TableModel::count() const
     return rowCount();
 }
 
-bool TableModel::insert(const QVariantMap &data)
+QVariantMap TableModel::get(int index) const
 {
+    QVariantMap ret;
+    QVariantList list = d->data.at(index);
+    for (int i = 0; i < list.length(); i++) {
+//        qDebug() << Q_FUNC_INFO << __LINE__ << i << QString::fromUtf8(d->roleNames.value(Qt::UserRole + i)) << list.at(i);
+        ret.insert(QString::fromUtf8(d->roleNames.value(Qt::UserRole + i)), list.at(i));
+    }
+    return ret;
+}
+
+QVariant TableModel::insert(const QVariantMap &data)
+{
+    QVariant ret;
     QStringList keys;
     QStringList placeHolders;
     QVariantMap values;
@@ -338,26 +374,27 @@ bool TableModel::insert(const QVariantMap &data)
         return false;
     }
     foreach (const QString &key, values.keys()) {
-        qDebug() << key << values.value(key);
         query.bindValue(key, values.value(key));
     }
-    qDebug() << query.boundValues();
 
-    bool ret = query.exec();
-    if (ret) {
+    if (query.exec()) {
         QString sql = d->selectSql();
         if (db.driverName() == QLatin1String("QPSQL")) {
             sql += QString(" WHERE %1=%2").arg("oid").arg(query.lastInsertId().toInt());
         } else {
-            sql += QString(" WHERE %1=%2").arg(d->primaryKey).arg(query.lastInsertId().toInt());
+            sql += QString(" WHERE %1=%2").arg(d->primaryKey).arg(d->toSql(query.lastInsertId()));
         }
-        qDebug() << Q_FUNC_INFO << __LINE__ << sql << query.lastInsertId() << db.driver()->hasFeature(QSqlDriver::LastInsertId);
+//        qDebug() << Q_FUNC_INFO << __LINE__ << sql << query.lastInsertId() << db.driver()->hasFeature(QSqlDriver::LastInsertId);
         QSqlQuery query2(sql, db);
         if (query2.first()) {
             int row = rowCount();
             beginInsertRows(QModelIndex(), row, row);
             QVariantList v;
             for (int i = 0; i < d->roleNames.keys().count(); i++) {
+//                qDebug() << Q_FUNC_INFO << __LINE__ << i << d->roleNames.value(Qt::UserRole + i) << d->primaryKey;
+                if (d->roleNames.value(Qt::UserRole + i) == d->primaryKey) {
+                    ret = query2.value(i);
+                }
                 v.append(query2.value(i));
             }
             d->data.append(v);
@@ -374,13 +411,68 @@ bool TableModel::insert(const QVariantMap &data)
 
 void TableModel::update(const QVariantMap &data)
 {
+    QStringList sets;
+    QVariantMap values;
+    QString where;
 
+    int keyRole = -1;
+    QVariant key;
+
+    foreach (int i, d->roleNames.keys()) {
+        QString field = QString::fromUtf8(d->roleNames.value(i));
+        if (data.contains(field)) {
+            QVariant value = data.value(field);
+            if (field == d->primaryKey) {
+                keyRole = i;
+                key = value;
+                where = QString(" WHERE %1=%2").arg(field).arg(d->toSql(value));
+            } else {
+                sets.append(QString("%1=:%1").arg(field));
+                values.insert(QString(":%1").arg(field), value);
+            }
+        }
+    }
+
+    QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
+    QSqlQuery query(db);
+    if (!query.prepare(QString("UPDATE %1 SET %2%3").arg(name()).arg(sets.join(", ")).arg(where))) {
+        qWarning() << Q_FUNC_INFO << __LINE__ << query.lastQuery() << query.lastError().text();
+        return;
+    }
+    foreach (const QString &key, values.keys()) {
+        qDebug() << key << values.value(key);
+        query.bindValue(key, values.value(key));
+    }
+    qDebug() << query.boundValues();
+
+    if (query.exec()) {
+        for (int i = 0; i < d->data.count(); i++) {
+            if (d->data.at(i).at(keyRole - Qt::UserRole) == key) {
+                QVariantList newData = d->data.at(i);
+                QVector<int> roles;
+                foreach (int j, d->roleNames.keys()) {
+                    QString field = QString::fromUtf8(d->roleNames.value(j));
+                    if (data.contains(field)) {
+                        QVariant value = data.value(field);
+                        if (field == d->primaryKey) {
+                        } else {
+                            newData[j - Qt::UserRole] = value;
+                            roles.append(j);
+                        }
+                    }
+                }
+                d->data[i] = newData;
+                dataChanged(index(i), index(i), roles);
+                break;
+            }
+        }
+    }
 }
 
 bool TableModel::remove(const QVariantMap &data)
 {
     QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
-    QString sql = QString("DELETE FROM %1 WHERE %2=%3;").arg(name()).arg(primaryKey()).arg(data.value(primaryKey()).toInt());
+    QString sql = QString("DELETE FROM %1 WHERE %2=%3;").arg(name()).arg(primaryKey()).arg(d->toSql(data.value(primaryKey())));
     QSqlQuery query(sql, db);
     bool ret = query.exec();
     if (ret) {
@@ -404,7 +496,7 @@ bool TableModel::remove(const QVariantMap &data)
             }
         }
     } else {
-        qWarning() << Q_FUNC_INFO << __LINE__ << query.executedQuery() << query.lastError().text();
+        qWarning() << Q_FUNC_INFO << __LINE__ << sql << query.lastError().text();
     }
     return ret;
 }

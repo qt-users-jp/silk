@@ -27,6 +27,7 @@
 #include "database.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QTimer>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 #include <QtQml/qqml.h>
@@ -38,20 +39,39 @@ class Database::Private : public QObject
 public:
     Private(Database *parent);
 
+public slots:
     void open();
+private slots:
+    void changed();
 
 private:
     Database *q;
+    QTimer timer;
 };
 
 Database::Private::Private(Database *parent)
     : QObject(parent)
     , q(parent)
 {
+    timer.setInterval(0);
+    timer.setSingleShot(true);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(open()));
+    connect(q, SIGNAL(connectionNameChanged(QString)), this, SLOT(changed()));
+    connect(q, SIGNAL(typeChanged(QString)), this, SLOT(changed()));
+    connect(q, SIGNAL(databaseNameChanged(QString)), this, SLOT(changed()));
+    connect(q, SIGNAL(hostNameChanged(QString)), this, SLOT(changed()));
+    connect(q, SIGNAL(userNameChanged(QString)), this, SLOT(changed()));
+    connect(q, SIGNAL(passwordChanged(QString)), this, SLOT(changed()));
+}
+
+void Database::Private::changed()
+{
+    if (!timer.isActive()) timer.start();
 }
 
 void Database::Private::open()
 {
+    if (q->m_databaseName.isNull()) return;
     if (q->m_connectionName.isEmpty()) {
         QQmlContext *context = qmlContext(q);
         q->connectionName(context->nameForObject(q));
@@ -67,7 +87,6 @@ void Database::Private::open()
             q->open(true);
         } else {
             qDebug() << Q_FUNC_INFO << __LINE__ << db.lastError().text();
-            q->open(false);
         }
     } else {
         q->open(QSqlDatabase::database(q->m_connectionName).isOpen());
@@ -76,6 +95,7 @@ void Database::Private::open()
 
 Database::Database(QObject *parent)
     : SilkAbstractObject(parent)
+    , m_hostName("localhost")
     , m_open(false)
     , d(new Private(this))
 {

@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "proxyhandler.h"
+#include "httphandler.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
@@ -37,11 +37,11 @@
 #include <qhttprequest.h>
 #include <qhttpreply.h>
 
-class ProxyHandler::Private : public QObject
+class HttpHandler::Private : public QObject
 {
     Q_OBJECT
 public:
-    Private(ProxyHandler *parent);
+    Private(HttpHandler *parent);
 
     void load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message);
 
@@ -51,22 +51,22 @@ private slots:
     void httpReplyDestroyed(QObject *object);
 
 private:
-    ProxyHandler *q;
+    HttpHandler *q;
     QMap<QObject *, QHttpRequest*> requestMap;
     QMap<QObject *, QHttpReply*> replyMap;
     QMap<QObject *, QNetworkReply*> replyMap2;
     static QNetworkAccessManager networkAccessManager;
 };
 
-QNetworkAccessManager ProxyHandler::Private::networkAccessManager;
+QNetworkAccessManager HttpHandler::Private::networkAccessManager;
 
-ProxyHandler::Private::Private(ProxyHandler *parent)
+HttpHandler::Private::Private(HttpHandler *parent)
     : QObject(parent)
     , q(parent)
 {
 }
 
-void ProxyHandler::Private::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
+void HttpHandler::Private::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
 //    qDebug() << url;
     Q_UNUSED(message)
@@ -96,7 +96,7 @@ void ProxyHandler::Private::load(const QUrl &url, QHttpRequest *request, QHttpRe
     connect(reply, SIGNAL(destroyed(QObject*)), this, SLOT(httpReplyDestroyed(QObject*)));
 }
 
-void ProxyHandler::Private::finished()
+void HttpHandler::Private::finished()
 {
     QNetworkReply *rep = qobject_cast<QNetworkReply *>(sender());
 //    qDebug() << Q_FUNC_INFO << __LINE__ << rep->url();
@@ -118,7 +118,7 @@ void ProxyHandler::Private::finished()
 //    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
-void ProxyHandler::Private::error(QNetworkReply::NetworkError error)
+void HttpHandler::Private::error(QNetworkReply::NetworkError error)
 {
     Q_UNUSED(error)
     QNetworkReply *rep = qobject_cast<QNetworkReply *>(sender());
@@ -129,7 +129,7 @@ void ProxyHandler::Private::error(QNetworkReply::NetworkError error)
 //    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
-void ProxyHandler::Private::httpReplyDestroyed(QObject* object)
+void HttpHandler::Private::httpReplyDestroyed(QObject* object)
 {
 //    qDebug() << Q_FUNC_INFO << __LINE__;
     if (replyMap2.contains(object)) {
@@ -139,16 +139,16 @@ void ProxyHandler::Private::httpReplyDestroyed(QObject* object)
 //    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
-ProxyHandler::ProxyHandler(QObject *parent)
-    : SilkAbstractMimeHandler(parent)
+HttpHandler::HttpHandler(QObject *parent)
+    : SilkAbstractProtocolHandler(parent)
     , d(new Private(this))
 {
 }
 
-bool ProxyHandler::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
+bool HttpHandler::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
     d->load(url, request, reply, message);
     return true;
 }
 
-#include "proxyhandler.moc"
+#include "httphandler.moc"

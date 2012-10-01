@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sssorc</file>
+        <file>contents/index.qml</file>
+        <file>contents/UserInput.qml</file>
+        <file>contents/signup.qml</file>
+        <file>contents/password.qml</file>
+        <file>contents/SSSOBase.qml</file>
+        <file>contents/AccountModel.qml</file>
+        <file>contents/SessionModel.qml</file>
+        <file>contents/SignupModel.qml</file>
+        <file>contents/SSSODatabase.qml</file>
+    </qresource>
+</RCC>

@@ -24,18 +24,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+#include "silkabstractprotocolhandler.h"
 
-#include <QtCore/QUuid>
-
-Silk::Silk(QObject *parent)
+SilkAbstractProtocolHandler::SilkAbstractProtocolHandler(QObject *parent)
     : QObject(parent)
 {
-}
-
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
 }

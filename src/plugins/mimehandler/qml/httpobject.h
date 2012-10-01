@@ -34,6 +34,8 @@
 class HttpObject : public SilkAbstractHttpObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString remoteAddress READ remoteAddress NOTIFY remoteAddressChanged)
+    SILK_ADD_PROPERTY(const QString &, remoteAddress, QString)
     Q_PROPERTY(QString method READ method NOTIFY methodChanged)
     SILK_ADD_PROPERTY(const QString &, method, QString)
     Q_PROPERTY(QString scheme READ scheme NOTIFY schemeChanged)
@@ -70,6 +72,7 @@ public:
 
 signals:
     void ready();
+    void remoteAddressChanged(const QString &remoteAddress);
     void methodChanged(const QString &method);
     void schemeChanged(const QString &scheme);
     void hostChanged(const QString &host);

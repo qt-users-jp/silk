@@ -168,6 +168,8 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         HttpObject *http = qobject_cast<HttpObject *>(component->create());
         if (!cache)
             connect(http, SIGNAL(destroyed()), this, SLOT(clearQmlCache()), Qt::QueuedConnection);
+        QCoreApplication::processEvents();
+        http->remoteAddress(request->remoteAddress());
         http->method(QString::fromLatin1(request->method()));
         QUrl url(request->url());
         QString query(url.query());
@@ -198,6 +200,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         http->requestCookies(cookies);
 
         if (!message.isEmpty()) http->message(message);
+        QCoreApplication::processEvents();
         QMetaObject::invokeMethod(http, "ready");
 
         component2http.insert(component, http);

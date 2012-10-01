@@ -24,18 +24,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+#include <QtCore/QCoreApplication>
+#include <silkserver.h>
+#include <silkconfig.h>
 
-#include <QtCore/QUuid>
-
-Silk::Silk(QObject *parent)
-    : QObject(parent)
+int main(int argc, char **argv)
 {
+    QCoreApplication app(argc, argv);
+
+    SilkConfig::initialize(argc, argv);
+
+    SilkServer server;
+    if (!server.isListening()) {
+        return -1;
+    }
+
+	return app.exec();
 }
 
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
-}

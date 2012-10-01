@@ -24,18 +24,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+#ifndef SILKABSTRACTPROTOCOLHANDLER_H
+#define SILKABSTRACTPROTOCOLHANDLER_H
 
-#include <QtCore/QUuid>
+#include <QtCore/QObject>
+#include <QtCore/QFileInfo>
 
-Silk::Silk(QObject *parent)
-    : QObject(parent)
+#include "silkglobal.h"
+
+class QHttpRequest;
+class QHttpReply;
+
+class SILK_EXPORT SilkAbstractProtocolHandler : public QObject
 {
-}
+    Q_OBJECT
+public:
+    explicit SilkAbstractProtocolHandler(QObject *parent = 0);
+    
+    virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString()) = 0;
+    
+signals:
+    void error(int code, QHttpRequest *request, QHttpReply *reply, const QString &errorString = QString());
+};
 
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
-}
+#endif // SILKABSTRACTPROTOCOLHANDLER_H
