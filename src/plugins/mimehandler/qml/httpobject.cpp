@@ -27,6 +27,43 @@
 #include "httpobject.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtCore/QTemporaryFile>
+#include <qhttprequest.h>
+
+HttpFileData::HttpFileData(QHttpFileData *data, QObject *parent)
+    : QObject(parent)
+{
+    fileName(data->fileName());
+    contentType(data->contentType());
+    QTemporaryFile file;
+    if (file.open()) {
+        file.setAutoRemove(false);
+        file.write(data->readAll());
+        file.close();
+        filePath(file.fileName());
+    }
+}
+
+bool HttpFileData::save(const QString &as) const
+{
+    bool ret = false;
+    QFile file(as);
+    if (file.open(QFile::WriteOnly)) {
+        file.write(m_data->readAll());
+        file.close();
+        ret = true;
+    }
+    return ret;
+}
+
+bool HttpFileData::remove()
+{
+    bool ret = QFile::remove(m_filePath);
+    if (ret)
+        filePath(QString());
+    return ret;
+}
 
 HttpObject::HttpObject(QObject *parent)
     : SilkAbstractHttpObject(parent)
@@ -34,6 +71,16 @@ HttpObject::HttpObject(QObject *parent)
     , m_status(200)
     , m_escape(false)
 {
+}
+
+QQmlListProperty<HttpFileData> HttpObject::files()
+{
+    return QQmlListProperty<HttpFileData>(this, m_files);
+}
+
+void HttpObject::setFiles(const QList<HttpFileData *> &files)
+{
+    m_files = files;
 }
 
 QByteArray HttpObject::out() const

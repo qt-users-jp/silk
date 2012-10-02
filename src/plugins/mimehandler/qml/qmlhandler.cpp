@@ -85,6 +85,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
 
     qmlRegisterType<SilkAbstractHttpObject>();
     qmlRegisterType<HttpObject>("Silk.HTTP", 1, 1, "Http");
+    qmlRegisterUncreatableType<HttpFileData>("Silk.HTTP", 1, 1, "HttpFileData", QLatin1String("readonly"));
 
     QDir appDir = QCoreApplication::applicationDirPath();
     QDir importsDir = appDir;
@@ -179,6 +180,11 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         http->path(url.path());
         http->query(query);
         http->data(QString(request->readAll()));
+        QList<HttpFileData *> files;
+        foreach (QHttpFileData *file, request->files()) {
+            files.append(new HttpFileData(file, this));
+        }
+        http->setFiles(files);
 
         QVariantMap requestHeader;
         foreach (const QByteArray &key, request->rawHeaderList()) {

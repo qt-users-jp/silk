@@ -31,6 +31,31 @@
 
 #include <QtCore/QUrl>
 
+class QHttpFileData;
+
+class HttpFileData : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
+    SILK_ADD_PROPERTY(const QString &, fileName, QString)
+    Q_PROPERTY(QString filePath READ filePath NOTIFY filePathChanged)
+    SILK_ADD_PROPERTY(const QString &, filePath, QString)
+    Q_PROPERTY(QString contentType READ contentType NOTIFY contentTypeChanged)
+    SILK_ADD_PROPERTY(const QString &, contentType, QString)
+public:
+    HttpFileData(QHttpFileData *data, QObject *parent = 0);
+
+    Q_INVOKABLE bool save(const QString &as) const;
+    Q_INVOKABLE bool remove();
+signals:
+    void fileNameChanged(const QString &fileName);
+    void filePathChanged(const QString &filePath);
+    void contentTypeChanged(const QString &contentType);
+
+private:
+    QHttpFileData *m_data;
+};
+
 class HttpObject : public SilkAbstractHttpObject
 {
     Q_OBJECT
@@ -48,6 +73,7 @@ class HttpObject : public SilkAbstractHttpObject
     SILK_ADD_PROPERTY(const QString &, query, QString)
     Q_PROPERTY(QString data READ data NOTIFY dataChanged)
     SILK_ADD_PROPERTY(const QString &, data, QString)
+    Q_PROPERTY(QQmlListProperty<HttpFileData> files READ files)
     Q_PROPERTY(QVariant requestHeader READ requestHeader NOTIFY requestHeaderChanged)
     SILK_ADD_PROPERTY(const QVariant &, requestHeader, QVariant)
     Q_PROPERTY(QVariantMap requestCookies READ requestCookies NOTIFY requestCookiesChanged)
@@ -70,6 +96,8 @@ public:
 
     virtual QByteArray out() const;
 
+    QQmlListProperty<HttpFileData> files();
+    void setFiles(const QList<HttpFileData *> &files);
 signals:
     void ready();
     void remoteAddressChanged(const QString &remoteAddress);
@@ -79,6 +107,7 @@ signals:
     void pathChanged(const QString &path);
     void queryChanged(const QString &query);
     void dataChanged(const QString &data);
+    void filesChanged(const QList<HttpFileData *> &files);
     void requestHeaderChanged(const QVariant &requestHeader);
     void requestCookiesChanged(const QVariantMap &requestHeader);
     void messageChanged(const QString &message);
@@ -87,6 +116,9 @@ signals:
     void responseHeaderChanged(const QVariantMap &responseHeader);
     void responseCookiesChanged(const QVariantMap &responseHeader);
     void escapeChanged(bool escape);
+
+private:
+    QList<HttpFileData *> m_files;
 };
 
 #endif // HTTPOBJECT_H
