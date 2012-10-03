@@ -62,6 +62,7 @@ Http {
             default:
                 break;
             }
+            chat.select = true;
         }
     }
 
@@ -73,6 +74,7 @@ Http {
 
         TableModel {
             id: chat
+            select: false
             name: 'Chat'
             primaryKey: 'key'
             property int key

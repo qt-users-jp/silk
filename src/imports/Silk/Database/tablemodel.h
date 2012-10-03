@@ -33,14 +33,30 @@
 
 class Database;
 
+#define ADD_PROPERTY(type, name, type2) \
+public: \
+    type name() const { return m_##name; } \
+    void name(type name) { \
+        if (m_##name == name) return; \
+        m_##name = name; \
+        emit name##Changed(name); \
+    } \
+private: \
+    type2 m_##name;
+
 class TableModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool select READ select WRITE select NOTIFY selectChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(Database *database READ database WRITE setDatabase NOTIFY databaseChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString primaryKey READ primaryKey WRITE setPrimaryKey NOTIFY primaryKeyChanged)
+    Q_PROPERTY(QString condition READ condition WRITE condition NOTIFY conditionChanged)
+    Q_PROPERTY(QString order READ order WRITE order NOTIFY orderChanged)
+    Q_PROPERTY(int limit READ limit WRITE limit NOTIFY limitChanged)
+    Q_PROPERTY(int offset READ offset WRITE offset NOTIFY offsetChanged)
 
     Q_INTERFACES(QQmlParserStatus)
 public:
@@ -71,14 +87,25 @@ public slots:
 
 
 signals:
+    void selectChanged(bool select);
     void countChanged(int count);
     void databaseChanged(Database *database);
     void nameChanged(const QString &name);
     void primaryKeyChanged(const QString &primaryKey);
+    void conditionChanged(const QString &condition);
+    void orderChanged(const QString &order);
+    void offsetChanged(int offset);
+    void limitChanged(int limit);
 
 private:
     class Private;
     Private *d;
+
+    ADD_PROPERTY(bool, select, bool)
+    ADD_PROPERTY(const QString &, condition, QString)
+    ADD_PROPERTY(const QString &, order, QString)
+    ADD_PROPERTY(int, limit, int)
+    ADD_PROPERTY(int, offset, int)
 };
 
 #endif // TABLEMODEL_H

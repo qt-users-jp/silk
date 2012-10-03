@@ -87,6 +87,7 @@ TableModel::Private::Private(TableModel *parent)
     primaryKeyMap.insert("QPSQL", " PRIMARY KEY");
 
     connect(q, SIGNAL(databaseChanged(Database*)), this, SLOT(databaseChanged(Database*)));
+    connect(q, SIGNAL(selectChanged(bool)), this, SLOT(select()));
     const QMetaObject *mo = q->metaObject();
     for (int i = 0; i < mo->propertyCount(); i++) {
         QMetaProperty property = mo->property(i);
@@ -212,11 +213,24 @@ void TableModel::Private::create()
 
 QString TableModel::Private::selectSql() const
 {
-    return QString("SELECT %2 FROM %1").arg(q->name()).arg(fieldNames.isEmpty() ? "*" : fieldNames.join(", "));
+    QString ret = QString("SELECT %2 FROM %1").arg(q->name()).arg(fieldNames.isEmpty() ? "*" : fieldNames.join(", "));
+    if (!q->m_condition.isEmpty())
+        ret += QString(" WHERE %1").arg(q->m_condition);
+    if (!q->m_order.isEmpty())
+        ret += QString(" ORDER BY %1").arg(q->m_order);
+    if (q->m_limit > 0) {
+        ret += QString(" LIMIT %1").arg(q->m_limit);
+        if (q->m_offset > 0) {
+            ret += QString(" OFFSET %1").arg(q->m_offset);
+        }
+    }
+    return ret;
 }
 
 void TableModel::Private::select()
 {
+    if (!q->m_select) return;
+
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
 
     q->beginRemoveRows(QModelIndex(), 0, data.count() - 1);
@@ -272,6 +286,9 @@ QString TableModel::Private::toSql(const QVariant &value)
 TableModel::TableModel(QObject *parent)
     : QAbstractListModel(parent)
     , d(new Private(this))
+    , m_select(true)
+    , m_limit(0)
+    , m_offset(0)
 {
 }
 
@@ -328,7 +345,6 @@ QHash<int, QByteArray> TableModel::roleNames() const
 
 int TableModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
     return d->data.count();
 }
 
@@ -382,12 +398,15 @@ QVariant TableModel::insert(const QVariantMap &data)
     }
 
     if (query.exec()) {
-        QString sql = d->selectSql();
+        QString condition = m_condition;
         if (db.driverName() == QLatin1String("QPSQL")) {
-            sql += QString(" WHERE %1=%2").arg("oid").arg(query.lastInsertId().toInt());
+            m_condition = QString("%1=%2").arg("oid").arg(query.lastInsertId().toInt());
         } else {
-            sql += QString(" WHERE %1=%2").arg(d->primaryKey).arg(d->toSql(query.lastInsertId()));
+            m_condition = QString("%1=%2").arg(d->primaryKey).arg(d->toSql(query.lastInsertId()));
         }
+        QString sql = d->selectSql();
+        m_condition = condition;
+
 //        qDebug() << Q_FUNC_INFO << __LINE__ << sql << query.lastInsertId() << db.driver()->hasFeature(QSqlDriver::LastInsertId);
         QSqlQuery query2(sql, db);
         if (query2.first()) {
