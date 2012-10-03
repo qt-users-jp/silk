@@ -89,12 +89,12 @@ class HttpObject : public SilkAbstractHttpObject
     SILK_ADD_PROPERTY(const QVariantMap &, responseHeader, QVariantMap)
     Q_PROPERTY(QVariantMap responseCookies READ responseCookies WRITE responseCookies NOTIFY responseCookiesChanged)
     SILK_ADD_PROPERTY(const QVariantMap &, responseCookies, QVariantMap)
-    Q_PROPERTY(bool escape READ escape WRITE escape NOTIFY escapeChanged)
-    SILK_ADD_PROPERTY(bool, escape, bool)
+    Q_PROPERTY(bool escapeHTML READ escapeHTML WRITE escapeHTML NOTIFY escapeHTMLChanged)
+    SILK_ADD_PROPERTY(bool, escapeHTML, bool)
 public:
     explicit HttpObject(QObject *parent = 0);
 
-    virtual QByteArray out() const;
+    virtual QByteArray out();
 
     QQmlListProperty<HttpFileData> files();
     void setFiles(const QList<HttpFileData *> &files);
@@ -115,7 +115,7 @@ signals:
     void statusChanged(int status);
     void responseHeaderChanged(const QVariantMap &responseHeader);
     void responseCookiesChanged(const QVariantMap &responseHeader);
-    void escapeChanged(bool escape);
+    void escapeHTMLChanged(bool escapeHTML);
 
 private:
     QList<HttpFileData *> m_files;

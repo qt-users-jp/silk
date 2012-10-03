@@ -57,11 +57,6 @@ SilkPageTemplate {
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "repeater.qml" }
                 }
                 Li {
-                    A { href: "%1.qml".arg(text); text: "comment" }
-                    Text { text: " / " }
-                    A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "comment.qml" }
-                }
-                Li {
                     A { href: "%1.qml".arg(text); text: "json" }
                     Text { text: " / " }
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "json.qml" }

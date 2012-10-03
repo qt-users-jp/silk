@@ -40,7 +40,7 @@ class CssRule : public SilkAbstractHttpObject
 public:
     explicit CssRule(QObject *parent = 0);
     
-    virtual QByteArray out() const;
+    virtual QByteArray out();
 
 protected:
     void generate(QList<QByteArray>& list, const QStringList &selectors = QStringList()) const;

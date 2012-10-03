@@ -25,13 +25,10 @@
  */
 
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 
 Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
-    loading: true
+    id: http
 
     Html {
         Head {
@@ -45,16 +42,17 @@ Http {
     }
 
     onReady: {
-        var request = new XMLHttpRequest()
+        http.loading = true;
+        var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             switch (request.readyState) {
             case 4: // Done
-                pre.text = request.responseText
-                root.loading = false
+                pre.text = request.responseText;
+                http.loading = false;
                 break
             }
         }
-        request.open("GET", "./file.qml")
-        request.send()
+        request.open("GET", "./file.qml");
+        request.send();
     }
 }

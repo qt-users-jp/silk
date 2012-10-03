@@ -38,7 +38,7 @@ class HtmlComment : public SilkAbstractHttpObject
 public:
     explicit HtmlComment(QObject *parent = 0);
     
-    virtual QByteArray out() const;
+    virtual QByteArray out();
 
 signals:
     void textChanged(const QString &text);

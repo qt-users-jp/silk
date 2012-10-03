@@ -24,15 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.JSON 1.0
 
-Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/json; charset=utf-8;'}
-
-    Json {
-        object: { 'name': 'value', 'value': Math.ceil(Math.random() * 100) }
-    }
+Json {
+    object: { 'name': 'value', 'value': Math.ceil(Math.random() * 100) }
 }

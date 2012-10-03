@@ -27,5 +27,7 @@
 import Silk.HTTP 1.1
 
 Text {
+    contentType: "text/html; charset=utf-8;"
     text: '<!DOCTYPE html>\n'
+    property bool escapeHTML: false
 }

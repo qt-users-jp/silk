@@ -38,7 +38,7 @@ class HtmlTag : public SilkAbstractHttpObject
 public:
     explicit HtmlTag(QObject *parent = 0);
     
-    virtual QByteArray out() const;
+    virtual QByteArray out();
 
 signals:
     void tagNameChanged(const QString &tagName);

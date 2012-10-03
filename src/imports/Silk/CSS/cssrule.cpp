@@ -36,7 +36,7 @@ CssRule::CssRule(QObject *parent)
 {
 }
 
-QByteArray CssRule::out() const
+QByteArray CssRule::out()
 {
     // TODO: support A { ...; Rule {... } }
     QByteArray ret;
@@ -95,8 +95,10 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
                     newSelector = QString("%1%2").arg(s).arg(s2);
                 } else if (s2.startsWith(">") || s2.startsWith("+")) {
                         newSelector = QString("%1 %2").arg(s).arg(s2);
-                } else {
+                } else if (!s.isEmpty()){
                     newSelector = QString("%1 %2").arg(s).arg(s2);
+                } else {
+                    newSelector = s2;
                 }
                 if (!attributes.isEmpty()) {
                     list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(newSelector).arg(attributes.join("\r\n    ")).toUtf8());
@@ -122,6 +124,7 @@ QStringList CssRule::parseAttributes(const CssRule *css) const
     for (int i = 0; i < count; i++) {
         QMetaProperty p = css->metaObject()->property(i);
         QString key(p.name());
+        if (key != key.toLower()) continue;
         if (key.startsWith("__")) continue;
         if (key.startsWith("_float")) key = key.mid(1);
         key.replace('_', "-");

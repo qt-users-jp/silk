@@ -31,12 +31,12 @@ HtmlComment::HtmlComment(QObject *parent)
 {
 }
 
-QByteArray HtmlComment::out() const
+QByteArray HtmlComment::out()
 {
     QByteArray ret("<!--");
     if (m_text.isNull()) {
-        foreach (const QObject *child, contentsList()) {
-            const SilkAbstractHttpObject *object = qobject_cast<const SilkAbstractHttpObject *>(child);
+        foreach (QObject *child, contentsList()) {
+            SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
             if (object && object->enabled()) {
                 ret.append(object->out());
             }

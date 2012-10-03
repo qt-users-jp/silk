@@ -24,28 +24,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 
-Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+Html {
+    Head {
+        Title { id: title; text: "json" }
+        Script { type: "text/javascript"; src: "json.js" }
+    }
 
-    Html {
-        Head {
-            Title { id: title; text: "json" }
-            Script { type: "text/javascript"; src: "json.js" }
-        }
+    Body {
+        onload: "fetch()"
+        H1 { text: title.text }
 
-        Body {
-            onload: "fetch()"
-            H1 { text: title.text }
-
-            Dl {
-                Dt { _id: "dt" }
-                Dd { _id: "dd" }
-            }
+        Dl {
+            Dt { _id: "dt" }
+            Dd { _id: "dd" }
         }
     }
 }

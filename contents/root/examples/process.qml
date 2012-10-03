@@ -25,17 +25,15 @@
  */
 
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import Silk.Process 1.0
 
 Http {
     id: http
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
     loading: true
 
     Process {
-        id: cat
+        id: date
         program: 'date'
         arguments: ['+%H:%M:%S']
         onOutput: output.text += line
@@ -53,10 +51,10 @@ Http {
             H1 { text: title.text }
             Pre {
                 id: output
-                text: '$ %1 %2\n'.arg(cat.program).arg(cat.arguments.join(' '))
+                text: '$ %1 %2\n'.arg(date.program).arg(date.arguments.join(' '))
             }
         }
     }
 
-    onReady: cat.start();
+    onReady: date.start();
 }

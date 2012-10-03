@@ -26,21 +26,19 @@
 
 import QtQuick 2.0
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import Silk.JSON 1.0
 import Silk.Utils 1.0
 import QtQuick.LocalStorage 2.0
 
 Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': root.post ? 'text/json; charset=utf-8;' : 'text/html; charset=utf-8;'}
+    id: http
 
-    property bool post: root.data.length > 0
+    property bool post: http.data.length > 0
 
     Html {
         id: html
-        enabled: !root.post
+        enabled: !http.post
         Head {
             Title { id: title; text: "chat" }
             Script { type: "text/javascript"; src: "./chat.js" }
@@ -75,7 +73,7 @@ Http {
 
     Json {
         id: json
-        enabled: root.post
+        enabled: http.post
     }
 
     onReady: {
@@ -84,8 +82,8 @@ Http {
         var where = ''
         var hasMessage = false;
 
-        if (root.post) {
-            var data = JSON.parse(root.data)
+        if (http.post) {
+            var data = JSON.parse(http.data)
             if (typeof data.message !== 'undefined') {
                 hasMessage = true;
 
@@ -113,7 +111,7 @@ Http {
                         }
                         )
         } catch (e) {}
-        if (root.post) {
+        if (http.post) {
             json.object = ret;
         } else {
             lis.model = ret;

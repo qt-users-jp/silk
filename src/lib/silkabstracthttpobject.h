@@ -50,7 +50,7 @@ class SILK_EXPORT SilkAbstractHttpObject : public SilkAbstractObject
 public:
     explicit SilkAbstractHttpObject(QObject *parent = 0);
 
-    virtual QByteArray out() const = 0;
+    virtual QByteArray out() = 0;
 
 signals:
     void enabledChanged(bool enabled);

@@ -48,7 +48,7 @@ SilkPageTemplate {
             }
             P { text: "silk generates following HTML" }
             PlainFile {
-                HelloSource { escape: true }
+                HelloSource { escapeHTML: true }
             }
 
             ButtonGroup {
@@ -78,7 +78,7 @@ SilkPageTemplate {
             }
             P { text: "silk generates following CSS" }
             PlainFile {
-                HelloCssSource { escape: true }
+                HelloCssSource {}
             }
 
             ButtonGroup {

@@ -24,14 +24,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.CSS 2.1
 
-Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/css; charset=utf-8;'}
-
+Css {
     Rule {
         selector: 'h1'
         color: 'blue'

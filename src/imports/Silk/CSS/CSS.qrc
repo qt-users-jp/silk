@@ -3,5 +3,7 @@
         <file>21_Rule.qml</file>
         <file>30_Rule.qml</file>
         <file>qmldir</file>
+        <file>21_Css.qml</file>
+        <file>30_Css.qml</file>
     </qresource>
 </RCC>

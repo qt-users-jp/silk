@@ -31,10 +31,11 @@
 
 JsonObject::JsonObject(QObject *parent)
     : SilkAbstractHttpObject(parent)
+    , m_contentType("text/json; charset=utf-8;")
 {
 }
 
-QByteArray JsonObject::out() const
+QByteArray JsonObject::out()
 {
     QJsonDocument doc = QJsonDocument::fromVariant(m_object);
     return doc.toJson();

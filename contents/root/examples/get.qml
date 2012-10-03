@@ -26,14 +26,13 @@
 
 import QtQuick 2.0
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import Silk.Utils 1.0
 
 Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+    id: http
 
+    DocType {}
     Html {
         Head {
             Title { id: title; text: "query string" }
@@ -49,7 +48,7 @@ Http {
                     }
                 }
             }
-            BlockQuote { text: "root.query=%1".arg(root.query.replace('+', ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) }
+            BlockQuote { text: "root.query=%1".arg(http.query.replace('+', ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) }
         }
     }
 }

@@ -35,11 +35,10 @@ HtmlTag::HtmlTag(QObject *parent)
 {
 }
 
-QByteArray HtmlTag::out() const
+QByteArray HtmlTag::out()
 {
     QByteArray ret;
 
-    QString tagName;
     QString text;
     QStringList attributes;
 
@@ -47,6 +46,7 @@ QByteArray HtmlTag::out() const
     for (int i = 0; i < count; i++) {
         QMetaProperty p = metaObject()->property(i);
         QString key(p.name());
+        if (key != key.toLower()) continue;
         if (key.startsWith("__")) continue;
         if (key.startsWith("_"))
             key = key.mid(1);
@@ -57,11 +57,8 @@ QByteArray HtmlTag::out() const
         case QVariant::String: {
             QString value = p.read(this).toString();
 
-            if (key == QLatin1String("tagName")) {
-                tagName = value;
-            } else if (key == QLatin1String("text")) {
+            if (key == QLatin1String("text")) {
                 text = value;
-            } else if (key == QLatin1String("objectName")) {
             } else if (!value.isNull()){
                 if (value.isEmpty()) {
                     attributes.append(QString(" %1").arg(key));
@@ -83,13 +80,13 @@ QByteArray HtmlTag::out() const
         }
     }
 
-    ret.append(QString("<%1%2").arg(tagName).arg(attributes.join("")));
+    ret.append(QString("<%1%2").arg(tagName()).arg(attributes.join("")));
 
     bool hasChildObjects = false;
 
     if (text.isNull()) {
-        foreach (const QObject *child, contentsList()) {
-            const SilkAbstractHttpObject *object = qobject_cast<const SilkAbstractHttpObject *>(child);
+        foreach (QObject *child, contentsList()) {
+            SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
             if (object && object->enabled()) {
                 if (!hasChildObjects) {
                     ret.append(">");
@@ -105,9 +102,17 @@ QByteArray HtmlTag::out() const
     }
 
     if (hasChildObjects) {
-        ret.append(QString("</%1>").arg(tagName));
+        ret.append(QString("</%1>").arg(tagName()));
     } else {
         ret.append(QLatin1String(" />"));
+    }
+    QVariant escapeHTML = property("escapeHTML");
+    if (escapeHTML.isValid() && escapeHTML.toBool()) {
+        QString str = QString::fromUtf8(ret);
+        str.replace("&", "&amp;");
+        str.replace("<", "&lt;");
+        str.replace(">", "&gt;");
+        ret = str.toUtf8();
     }
     return ret;
 }

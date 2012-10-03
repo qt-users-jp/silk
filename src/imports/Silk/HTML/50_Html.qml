@@ -26,5 +26,8 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'html'
+    property string contentType: "text/html; charset=utf-8;"
+    property string docType: "<!DOCTYPE html>"
+    property bool escapeHTML: false
     property string manifest
 }

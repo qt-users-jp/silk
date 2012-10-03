@@ -24,9 +24,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import QtQuick 2.0
 import Silk.HTML 5.0
+import Silk.Cache 1.0
 
 Pre {
+    id: root
     property string __class
     _class: "file %1".arg(__class)
+    property url __file
+
+    Cache { id: cache }
+
+    Component.onCompleted: {
+        if (__file.toString().length > 0) {
+            var value = cache.fetch(__file);
+            if (typeof value !== 'undefined') {
+                root.text = value;
+            } else {
+                var request = new XMLHttpRequest()
+                request.onreadystatechange = function() {
+                    switch (request.readyState) {
+                    case 4: // Done
+                        cache.add(__file, request.responseText);
+                        root.text = request.responseText;
+                        break;
+                    }
+                }
+                request.open("GET", __file, true);
+                request.send();
+            }
+        }
+    }
 }

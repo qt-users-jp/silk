@@ -26,15 +26,13 @@
 
 import QtQuick 2.0
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import Silk.Utils 1.0
 import Silk.Database 1.0
 import "./components"
 
 Http {
     id: http
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
     UserInput {
         id: input
@@ -48,12 +46,18 @@ Http {
             case 'remove':
                 for (var i in data) {
                     if (i.substring(0, 'key_'.length) === 'key_') {
-                        chat.remove({'key': i.substring('key_'.length)});
+                        if (db.transaction()) {
+                            chat.remove({'key': i.substring('key_'.length)});
+                            if (!db.commit()) db.rollback();
+                        }
                     }
                 }
                 break;
             case 'insert':
-                chat.insert({'value': input.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')});
+                if (db.transaction()) {
+                    chat.insert({'value': input.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')});
+                    if (!db.commit()) db.rollback();
+                }
                 break;
             default:
                 break;
@@ -62,6 +66,7 @@ Http {
     }
 
     Database {
+        id: db
         connectionName: 'examples/database.qml'
         type: "QSQLITE"
         databaseName: ":memory:"

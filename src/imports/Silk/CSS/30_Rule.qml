@@ -27,6 +27,7 @@
 import Silk.CSS 3.0
 
 CSSRule {
+    property string contentType: "text/css; charset=utf-8;"
     // http://www.w3.org/Style/CSS/current-work
 
     /* CSS Color Module Level 3 */

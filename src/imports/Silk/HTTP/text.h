@@ -32,14 +32,17 @@
 class Text : public SilkAbstractHttpObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString contentType READ contentType WRITE contentType NOTIFY contentTypeChanged)
+    SILK_ADD_PROPERTY(const QString &, contentType, QString)
     Q_PROPERTY(QString text READ text WRITE text NOTIFY textChanged)
     SILK_ADD_PROPERTY(const QString &, text, QString)
 public:
     explicit Text(QObject *parent = 0);
     
-    virtual QByteArray out() const { return text().toUtf8(); }
+    virtual QByteArray out() { return text().toUtf8(); }
 
 signals:
+    void contentTypeChanged(const QString &contentType);
     void textChanged(const QString &text);
 };
 

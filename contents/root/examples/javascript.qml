@@ -25,15 +25,13 @@
  */
 
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import 'reverse.js' as Script
 
 Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+    id: http
 
-    property string source: typeof root.data !== 'undefined' && root.data.indexOf("=") > 0 ? decodeURIComponent(root.data.substring(root.data.indexOf("=") + 1).replace('+', ' ')) : ''
+    property string source: typeof http.data !== 'undefined' && http.data.indexOf("=") > 0 ? decodeURIComponent(http.data.substring(http.data.indexOf("=") + 1).replace('+', ' ')) : ''
 
     Html {
         Head {
@@ -47,10 +45,10 @@ Http {
             Form {
                 action: "./javascript.qml"
                 method: "POST"
-                Input { id: source; _id: "source"; type: "text"; name: "source"; value: root.source.length > 0 ? root.source : "QML" }
+                Input { id: source; _id: "source"; type: "text"; name: "source"; value: http.source.length > 0 ? http.source : "QML" }
                 Input { type: "submit"; value: "Exec on server side" }
                 Button { text: "Exec on client side"; onclick: "document.getElementById('result').innerHTML = reverse(document.getElementById('source').value); return false;" }
-                P { id: result; _id: "result"; text: Script.reverse(root.source) }
+                P { id: result; _id: "result"; text: Script.reverse(http.source) }
             }
         }
     }

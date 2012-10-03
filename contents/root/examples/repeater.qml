@@ -25,33 +25,26 @@
  */
 
 import QtQuick 2.0
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import Silk.Utils 1.0
 
-Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+Html {
+    Head {
+        Title { id: title; text: "repeater" }
+    }
 
-    Html {
-        Head {
-            Title { id: title; text: "repeater" }
-        }
-
-        Body {
-            H1 { text: title.text }
-            Ul {
-                Repeater {
-                    model: 10
-                    Component { Li { text: model.modelData } }
-                }
+    Body {
+        H1 { text: title.text }
+        Ul {
+            Repeater {
+                model: 10
+                Component { Li { text: model.modelData } }
             }
-            Ul {
-                Repeater {
-                    model: ['abc', 'def', 'ghi']
-                    Component { Li { text: model.modelData } }
-                }
+        }
+        Ul {
+            Repeater {
+                model: ['abc', 'def', 'ghi']
+                Component { Li { text: model.modelData } }
             }
         }
     }

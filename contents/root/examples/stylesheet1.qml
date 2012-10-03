@@ -24,31 +24,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
-import Silk.CSS 2.1
+import Silk.HTML 5.0
+import Silk.CSS 3.0
 
-Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
-
-    Html {
-        Head {
-            Title { id: title; text: "file" }
-            Style {
-                type: "text/css"
-                Comment {
-                    Rule {
-                        selector: "h1"
-                        color: "red"
-                    }
+Html {
+    Head {
+        Title { id: title; text: "file" }
+        Style {
+            type: "text/css"
+            Comment {
+                Rule {
+                    selector: "h1"
+                    color: "red"
                 }
             }
         }
+    }
 
-        Body {
-            H1 { text: title.text }
-        }
+    Body {
+        H1 { text: title.text }
     }
 }

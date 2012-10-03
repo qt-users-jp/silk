@@ -25,13 +25,11 @@
  */
 
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import "./components"
 
 Http {
     id: http
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
     property string userName
 

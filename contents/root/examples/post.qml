@@ -25,15 +25,15 @@
  */
 
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import 'reverse.js' as Script
 
 Http {
     id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
     property string source: root.data.indexOf("=") > 0 ? decodeURIComponent(root.data.substring(root.data.indexOf("=") + 1).replace('+', ' ')) : ''
+
+    DocType {}
     Html {
         Head {
             Title { id: title; text: "post" }

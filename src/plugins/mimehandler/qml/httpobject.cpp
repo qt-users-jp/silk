@@ -69,7 +69,7 @@ HttpObject::HttpObject(QObject *parent)
     : SilkAbstractHttpObject(parent)
     , m_loading(false)
     , m_status(200)
-    , m_escape(false)
+    , m_escapeHTML(false)
 {
 }
 
@@ -83,21 +83,20 @@ void HttpObject::setFiles(const QList<HttpFileData *> &files)
     m_files = files;
 }
 
-QByteArray HttpObject::out() const
+QByteArray HttpObject::out()
 {
     QByteArray ret;
-    foreach (const QObject *child, contentsList()) {
-        const SilkAbstractHttpObject *object = qobject_cast<const SilkAbstractHttpObject *>(child);
+    foreach (QObject *child, contentsList()) {
+        SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
         if (object && object->enabled()) {
+            if (!m_responseHeader.contains("Content-Type")) {
+                QVariant contentType = object->property("contentType");
+                if (!contentType.isNull()) {
+                    m_responseHeader.insert(QLatin1String("Content-Type"), contentType);
+                }
+            }
             ret.append(object->out());
         }
-    }
-    if (m_escape) {
-        QString str = QString::fromUtf8(ret);
-        str.replace("&", "&amp;");
-        str.replace("<", "&lt;");
-        str.replace(">", "&gt;");
-        ret = str.toUtf8();
     }
     return ret;
 }

@@ -26,16 +26,15 @@
 
 import QtQuick 2.0
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import Silk.Utils 1.0
 import "./components"
 
 Http {
     id: http
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
     property var cookies: http.requestCookies
+
     UserInput {
         id: input
 

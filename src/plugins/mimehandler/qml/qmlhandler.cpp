@@ -56,7 +56,7 @@ public:
     void load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message);
 private:
     void exec(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
-    void close(HttpObject *http);
+    void close(SilkAbstractHttpObject *http);
 
 private slots:
     void loadingChanged(bool loading);
@@ -71,9 +71,9 @@ private:
     QMap<QObject*, QHttpRequest*> component2request;
     QMap<QObject*, QHttpReply*> component2reply;
     QMap<QObject*, QString> component2message;
-    QMap<QObject*, HttpObject*> component2http;
-    QMap<QObject*, QHttpRequest*> http2request;
-    QMap<QObject*, QHttpReply*> http2reply;
+    QMap<QObject*, SilkAbstractHttpObject*> component2object;
+    QMap<QObject*, QHttpRequest*> object2request;
+    QMap<QObject*, QHttpReply*> object2reply;
 };
 
 QmlHandler::Private::Private(QmlHandler *parent)
@@ -166,94 +166,125 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         connect(component, SIGNAL(statusChanged(QQmlComponent::Status)), this, SLOT(statusChanged()), Qt::UniqueConnection);
         break;
     case QQmlComponent::Ready: {
-        HttpObject *http = qobject_cast<HttpObject *>(component->create());
+        SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject*>(component->create());
+        if (!object) {
+            emit q->error(403, request, reply, request->url().toString());
+            return;
+        }
         if (!cache)
-            connect(http, SIGNAL(destroyed()), this, SLOT(clearQmlCache()), Qt::QueuedConnection);
-        QCoreApplication::processEvents();
-        http->remoteAddress(request->remoteAddress());
-        http->method(QString::fromLatin1(request->method()));
-        QUrl url(request->url());
-        QString query(url.query());
-        url.setQuery(QString());
-        http->scheme(url.scheme());
-        http->host(url.host());
-        http->path(url.path());
-        http->query(query);
-        http->data(QString(request->readAll()));
-        QList<HttpFileData *> files;
-        foreach (QHttpFileData *file, request->files()) {
-            files.append(new HttpFileData(file, this));
-        }
-        http->setFiles(files);
+            connect(object, SIGNAL(destroyed()), this, SLOT(clearQmlCache()), Qt::QueuedConnection);
 
-        QVariantMap requestHeader;
-        foreach (const QByteArray &key, request->rawHeaderList()) {
-            requestHeader.insert(QString(key), QString(request->rawHeader(key)));
-        }
-        http->requestHeader(requestHeader);
+        HttpObject *http = qobject_cast<HttpObject *>(object);
+        if (http) {
+            QCoreApplication::processEvents();
+            http->remoteAddress(request->remoteAddress());
+            http->method(QString::fromLatin1(request->method()));
+            QUrl url(request->url());
+            QString query(url.query());
+            url.setQuery(QString());
+            http->scheme(url.scheme());
+            http->host(url.host());
+            http->path(url.path());
+            http->query(query);
+            http->data(QString(request->readAll()));
+            QList<HttpFileData *> files;
+            foreach (QHttpFileData *file, request->files()) {
+                files.append(new HttpFileData(file, this));
+            }
+            http->setFiles(files);
 
-        QVariantMap cookies;
-        foreach (const QNetworkCookie &cookie, request->cookies()) {
-            QVariantMap c;
-            c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
-            c.insert(QLatin1String("expires"), cookie.expirationDate());
-            c.insert(QLatin1String("domain"), cookie.domain());
-            c.insert(QLatin1String("path"), cookie.path());
-            c.insert(QLatin1String("secure"), cookie.isSecure());
-            c.insert(QLatin1String("session"), cookie.isSessionCookie());
-            cookies.insert(QString::fromUtf8(cookie.name()), c);
-        }
-        http->requestCookies(cookies);
+            QVariantMap requestHeader;
+            foreach (const QByteArray &key, request->rawHeaderList()) {
+                requestHeader.insert(QString(key), QString(request->rawHeader(key)));
+            }
+            http->requestHeader(requestHeader);
 
-        if (!message.isEmpty()) http->message(message);
-        QCoreApplication::processEvents();
-        QMetaObject::invokeMethod(http, "ready");
+            QVariantMap cookies;
+            foreach (const QNetworkCookie &cookie, request->cookies()) {
+                QVariantMap c;
+                c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
+                c.insert(QLatin1String("expires"), cookie.expirationDate());
+                c.insert(QLatin1String("domain"), cookie.domain());
+                c.insert(QLatin1String("path"), cookie.path());
+                c.insert(QLatin1String("secure"), cookie.isSecure());
+                c.insert(QLatin1String("session"), cookie.isSessionCookie());
+                cookies.insert(QString::fromUtf8(cookie.name()), c);
+            }
+            http->requestCookies(cookies);
 
-        component2http.insert(component, http);
-        http2request.insert(http, request);
-        http2reply.insert(http, reply);
-        if (!http->loading()) {
-            close(http);
+            if (!message.isEmpty()) http->message(message);
+            QCoreApplication::processEvents();
+            QMetaObject::invokeMethod(http, "ready");
+
+            component2object.insert(component, object);
+            object2request.insert(object, request);
+            object2reply.insert(object, reply);
+            if (!http->loading()) {
+                close(http);
+            } else {
+                connect(http, SIGNAL(loadingChanged(bool)), this, SLOT(loadingChanged(bool)));
+            }
         } else {
-            connect(http, SIGNAL(loadingChanged(bool)), this, SLOT(loadingChanged(bool)));
+            if (object->property("contentType").isValid()) {
+                component2object.insert(component, object);
+                object2request.insert(object, request);
+                object2reply.insert(object, reply);
+                close(object);
+            } else {
+                q->emit error(403, request, reply, request->url().toString());
+            }
         }
+
+
         break; }
     }
 }
 
-void QmlHandler::Private::close(HttpObject *http)
+void QmlHandler::Private::close(SilkAbstractHttpObject *object)
 {
-    if (http2request.contains(http) && http2reply.contains(http)) {
-        QHttpRequest *request = http2request.take(http);
-        QHttpReply *reply = http2reply.take(http);
-        reply->setStatus(http->status());
+    if (object2request.contains(object) && object2reply.contains(object)) {
+        QByteArray out = object->out();
 
-        QVariantMap header = http->responseHeader();
-        foreach (const QString &key, header.keys()) {
-            QString value = header.value(key).toString();
-            reply->setRawHeader(key.toUtf8(), value.toUtf8());
-        }
+        QHttpRequest *request = object2request.take(object);
+        QHttpReply *reply = object2reply.take(object);
 
-        QList<QNetworkCookie> cookies;
-        foreach (const QString &name, http->responseCookies().keys()) {
-            QVariantMap c = http->responseCookies().value(name).toMap();
-            QNetworkCookie cookie;
-            cookie.setName(name.toUtf8());
-            if (c.contains("value")) cookie.setValue(c.value("value").toString().toUtf8());
-            if (c.contains("expires")) cookie.setExpirationDate(c.value("expires").toDateTime());
-            if (c.contains("domain")) cookie.setDomain(c.value("domain").toString());
-            if (c.contains("path")) cookie.setPath(c.value("path").toString());
-            if (c.contains("secure")) cookie.setSecure(c.value("secure").toBool());
-            cookies.append(cookie);
+        HttpObject *http = qobject_cast<HttpObject *>(object);
+        if (http) {
+            reply->setStatus(http->status());
+
+            QVariantMap header = http->responseHeader();
+            foreach (const QString &key, header.keys()) {
+                QString value = header.value(key).toString();
+                reply->setRawHeader(key.toUtf8(), value.toUtf8());
+            }
+
+            QList<QNetworkCookie> cookies;
+            foreach (const QString &name, http->responseCookies().keys()) {
+                QVariantMap c = http->responseCookies().value(name).toMap();
+                QNetworkCookie cookie;
+                cookie.setName(name.toUtf8());
+                if (c.contains("value")) cookie.setValue(c.value("value").toString().toUtf8());
+                if (c.contains("expires")) cookie.setExpirationDate(c.value("expires").toDateTime());
+                if (c.contains("domain")) cookie.setDomain(c.value("domain").toString());
+                if (c.contains("path")) cookie.setPath(c.value("path").toString());
+                if (c.contains("secure")) cookie.setSecure(c.value("secure").toBool());
+                cookies.append(cookie);
+            }
+            reply->setCookies(cookies);
+        } else {
+            reply->setStatus(200);
+            reply->setRawHeader("Content-Type", object->property("contentType").toByteArray());
+            QVariant docType = object->property("docType");
+            if (docType.isValid())
+                reply->write(docType.toByteArray());
         }
-        reply->setCookies(cookies);
 
         if (request->method() == "GET" || request->method() == "POST") {
-            reply->write(http->out());
+            reply->write(out);
         }
         reply->close();
     }
-    http->deleteLater();
+    object->deleteLater();
 }
 
 void QmlHandler::Private::loadingChanged(bool loading)
@@ -281,10 +312,10 @@ void QmlHandler::Private::componentDestroyed(QObject *object)
     if (component2message.contains(object)) {
         component2message.remove(object);
     }
-    if (component2http.contains(object)) {
-        HttpObject *http = component2http.take(object);
-        http2request.remove(http);
-        http2reply.remove(http);
+    if (component2object.contains(object)) {
+        SilkAbstractHttpObject *o = component2object.take(object);
+        object2request.remove(o);
+        object2reply.remove(o);
     }
 }
 

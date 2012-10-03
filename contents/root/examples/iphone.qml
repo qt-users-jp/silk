@@ -29,17 +29,15 @@ import Silk.HTML 4.01
 import Silk.CSS 2.1
 
 Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': root.mode != "css" ? 'text/html; charset=utf-8;' : 'text/css;'}
+    id: http
 
-    property string mode: typeof root.query !== 'undefined' && root.query.indexOf("=") > 0 ? decodeURIComponent(root.query.substring(root.query.indexOf("=") + 1).replace('+', ' ')) : ''
+    property string mode: typeof http.query !== 'undefined' && http.query.indexOf("=") > 0 ? decodeURIComponent(http.query.substring(http.query.indexOf("=") + 1).replace('+', ' ')) : ''
 
     Html {
-        enabled: root.mode != "css"
+        enabled: http.mode != "css"
         Head {
             Title { id: title; text: "Creating Single Element iPhone using CSS3" }
-            Link { rel: "stylesheet"; type: "text/css"; href: "%1?mode=%2".arg(root.path).arg("css") }
+            Link { rel: "stylesheet"; type: "text/css"; href: "%1?mode=%2".arg(http.path).arg("css") }
         }
 
         Body {
@@ -49,7 +47,7 @@ Http {
     }
 
     Rule {
-        enabled: root.mode == "css"
+        enabled: http.mode == "css"
         selector: "body"
         background: "#111"
 

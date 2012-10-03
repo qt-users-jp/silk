@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,21 +25,35 @@
  */
 
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
+import "../"
+import "../components/"
+import "./demos/"
 
-Http {
-    id: root
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+SilkPageTemplate {
+    id: http
 
-    Html {
-        Head {
-            Title { id: title; text: "comment" }
+    subtitle: "Hello HTTP"
+
+    Article {
+//        Header {
+//            H2 { text: "Hello QML" }
+//        }
+
+        Section {
+            H2 { text: "This is the minimal example in silk." }
+            PlainFile {
+                __class: 'qml'
+                __file: './demos/HelloHttpSource.qml'
+            }
         }
 
-        Body {
-            H1 { text: title.text }
-            Comment { text: "This is a comment" }
+        Footer {
+            Nav {
+                A { href: "/config.qml"; text: "Configuration" }
+                Text { text: " &lt;&lt; Previous / Next &gt;&gt; " }
+                A { href: "/examples/"; text: "Examples" }
+            }
         }
     }
 }

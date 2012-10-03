@@ -27,4 +27,7 @@
 #include "text.h"
 
 Text::Text(QObject *parent)
-    : SilkAbstractHttpObject(parent) {}
+    : SilkAbstractHttpObject(parent)
+    , m_contentType("text/plain; charset=utf-8;")
+{
+}

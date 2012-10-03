@@ -25,14 +25,12 @@
  */
 
 import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import Silk.HTML 5.0
 import Silk.Cache 1.0
 import "./components"
 
 Http {
     id: http
-    status: 200
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
 
     Cache { id: cache }
 
@@ -40,6 +38,7 @@ Http {
         id: input
 
         property string action
+        property string oauth_token
         property string oauth_verifier
 
         onSubmit: {
@@ -60,9 +59,9 @@ Http {
             default:
                 if (input.oauth_verifier.length > 0) {
                     http.loading = true;
-                    var session_data = cache.fetch(http.requestCookies.session_id.value);
-                    twitter.token = session_data.token;
-                    twitter.tokenSecret = session_data.tokenSecret;
+                    twitter.token = input.oauth_token;
+                    twitter.tokenSecret = cache.fetch(input.oauth_token);
+                    cache.remove(input.oauth_token);
                     twitter.accessToken(input.oauth_verifier);
                 } else {
                     if (typeof http.requestCookies.session_id !== 'undefined') {
@@ -102,29 +101,24 @@ Http {
     Twitter {
         id: twitter
         onAuthorize: {
-            var session_id = Silk.uuid();
-            var session_data = {};
-            session_data.token = twitter.token;
-            session_data.tokenSecret = twitter.tokenSecret;
-            cache.add(session_id, session_data);
-
-            var cookies = http.responseCookies;
-            cookies.session_id = { 'value': session_id };
-            http.responseCookies = cookies;
-
-            http.status = 301
-            http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': url}
-            http.loading = false
+            cache.add(twitter.token, twitter.tokenSecret);
+            http.status = 301;
+            http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': url};
+            http.loading = false;
         }
         onAuthorizedChanged: {
             if (authorized) {
-                var session_id = http.requestCookies.session_id.value;
-                var session_data = cache.fetch(session_id);
+                var session_id = Silk.uuid();
+                var session_data = {}
                 session_data.token = twitter.token;
                 session_data.tokenSecret = twitter.tokenSecret;
                 session_data.user_id = twitter.user_id;
                 session_data.screen_name = twitter.screen_name;
                 cache.add(session_id, session_data);
+
+                var cookies = http.responseCookies;
+                cookies.session_id = { 'value': session_id };
+                http.responseCookies = cookies;
 
                 http.status = 301
                 http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': '/examples/oauth.qml'}

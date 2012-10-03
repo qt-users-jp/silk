@@ -29,8 +29,6 @@ import Silk.HTML 5.0
 
 Http {
     id: root
-    status: 200
-    responseHeader: {"Content-Type": "text/html; charset=utf-8;"}
 
     property string subtitle
     default property alias contents: main.contents
@@ -41,7 +39,6 @@ Http {
     Comment { text: '[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]' } Text { text: "\n" }
     Comment { text: '[if IE 8]><html class="no-js lt-ie9"> <![endif]' } Text { text: "\n" }
     Comment { text: '[if gt IE 8]><!' } Text { text: '<html class="no-js">' } Comment { text: '<![endif]' } Text { text: "\n" }
-
     Head {
         Meta { charset: "utf-8" }
         Meta { http_equiv: "X-UA-Compatible"; content: "IE=edge,chrome=1" }

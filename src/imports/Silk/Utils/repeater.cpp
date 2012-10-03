@@ -37,7 +37,7 @@ Repeater::Repeater(QObject *parent)
 {
 }
 
-QByteArray Repeater::out() const
+QByteArray Repeater::out()
 {
     QByteArray ret;
     QVariantList list;

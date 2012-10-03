@@ -246,6 +246,9 @@ QString TableModel::Private::toSql(const QVariant &value)
     case QVariant::Int:
         return QString::number(value.toInt());
         break;
+    case QVariant::LongLong:
+        return QString::number(value.toLongLong());
+        break;
     case QVariant::Double:
         return QString::number(value.toDouble());
         break;
@@ -260,6 +263,7 @@ QString TableModel::Private::toSql(const QVariant &value)
         return value.toDateTime().toString("'yyyy-MM-dd hh:mm:ss'");
         break;
     default:
+        qDebug() << Q_FUNC_INFO << __LINE__ << value.type() << "is not handled here.";
         break;
     }
     return QString();
