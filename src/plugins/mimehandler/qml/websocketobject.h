@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,45 +24,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTPOBJECT_H
-#define HTTPOBJECT_H
+#ifndef WEBSOCKETOBJECT_H
+#define WEBSOCKETOBJECT_H
 
-#include <silkabstracthttpobject.h>
+#include <silkabstractobject.h>
+#include <qwebsocket.h>
 
-#include <QtCore/QUrl>
-
-class QHttpFileData;
-
-class HttpFileData : public QObject
+class WebSocketObject : public SilkAbstractObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
-    SILK_ADD_PROPERTY(const QString &, fileName, QString)
-    Q_PROPERTY(QString filePath READ filePath NOTIFY filePathChanged)
-    SILK_ADD_PROPERTY(const QString &, filePath, QString)
-    Q_PROPERTY(QString contentType READ contentType NOTIFY contentTypeChanged)
-    SILK_ADD_PROPERTY(const QString &, contentType, QString)
-public:
-    HttpFileData(QHttpFileData *data, QObject *parent = 0);
 
-    Q_INVOKABLE bool save(const QString &as) const;
-    Q_INVOKABLE bool remove();
-signals:
-    void fileNameChanged(const QString &fileName);
-    void filePathChanged(const QString &filePath);
-    void contentTypeChanged(const QString &contentType);
-
-private:
-    QHttpFileData *m_data;
-};
-
-class HttpObject : public SilkAbstractHttpObject
-{
-    Q_OBJECT
     Q_PROPERTY(QString remoteAddress READ remoteAddress NOTIFY remoteAddressChanged)
     SILK_ADD_PROPERTY(const QString &, remoteAddress, QString)
-    Q_PROPERTY(QString method READ method NOTIFY methodChanged)
-    SILK_ADD_PROPERTY(const QString &, method, QString)
     Q_PROPERTY(QString scheme READ scheme NOTIFY schemeChanged)
     SILK_ADD_PROPERTY(const QString &, scheme, QString)
     Q_PROPERTY(QString host READ host NOTIFY hostChanged)
@@ -73,9 +46,6 @@ class HttpObject : public SilkAbstractHttpObject
     SILK_ADD_PROPERTY(const QString &, path, QString)
     Q_PROPERTY(QString query READ query NOTIFY queryChanged)
     SILK_ADD_PROPERTY(const QString &, query, QString)
-    Q_PROPERTY(QString data READ data NOTIFY dataChanged)
-    SILK_ADD_PROPERTY(const QString &, data, QString)
-    Q_PROPERTY(QQmlListProperty<HttpFileData> files READ files)
     Q_PROPERTY(QVariant requestHeader READ requestHeader NOTIFY requestHeaderChanged)
     SILK_ADD_PROPERTY(const QVariant &, requestHeader, QVariant)
     Q_PROPERTY(QVariantMap requestCookies READ requestCookies NOTIFY requestCookiesChanged)
@@ -83,45 +53,32 @@ class HttpObject : public SilkAbstractHttpObject
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     SILK_ADD_PROPERTY(const QString &, message, QString)
 
-    Q_PROPERTY(bool loading READ loading WRITE loading NOTIFY loadingChanged)
-    SILK_ADD_PROPERTY(bool, loading, bool)
-    Q_PROPERTY(int status READ status WRITE status NOTIFY statusChanged)
-    SILK_ADD_PROPERTY(int, status, int)
-    Q_PROPERTY(QVariantMap responseHeader READ responseHeader WRITE responseHeader NOTIFY responseHeaderChanged)
-    SILK_ADD_PROPERTY(const QVariantMap &, responseHeader, QVariantMap)
-    Q_PROPERTY(QVariantMap responseCookies READ responseCookies WRITE responseCookies NOTIFY responseCookiesChanged)
-    SILK_ADD_PROPERTY(const QVariantMap &, responseCookies, QVariantMap)
-    Q_PROPERTY(bool escapeHTML READ escapeHTML WRITE escapeHTML NOTIFY escapeHTMLChanged)
-    SILK_ADD_PROPERTY(bool, escapeHTML, bool)
 public:
-    explicit HttpObject(QObject *parent = 0);
+    explicit WebSocketObject(QObject *parent = 0);
 
-    virtual QByteArray out();
+    void setWebSocket(QWebSocket *socket);
+public slots:
+    void accept(const QByteArray &protocol = QByteArray());
+    void send(const QByteArray &data);
 
-    QQmlListProperty<HttpFileData> files();
-    void setFiles(const QList<HttpFileData *> &files);
 signals:
+    void message(const QVariantMap &message);
     void ready();
     void remoteAddressChanged(const QString &remoteAddress);
-    void methodChanged(const QString &method);
     void schemeChanged(const QString &scheme);
     void hostChanged(const QString &host);
     void portChanged(int port);
     void pathChanged(const QString &path);
     void queryChanged(const QString &query);
-    void dataChanged(const QString &data);
-    void filesChanged(const QList<HttpFileData *> &files);
     void requestHeaderChanged(const QVariant &requestHeader);
     void requestCookiesChanged(const QVariantMap &requestHeader);
     void messageChanged(const QString &message);
-    void loadingChanged(bool loading);
-    void statusChanged(int status);
-    void responseHeaderChanged(const QVariantMap &responseHeader);
-    void responseCookiesChanged(const QVariantMap &responseHeader);
-    void escapeHTMLChanged(bool escapeHTML);
+
+private slots:
+    void onmessage(const QByteArray &msg);
 
 private:
-    QList<HttpFileData *> m_files;
+    QWebSocket *m_socket;
 };
 
-#endif // HTTPOBJECT_H
+#endif // WEBSOCKETOBJECT_H

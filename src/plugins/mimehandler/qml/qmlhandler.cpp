@@ -40,11 +40,13 @@
 
 #include <qhttprequest.h>
 #include <qhttpreply.h>
+#include <qwebsocket.h>
 
 #include <silkconfig.h>
 #include <silkimportsinterface.h>
 
 #include "httpobject.h"
+#include "websocketobject.h"
 #include "silk.h"
 
 class QmlHandler::Private : public QObject
@@ -54,8 +56,10 @@ public:
     Private(QmlHandler *parent);
 
     void load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message);
+    void load(const QUrl &url, QWebSocket *socket, const QString &message);
 private:
     void exec(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
+    void exec(QQmlComponent *component, QWebSocket *socket, const QString &message = QString());
     void close(SilkAbstractHttpObject *http);
 
 private slots:
@@ -70,8 +74,9 @@ private:
     QMap<QObject*, QString> component2root;
     QMap<QObject*, QHttpRequest*> component2request;
     QMap<QObject*, QHttpReply*> component2reply;
+    QMap<QObject*, QWebSocket*> component2socket;
     QMap<QObject*, QString> component2message;
-    QMap<QObject*, SilkAbstractHttpObject*> component2object;
+    QMap<QObject*, QObject*> component2object;
     QMap<QObject*, QHttpRequest*> object2request;
     QMap<QObject*, QHttpReply*> object2reply;
 };
@@ -86,6 +91,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
     qmlRegisterType<SilkAbstractHttpObject>();
     qmlRegisterType<HttpObject>("Silk.HTTP", 1, 1, "Http");
     qmlRegisterUncreatableType<HttpFileData>("Silk.HTTP", 1, 1, "HttpFileData", QLatin1String("readonly"));
+    qmlRegisterType<WebSocketObject>("Silk.WebSocket", 1, 0, "WebSocket");
 
     QDir appDir = QCoreApplication::applicationDirPath();
     QDir importsDir = appDir;
@@ -184,6 +190,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
             url.setQuery(QString());
             http->scheme(url.scheme());
             http->host(url.host());
+            http->port(url.port());
             http->path(url.path());
             http->query(query);
             http->data(QString(request->readAll()));
@@ -298,7 +305,11 @@ void QmlHandler::Private::loadingChanged(bool loading)
 void QmlHandler::Private::statusChanged()
 {
     QQmlComponent *component = qobject_cast<QQmlComponent *>(sender());
-    exec(component, component2request.take(component), component2reply.take(component), component2message.take(component));
+    if (component2request.contains(component) && component2reply.contains(component)) {
+        exec(component, component2request.take(component), component2reply.take(component), component2message.take(component));
+    } else if (component2socket.contains(component)) {
+        exec(component, component2socket.take(component), component2message.take(component));
+    }
 }
 
 void QmlHandler::Private::componentDestroyed(QObject *object)
@@ -309,11 +320,14 @@ void QmlHandler::Private::componentDestroyed(QObject *object)
     if (component2reply.contains(object)) {
         component2reply.remove(object);
     }
+    if (component2socket.contains(object)) {
+        component2socket.remove(object);
+    }
     if (component2message.contains(object)) {
         component2message.remove(object);
     }
     if (component2object.contains(object)) {
-        SilkAbstractHttpObject *o = component2object.take(object);
+        QObject *o = component2object.take(object);
         object2request.remove(o);
         object2reply.remove(o);
     }
@@ -322,6 +336,78 @@ void QmlHandler::Private::componentDestroyed(QObject *object)
 void QmlHandler::Private::clearQmlCache()
 {
     engine.trimComponentCache();
+}
+
+void QmlHandler::Private::load(const QUrl &url, QWebSocket *socket, const QString &message)
+{
+    QQmlComponent *component = new QQmlComponent(&engine, url, socket);
+    connect(component, SIGNAL(destroyed(QObject *)), this, SLOT(componentDestroyed(QObject *)), Qt::QueuedConnection);
+    exec(component, socket, message);
+}
+
+void QmlHandler::Private::exec(QQmlComponent *component, QWebSocket *socket, const QString &message)
+{
+    static bool cache = SilkConfig::value("cache.qml").toBool();
+    switch (component->status()) {
+    case QQmlComponent::Null:
+        // TODO: any check?
+        break;
+    case QQmlComponent::Error:
+        qDebug() << component->errorString();
+        emit q->error(500, socket, component->errorString());
+        break;
+    case QQmlComponent::Loading:
+        component2socket.insert(component, socket);
+        component2message.insert(component, message);
+        connect(component, SIGNAL(statusChanged(QQmlComponent::Status)), this, SLOT(statusChanged()), Qt::UniqueConnection);
+        break;
+    case QQmlComponent::Ready: {
+        WebSocketObject *object = qobject_cast<WebSocketObject*>(component->create());
+        if (!object) {
+            emit q->error(403, socket, socket->url().toString());
+            return;
+        }
+        if (!cache)
+            connect(object, SIGNAL(destroyed()), this, SLOT(clearQmlCache()), Qt::QueuedConnection);
+
+        object->setWebSocket(socket);
+        QCoreApplication::processEvents();
+        object->remoteAddress(socket->remoteAddress());
+        QUrl url(socket->url());
+        QString query(url.query());
+        url.setQuery(QString());
+        object->scheme(url.scheme());
+        object->host(url.host());
+        object->port(url.port());
+        object->path(url.path());
+        object->query(query);
+
+        QVariantMap requestHeader;
+        foreach (const QByteArray &key, socket->rawHeaderList()) {
+            requestHeader.insert(QString(key), QString(socket->rawHeader(key)));
+        }
+        object->requestHeader(requestHeader);
+
+        QVariantMap cookies;
+        foreach (const QNetworkCookie &cookie, socket->cookies()) {
+            QVariantMap c;
+            c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
+            c.insert(QLatin1String("expires"), cookie.expirationDate());
+            c.insert(QLatin1String("domain"), cookie.domain());
+            c.insert(QLatin1String("path"), cookie.path());
+            c.insert(QLatin1String("secure"), cookie.isSecure());
+            c.insert(QLatin1String("session"), cookie.isSessionCookie());
+            cookies.insert(QString::fromUtf8(cookie.name()), c);
+        }
+        object->requestCookies(cookies);
+
+        if (!message.isEmpty()) object->message(message);
+        QCoreApplication::processEvents();
+        QMetaObject::invokeMethod(object, "ready");
+
+        component2object.insert(component, object);
+        break; }
+    }
 }
 
 QmlHandler::QmlHandler(QObject *parent)
@@ -346,6 +432,27 @@ bool QmlHandler::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply,
             emit error(403, request, reply, request->url().toString());
         } else {
             d->load(url, request, reply, message);
+        }
+    }
+    return true;
+}
+
+bool QmlHandler::load(const QUrl &url, QWebSocket *socket, const QString &message)
+{
+    QFileInfo fileInfo;
+    if (url.scheme() == "qrc") {
+        fileInfo = QFileInfo(url.toString().mid(3));
+    } else {
+        fileInfo = QFileInfo(url.toLocalFile());
+    }
+
+    if (fileInfo.fileName().at(0).isUpper()) {
+        return false;
+    } else {
+        if (!fileInfo.isReadable()){
+            emit error(403, socket, socket->url().toString());
+        } else {
+            d->load(url, socket, message);
         }
     }
     return true;

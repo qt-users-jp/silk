@@ -38,6 +38,7 @@
 
 #include <qhttprequest.h>
 #include <qhttpreply.h>
+#include <qwebsocket.h>
 
 #include <silkmimehandlerinterface.h>
 #include <silkabstractmimehandler.h>
@@ -52,13 +53,17 @@ public:
 
 private slots:
     void incomingConnection(QHttpRequest *request, QHttpReply *reply);
+    void incomingConnection(QWebSocket *socket);
 
 private:
-    QString documentRootForRequest(const QHttpRequest *request) const;
+    QString documentRootForRequest(const QUrl &url) const;
     void load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void loadFile(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply);
     void loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
+    void load(const QFileInfo &fileInfo, QWebSocket *socket, const QString &message = QString());
+    void loadUrl(const QUrl &url, QWebSocket *socket, const QString &message = QString());
+    void error(int statusCode, QWebSocket *socket, const QString &message = QString());
 
 private:
     SilkServer *q;
@@ -133,6 +138,7 @@ SilkServer::Private::Private(SilkServer *parent)
     }
 
     connect(q, SIGNAL(incomingConnection(QHttpRequest *, QHttpReply *)), this, SLOT(incomingConnection(QHttpRequest *, QHttpReply *)));
+    connect(q, SIGNAL(incomingConnection(QWebSocket *)), this, SLOT(incomingConnection(QWebSocket *)));
 
     QString listenAddress = SilkConfig::value("listen.address").toString();
     QHostAddress address;
@@ -164,11 +170,11 @@ SilkServer::Private::Private(SilkServer *parent)
     }
 }
 
-QString SilkServer::Private::documentRootForRequest(const QHttpRequest *request) const
+QString SilkServer::Private::documentRootForRequest(const QUrl &url) const
 {
     QString ret(":/contents");
-    if (documentRoots.contains(request->url().host())) {
-        ret = documentRoots.value(request->url().host());
+    if (documentRoots.contains(url.host())) {
+        ret = documentRoots.value(url.host());
     } else if (documentRoots.contains("*")) {
         ret = documentRoots.value("*");
     }
@@ -179,7 +185,7 @@ void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *
 {
 //    qDebug() << Q_FUNC_INFO << __LINE__ << request->url();
 
-    QString documentRoot = documentRootForRequest(request);
+    QString documentRoot = documentRootForRequest(request->url());
 
     if (documentRoot.indexOf("://") > 0) {
         QUrl url(documentRoot);
@@ -204,6 +210,37 @@ void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *
             load(fileInfo, request, reply);
         } else {
             error(404, request, reply, request->url().toString());
+        }
+    }
+}
+
+void SilkServer::Private::incomingConnection(QWebSocket *socket)
+{
+    QString documentRoot = documentRootForRequest(socket->url());
+
+    if (documentRoot.indexOf("://") > 0) {
+        QUrl url(documentRoot);
+        url.setPath(socket->url().path());
+        loadUrl(url, socket);
+    } else {
+        QString fileName(documentRoot + socket->url().path());
+        QFileInfo fileInfo(fileName);
+        if (fileInfo.isDir()) {
+            if (socket->url().path().endsWith("/")) {
+                fileName = fileName + QLatin1String("/index.qml");
+                fileInfo = QFileInfo(fileName);
+            } else {
+                QUrl url(socket->url());
+                url.setPath(url.path() + "/");
+                error(301, socket, url.toString());
+                return;
+            }
+        }
+
+        if (fileInfo.exists()) {
+            load(fileInfo, socket);
+        } else {
+            error(404, socket, socket->url().toString());
         }
     }
 }
@@ -262,12 +299,54 @@ void SilkServer::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpR
 
 void SilkServer::Private::error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    QString documentRoot = documentRootForRequest(request);
+    QString documentRoot = documentRootForRequest(request->url());
     if (QFile::exists(QString::fromUtf8("%1/errors/%2.qml").arg(documentRoot).arg(statusCode))) {
         load(QFileInfo(QString::fromUtf8("%1/errors/%2.qml").arg(documentRoot).arg(statusCode)), request, reply, message);
     } else {
         load(QFileInfo(QString::fromUtf8(":/errors/%2.qml").arg(statusCode)), request, reply, message);
     }
+}
+
+void SilkServer::Private::load(const QFileInfo &fileInfo, QWebSocket *socket, const QString &message)
+{
+    QMimeType mimeType = mimeDatabase.mimeTypeForFile(fileInfo.fileName(), QMimeDatabase::MatchExtension);
+    QString mime = mimeType.name();
+    if (mimeHandlers.contains(mime)) {
+        QUrl url;
+        if (fileInfo.filePath().startsWith(":/")) {
+            url = QUrl("qrc" + fileInfo.absoluteFilePath());
+        } else {
+            url = QUrl::fromLocalFile(fileInfo.absoluteFilePath());
+        }
+        bool ret = mimeHandlers[mime]->load(url, socket, message);
+        if (!ret) {
+            error(401, socket, socket->url().toString());
+        }
+    } else {
+        error(401, socket, socket->url().toString());
+    }
+}
+
+void SilkServer::Private::loadUrl(const QUrl &url, QWebSocket *socket, const QString &message)
+{
+    qDebug() << Q_FUNC_INFO << __LINE__ << url;
+    bool ret = false;
+    if (protocolHandlers.contains(url.scheme())) {
+        ret = protocolHandlers[url.scheme()]->load(url, socket, message);
+    }
+    if (!ret) {
+        error(403, socket, socket->url().toString());
+    }
+    qDebug() << Q_FUNC_INFO << __LINE__;
+}
+
+void SilkServer::Private::error(int statusCode, QWebSocket *socket, const QString &message)
+{
+    // TODO: error handling
+    qDebug() << Q_FUNC_INFO << __LINE__ << statusCode << message;
+//    socket->close();
+    socket->deleteLater();
+    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
 SilkServer::SilkServer(QObject *parent)

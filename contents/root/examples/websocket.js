@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,26 +24,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKABSTRACTHTTPOBJECT_H
-#define SILKABSTRACTHTTPOBJECT_H
+var ws;
 
-#include "silkglobal.h"
-#include "silkabstractobject.h"
+function addItem(text) {
+    var ul = document.getElementById("ul");
+    var li = document.createElement("li");
+    li.innerHTML = text;
+    if (ul.children.length > 0) {
+        ul.insertBefore(li, ul.children[0]);
+    } else {
+        ul.appendChild(li);
+    }
+}
 
-class SILK_EXPORT SilkAbstractHttpObject : public SilkAbstractObject
-{
-    Q_OBJECT
+function connect(url) {
+    if ("WebSocket" in window) {
+        ws = new WebSocket(url, ["chat", "superchat"]);
+    } else if ("MozWebSocket" in window) {
+        ws = new MozWebSocket(url, ["chat", "superchat"]);
+    }
+    ws.onopen = function() {
+        addItem("connected");
+    };
+    ws.onclose = function(event) {
+        addItem("disconnected");
+    };
+    ws.onerror = function(evt) {
+        addItem("error");
+    };
+    ws.onmessage = function(message) {
+        addItem("received: " + message.data);
+    };
+}
 
-    Q_PROPERTY(bool enabled READ enabled WRITE enabled NOTIFY enabledChanged)
-    SILK_ADD_PROPERTY(bool, enabled, bool)
-public:
-    explicit SilkAbstractHttpObject(QObject *parent = 0);
-
-    virtual QByteArray out() = 0;
-
-signals:
-    void enabledChanged(bool enabled);
-};
-
-
-#endif // SILKABSTRACTHTTPOBJECT_H
+function send(message) {
+    ws.send(message.value);
+    addItem('sent: ' + message.value);
+    message.value = '';
+    message.focus();
+}

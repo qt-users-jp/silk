@@ -7,9 +7,11 @@ HEADERS += \
     qmlplugin.h \
     qmlhandler.h \
     httpobject.h \
-    silk.h
+    silk.h \
+    websocketobject.h
 
 SOURCES += \
     qmlhandler.cpp \
     httpobject.cpp \
-    silk.cpp
+    silk.cpp \
+    websocketobject.cpp

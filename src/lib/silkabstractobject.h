@@ -32,6 +32,17 @@
 
 #include "silkglobal.h"
 
+#define SILK_ADD_PROPERTY(type, name, type2) \
+public: \
+    type name() const { return m_##name; } \
+    void name(type name) { \
+        if (m_##name == name) return; \
+        m_##name = name; \
+        emit name##Changed(name); \
+    } \
+private: \
+    type2 m_##name;
+
 class SILK_EXPORT SilkAbstractObject : public QObject
 {
     Q_OBJECT

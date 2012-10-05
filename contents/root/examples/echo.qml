@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,26 +24,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKABSTRACTHTTPOBJECT_H
-#define SILKABSTRACTHTTPOBJECT_H
+import Silk.WebSocket 1.0
 
-#include "silkglobal.h"
-#include "silkabstractobject.h"
-
-class SILK_EXPORT SilkAbstractHttpObject : public SilkAbstractObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(bool enabled READ enabled WRITE enabled NOTIFY enabledChanged)
-    SILK_ADD_PROPERTY(bool, enabled, bool)
-public:
-    explicit SilkAbstractHttpObject(QObject *parent = 0);
-
-    virtual QByteArray out() = 0;
-
-signals:
-    void enabledChanged(bool enabled);
-};
-
-
-#endif // SILKABSTRACTHTTPOBJECT_H
+WebSocket {
+    onReady: accept()
+    onMessage: send(message.data);
+}

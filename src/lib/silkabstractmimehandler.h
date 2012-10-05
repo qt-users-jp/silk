@@ -34,6 +34,7 @@
 
 class QHttpRequest;
 class QHttpReply;
+class QWebSocket;
 
 class SILK_EXPORT SilkAbstractMimeHandler : public QObject
 {
@@ -42,9 +43,11 @@ public:
     explicit SilkAbstractMimeHandler(QObject *parent = 0);
     
     virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString()) = 0;
-    
+    virtual bool load(const QUrl &url, QWebSocket *socket, const QString &message = QString()) { return false; }
+
 signals:
     void error(int code, QHttpRequest *request, QHttpReply *reply, const QString &errorString = QString());
+    void error(int code, QWebSocket *socket, const QString &errorString = QString());
 };
 
 #endif // SILKABSTRACTMIMEHANDLER_H

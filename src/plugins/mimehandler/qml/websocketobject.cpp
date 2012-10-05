@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,26 +24,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKABSTRACTHTTPOBJECT_H
-#define SILKABSTRACTHTTPOBJECT_H
+#include "websocketobject.h"
 
-#include "silkglobal.h"
-#include "silkabstractobject.h"
-
-class SILK_EXPORT SilkAbstractHttpObject : public SilkAbstractObject
+WebSocketObject::WebSocketObject(QObject *parent)
+    : SilkAbstractObject(parent)
+    , m_socket(0)
 {
-    Q_OBJECT
+}
 
-    Q_PROPERTY(bool enabled READ enabled WRITE enabled NOTIFY enabledChanged)
-    SILK_ADD_PROPERTY(bool, enabled, bool)
-public:
-    explicit SilkAbstractHttpObject(QObject *parent = 0);
+void WebSocketObject::setWebSocket(QWebSocket *socket)
+{
+    m_socket = socket;
+    connect(socket, SIGNAL(message(QByteArray)), this, SLOT(onmessage(QByteArray)));
+}
 
-    virtual QByteArray out() = 0;
+void WebSocketObject::accept(const QByteArray &protocol)
+{
+    m_socket->accept(protocol);
+}
 
-signals:
-    void enabledChanged(bool enabled);
-};
+void WebSocketObject::send(const QByteArray &data)
+{
+    m_socket->send(data);
+}
 
-
-#endif // SILKABSTRACTHTTPOBJECT_H
+void WebSocketObject::onmessage(const QByteArray &msg)
+{
+    QVariantMap map;
+    map.insert("data", msg);
+    emit message(map);
+}

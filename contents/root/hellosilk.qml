@@ -48,6 +48,7 @@ SilkPageTemplate {
             }
             P { text: "silk generates following HTML" }
             PlainFile {
+                Text { text: '&lt;!DOCTYPE html&gt;' }
                 HelloSource { escapeHTML: true }
             }
 

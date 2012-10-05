@@ -76,6 +76,11 @@ SilkPageTemplate {
                         Td { text: "&nbsp;" }
                     }
                     Tr {
+                        Td { text: "WebSocket" }
+                        Td { text: "Silk.WebSocket 1.0" }
+                        Td { A { href: "http://www.ietf.org/rfc/rfc6455.txt"; text: "WebSocket" } }
+                    }
+                    Tr {
                         Td { text: "JSON" }
                         Td { text: "Silk.JSON 1.0" }
                         Td { A { href: "http://www.ietf.org/rfc/rfc4627.txt"; text: "JSON" } }
