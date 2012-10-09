@@ -26,10 +26,16 @@
 
 import Silk.HTTP 1.1
 import Silk.HTML 5.0
+import Silk.Utils 1.0
 import "./components"
 
 Http {
     id: http
+
+    SilkConfig {
+        id: config
+        property variant websocket
+    }
 
     Html {
         Head {
@@ -38,7 +44,7 @@ Http {
         }
 
         Body {
-            onload: "connect('ws://%1:%2/examples/echo.qml'); document.getElementById('message').focus();".arg(http.host).arg(http.port)
+            onload: "connect('ws://%1:%2/examples/echo.qml'); document.getElementById('message').focus();".arg(typeof config.websocket.host !== 'undefined' ? config.websocket.host : http.host).arg(typeof config.websocket.port !== 'undefined' ? config.websocket.port : http.port)
             H1 { text: title.text }
             Form {
                 onsubmit: "send(document.getElementById('message')); return false;"

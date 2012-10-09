@@ -27,7 +27,6 @@
 import Silk.HTTP 1.1
 import Silk.HTML 5.0
 import Silk.Utils 1.0
-import "./components"
 
 Http {
     id: http
