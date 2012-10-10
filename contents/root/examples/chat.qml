@@ -43,7 +43,7 @@ Http {
 
     SilkConfig {
         id: config
-        property variant websocket: {"host": http.host, "port": http.port }
+        property variant websocket
     }
 
     Html {
@@ -53,7 +53,7 @@ Http {
         }
 
         Body {
-            onload: "connect('ws://%1:%2/examples/chatserver.qml')".arg(config.websocket.host).arg(config.websocket.port)
+            onload: "connect('ws://%1:%2/examples/chatserver.qml')".arg(typeof config.websocket.host !== 'undefined' ? config.websocket.host : http.host).arg(typeof config.websocket.port !== 'undefined' ? config.websocket.port : http.port)
             H1 { text: title.text }
 
             Form {
