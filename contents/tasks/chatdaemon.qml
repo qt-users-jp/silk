@@ -36,7 +36,7 @@ Server {
         switch (message.action) {
         case 'messages':
             if (sender !== null)
-                sender.respound({"action": "messages", "messages": root.messages});
+                sender.respond({"action": "messages", "messages": root.messages});
             break;
         case 'post': {
             var messages = root.messages;
@@ -46,7 +46,7 @@ Server {
             m.time = new Date();
             messages.unshift(m);
             root.messages = messages;
-            root.respound(message)
+            root.respond(message)
             break; }
 
         }

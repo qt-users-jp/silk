@@ -38,7 +38,7 @@ WebSocket {
     Client {
         id: client
         connectionName: 'websocketChatServer'
-        onRespound: {
+        onRespond: {
             var m = {};
             m.user = message.user;
             m.message = message.message;

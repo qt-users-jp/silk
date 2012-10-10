@@ -48,7 +48,7 @@ public:
 
 signals:
     void request(const QVariantMap &message, QObject *sender);
-    void respound(const QVariantMap &message);
+    void respond(const QVariantMap &message);
 
     void connectionNameChanged(const QString &connectionName);
 

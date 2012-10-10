@@ -43,5 +43,5 @@ void Client::request(const QVariantMap &message, QObject *sender)
 void Client::componentComplete()
 {
     server = Server::server(m_connectionName);
-    connect(server, SIGNAL(respound(QVariantMap)), this, SIGNAL(respound(QVariantMap)));
+    connect(server, SIGNAL(respond(QVariantMap)), this, SIGNAL(respond(QVariantMap)));
 }

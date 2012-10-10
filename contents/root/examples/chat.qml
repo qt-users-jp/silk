@@ -36,7 +36,7 @@ Http {
     Client {
         id: client
         connectionName: 'websocketChatServer'
-        onRespound: messages.model = message.messages;
+        onRespond: messages.model = message.messages;
     }
 
     onReady: {

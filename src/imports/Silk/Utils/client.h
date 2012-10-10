@@ -50,7 +50,7 @@ public slots:
     void request(const QVariantMap &message, QObject *sender = 0);
 
 signals:
-    void respound(const QVariantMap &message);
+    void respond(const QVariantMap &message);
 
     void connectionNameChanged(const QString &connectionName);
 
