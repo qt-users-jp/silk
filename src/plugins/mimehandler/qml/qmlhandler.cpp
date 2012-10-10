@@ -127,7 +127,6 @@ QmlHandler::Private::Private(QmlHandler *parent)
     }
 
     QVariantList tasks = SilkConfig::value("silk.tasks").toList();
-
     foreach (const QVariant &task, tasks) {
         QQmlComponent *component = new QQmlComponent(&engine, QUrl::fromLocalFile(task.toString()), this);
         switch (component->status()) {
@@ -135,13 +134,13 @@ QmlHandler::Private::Private(QmlHandler *parent)
             break;
         case QQmlComponent::Error:
             qDebug() << component->errorString();
-            QMetaObject::invokeMethod(q, "quit", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
             break;
         case QQmlComponent::Loading:
             break;
         case QQmlComponent::Ready: {
             QObject *app = component->create();
-            connect(app, SIGNAL(destroyed(QObject *)), q, SLOT(quit()), Qt::QueuedConnection);
+            connect(app, SIGNAL(destroyed(QObject *)), qApp, SLOT(quit()), Qt::QueuedConnection);
             break; }
         }
     }

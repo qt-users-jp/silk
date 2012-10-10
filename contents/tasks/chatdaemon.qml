@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,53 +24,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-function connect(url) {
-    if ("WebSocket" in window) {
-        ws = new WebSocket(url, ["chat"]);
-    } else if ("MozWebSocket" in window) {
-        ws = new MozWebSocket(url, ["chat"]);
-    }
-    ws.onopen = function() {
-        if (document.getElementById('name').value.length === 0) {
-            document.getElementById('name').focus();
-        } else {
-            document.getElementById('message').focus();
+import Silk.Utils 1.0
+
+Server {
+    id: root
+    connectionName: 'websocketChatServer'
+
+    property var messages: []
+
+    onRequest: {
+        switch (message.action) {
+        case 'messages':
+            if (sender !== null)
+                sender.respound({"action": "messages", "messages": root.messages});
+            break;
+        case 'post': {
+            var messages = root.messages;
+            var m = {};
+            m.user = message.user;
+            m.message = message.message;
+            m.time = new Date();
+            messages.unshift(m);
+            root.messages = messages;
+            root.respound(message)
+            break; }
+
         }
     }
-    ws.onmessage = function(message) {
-        addItem(JSON.parse(message.data));
-    }
-}
-
-function post() {
-    var input = document.getElementById('message');
-    if (document.getElementById('name').value.length === 0) {
-        document.getElementById('name').focus();
-    } else if (input.value.length === 0) {
-        input.focus();
-    } else {
-        var message = {};
-        message.action = "post";
-        message.user = document.getElementById('name').value;
-        message.message = input.value;
-        ws.send(JSON.stringify(message));
-        input.value = '';
-        input.focus();
-    }
-}
-
-function addItem(data) {
-    var dl = document.getElementById("dl");
-
-    var dd = document.createElement("dd");
-    dd.innerHTML = data.message
-    if (dl.children.length > 2) {
-        dl.insertBefore(dd, dl.children[2])
-    } else {
-        dl.appendChild(dd)
-    }
-
-    var dt = document.createElement("dt");
-    dt.innerHTML = data.user
-    dl.insertBefore(dt, dd)
 }

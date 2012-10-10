@@ -34,6 +34,8 @@
 
 #include "repeater.h"
 #include "config.h"
+#include "server.h"
+#include "client.h"
 
 class UtilsPlugin : public QObject, SilkImportsInterface
 {
@@ -45,6 +47,8 @@ public:
     {
         qmlRegisterType<Repeater>("Silk.Utils", 1, 0, "Repeater");
         qmlRegisterType<Config>("Silk.Utils", 1, 0, "SilkConfig");
+        qmlRegisterType<Server>("Silk.Utils", 1, 0, "Server");
+        qmlRegisterType<Client>("Silk.Utils", 1, 0, "Client");
     }
 };
 

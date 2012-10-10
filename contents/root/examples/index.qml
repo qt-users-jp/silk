@@ -234,6 +234,12 @@ SilkPageTemplate {
                         Li {
                             A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "chat.js" }
                         }
+                        Li {
+                            A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "chatserver.qml" }
+                        }
+                        Li {
+                            A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/tasks/%1".arg(text); text: "chatdaemon.qml" }
+                        }
                     }
                 }
                 Li {
