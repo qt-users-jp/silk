@@ -40,6 +40,14 @@ public:
 
     virtual void classBegin() {}
     virtual void componentComplete();
+
+    Q_INVOKABLE void update();
+
+private slots:
+    void load();
+
+private:
+    int propertyCount;
 };
 
 #endif // CONFIG_H

@@ -34,8 +34,10 @@ Http {
 
     SilkConfig {
         id: config
-        property variant websocket
+        property var websocket: {"host": http.host, "port": http.port }
     }
+
+    onReady: config.update()
 
     Html {
         Head {
@@ -44,7 +46,7 @@ Http {
         }
 
         Body {
-            onload: "connect('ws://%1:%2/examples/echo.qml'); document.getElementById('message').focus();".arg(typeof config.websocket.host !== 'undefined' ? config.websocket.host : http.host).arg(typeof config.websocket.port !== 'undefined' ? config.websocket.port : http.port)
+            onload: "connect('ws://%1:%2/examples/echo.qml'); document.getElementById('message').focus();".arg(config.websocket.host).arg(config.websocket.port)
             H1 { text: title.text }
             Form {
                 onsubmit: "send(document.getElementById('message')); return false;"

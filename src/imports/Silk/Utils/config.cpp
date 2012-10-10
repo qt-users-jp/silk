@@ -38,6 +38,11 @@ Config::Config(QObject *parent)
 
 void Config::componentComplete()
 {
+    update();
+}
+
+void Config::update()
+{
     QVariantMap config = SilkConfig::config();
     const QMetaObject *mo = metaObject();
     for (int i = 0; i < mo->propertyCount(); i++) {

@@ -39,11 +39,14 @@ Http {
         onRespound: messages.model = message.messages;
     }
 
-    onReady: client.request({"action": "messages"}, client);
+    onReady: {
+        config.update();
+        client.request({"action": "messages"}, client);
+    }
 
     SilkConfig {
         id: config
-        property variant websocket
+        property var websocket: {"host": http.host, "port": http.port }
     }
 
     Html {
@@ -53,7 +56,7 @@ Http {
         }
 
         Body {
-            onload: "connect('ws://%1:%2/examples/chatserver.qml')".arg(typeof config.websocket.host !== 'undefined' ? config.websocket.host : http.host).arg(typeof config.websocket.port !== 'undefined' ? config.websocket.port : http.port)
+            onload: "connect('ws://%1:%2/examples/chatserver.qml');".arg(config.websocket.host).arg(config.websocket.port)
             H1 { text: title.text }
 
             Form {

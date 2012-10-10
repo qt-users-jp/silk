@@ -39,10 +39,13 @@ function addItem(text) {
 
 function connect(url) {
     if ("WebSocket" in window) {
-        ws = new WebSocket(url, ["chat", "superchat"]);
+        ws = new WebSocket(url);
     } else if ("MozWebSocket" in window) {
-        ws = new MozWebSocket(url, ["chat", "superchat"]);
+        ws = new MozWebSocket(url);
+    } else {
+        addItem("WebSocket not supported.");
     }
+
     ws.onopen = function() {
         addItem("connected");
     };
