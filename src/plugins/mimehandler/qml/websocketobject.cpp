@@ -36,6 +36,7 @@ void WebSocketObject::setWebSocket(QWebSocket *socket)
 {
     m_socket = socket;
     connect(socket, SIGNAL(message(QByteArray)), this, SLOT(onmessage(QByteArray)));
+    connect(socket, SIGNAL(destroyed()), this, SLOT(deleteLater()));
 }
 
 void WebSocketObject::accept(const QByteArray &protocol)
