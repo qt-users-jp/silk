@@ -24,19 +24,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.CSS 3.0
 
-Http {
-    id: http
-    status: 200
-    responseHeader: {'Content-Type': 'text/css; charset=utf-8;'}
+Css {
+    id: css
 
     property string whiteColor: '#f0ffe1'
     property string lightColor: '#80C342'
     property string darkColor: '#006225'
     property string blackColor: '#003212'
-    property bool firefox: typeof http.requestHeader !== 'undefined' && typeof http.requestHeader['user-agent'] !== 'undefined' ? http.requestHeader['user-agent'].indexOf('firefox') > -1 : false
+    property bool firefox: http.requestHeader['user-agent'].indexOf('firefox') > -1
 
     /* ==========================================================================
        HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
@@ -51,18 +48,18 @@ Http {
         selector: 'body'
         font_size: '1em'
         property string line_height: '1.4'
-        background: http.whiteColor
+        background: css.whiteColor
     }
 
     Rule {
         selector: '::-moz-selection'
-        background: http.lightColor
+        background: css.lightColor
         property string text_shadow: 'none'
     }
 
     Rule {
         selector: '::selection'
-        background: http.lightColor
+        background: css.lightColor
         property string text_shadow: 'none'
     }
 
@@ -123,35 +120,35 @@ Http {
     Rule {
         id: header_container
         selector: '.header-container'
-        border_bottom: '20px solid %1'.arg(http.lightColor)
-        background: http.darkColor
+        border_bottom: '20px solid %1'.arg(css.lightColor)
+        background: css.darkColor
     }
 
     Rule {
         selector: '.main aside'
-        border_bottom: '10px solid %1'.arg(http.darkColor)
-        background: http.lightColor
+        border_bottom: '10px solid %1'.arg(css.darkColor)
+        background: css.lightColor
     }
 
     Rule {
         selector: '.footer-container'
-        border_top: '20px solid %1'.arg(http.lightColor)
-        background: http.darkColor
+        border_top: '20px solid %1'.arg(css.lightColor)
+        background: css.darkColor
     }
 
     Rule {
         selector: '.title'
-        color: http.whiteColor
+        color: css.whiteColor
         font_size: '2.25em'
 
         Rule {
             selector: 'a'
-            color: http.whiteColor
+            color: css.whiteColor
             text_decoration: 'none'
 
             Rule {
                 selector: ':hover,:visit'
-                color: http.whiteColor
+                color: css.whiteColor
             }
 
             Rule {
@@ -183,12 +180,12 @@ Http {
             text_decoration: 'none'
             font_weight: 'bold'
 
-            color: http.whiteColor
-            background: http.lightColor
+            color: css.whiteColor
+            background: css.lightColor
 
             Rule {
                 selector: ':hover,:visit'
-                color: http.whiteColor
+                color: css.whiteColor
             }
 
             Rule {
@@ -208,7 +205,7 @@ Http {
         Rule {
             selector: 'article'
 //            property string padding: '30px 0'
-            color: http.blackColor
+            color: css.blackColor
 
             Rule {
                 selector: 'h1,h2,h3,h4,h5,h6'
@@ -240,18 +237,18 @@ Http {
 
             Rule {
                 selector: 'a'
-                color: http.darkColor
+                color: css.darkColor
 
                 Rule {
                     selector: ':hover,:visit'
-                    color: http.darkColor
+                    color: css.darkColor
                 }
             }
         }
 
         Rule {
             selector: 'aside'
-            color: http.whiteColor
+            color: css.whiteColor
             property string padding: '0px 0% 10px'
 
             Rule {
@@ -268,12 +265,12 @@ Http {
             property string padding: '20px 0'
             Rule {
                 selector: 'a'
-                color: http.whiteColor
+                color: css.whiteColor
                 text_decoration: 'none'
 
                 Rule {
                     selector: ':hover,:visit'
-                    color: http.whiteColor
+                    color: css.whiteColor
                 }
 
                 Rule {
@@ -312,7 +309,7 @@ Http {
             Rule {
                 selector: 'section'
                 property string margin_bottom: '20px'
-                border_bottom: '1px solid %1'.arg(http.darkColor)
+                border_bottom: '1px solid %1'.arg(css.darkColor)
             }
 
             Rule {
@@ -326,12 +323,12 @@ Http {
 
             Rule {
                 selector: 'a'
-                color: http.whiteColor
+                color: css.whiteColor
                 text_decoration: 'none'
 
                 Rule {
                     selector: ':visited'
-                    color: http.whiteColor
+                    color: css.whiteColor
                 }
 
                 Rule {

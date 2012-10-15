@@ -24,31 +24,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Utils 1.0
 
-Http {
-    id: http
+Html {
+    Head {
+        Title { id: title; text: "query string" }
+    }
 
-    DocType {}
-    Html {
-        Head {
-            Title { id: title; text: "query string" }
-        }
-
-        Body {
-            H1 { text: title.text }
-            Ul {
-                Repeater {
-                    model: 3
-                    Component {
-                        Li { A { href: "?%1".arg(text); text: "query%1".arg(model.modelData) } }
-                    }
+    Body {
+        H1 { text: title.text }
+        Ul {
+            Repeater {
+                model: 3
+                Component {
+                    Li { A { href: "?%1".arg(text); text: "query%1".arg(model.modelData) } }
                 }
             }
-            BlockQuote { text: "root.query=%1".arg(http.query.replace('+', ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) }
         }
+        BlockQuote { text: "root.query=%1".arg(http.query.replace('+', ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) }
     }
 }

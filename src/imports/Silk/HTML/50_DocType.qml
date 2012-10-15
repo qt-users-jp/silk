@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
+import Silk.HTML 5.0
 
 Text {
     contentType: "text/html; charset=utf-8;"

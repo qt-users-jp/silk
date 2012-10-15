@@ -24,15 +24,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
 import Silk.Utils 1.0
 import Silk.SMTP 1.0
 import "./components"
 
-Http {
-    id: http
-
+Html {
     UserInput {
         id: input
 
@@ -76,20 +73,19 @@ Http {
         }
     }
 
-    Html {
-        Head {
-            Title { id: title; text: "Send email" }
-        }
+    Head {
+        Title { id: title; text: "Send email" }
+    }
 
-        Body {
-            H1 { text: title.text }
-            P {
-                enabled: smtp.host.length === 0
-                Text {
-                    text: 'to test smtp.qml you have to add email config to <a href="/config.qml">silkrc</a> like below.'
-                }
-                Pre {
-                    text: '{
+    Body {
+        H1 { text: title.text }
+        P {
+            enabled: smtp.host.length === 0
+            Text {
+                text: 'to test smtp.qml you have to add email config to <a href="/config.qml">silkrc</a> like below.'
+            }
+            Pre {
+                text: '{
     "email": {
         "host": "<em>smtp server address</em>"
         , "encrypt": "<em>SSL</em>"
@@ -99,20 +95,19 @@ Http {
         , "from": "<em>your mail address</em>"
     }
 }'
-                }
             }
-            P {
-                Text { id: msg }
-            }
-            Form {
-                id: form
-                enabled: smtp.host.length > 0
-                method: 'POST'
-                Text { text: "e-mail address: " }
-                Input { type: 'text'; name: 'email' }
-                Input { type: 'submit'; value: 'Send' }
-                Input { type: 'hidden'; name: 'action'; value: 'send' }
-            }
+        }
+        P {
+            Text { id: msg }
+        }
+        Form {
+            id: form
+            enabled: smtp.host.length > 0
+            method: 'POST'
+            Text { text: "e-mail address: " }
+            Input { type: 'text'; name: 'email' }
+            Input { type: 'submit'; value: 'Send' }
+            Input { type: 'hidden'; name: 'action'; value: 'send' }
         }
     }
 }

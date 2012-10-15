@@ -38,7 +38,6 @@ CssRule::CssRule(QObject *parent)
 
 QByteArray CssRule::out()
 {
-    // TODO: support A { ...; Rule {... } }
     QByteArray ret;
     QList<QByteArray> list;
     generate(list);
@@ -79,10 +78,11 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
             if (!attributes.isEmpty()) {
                 list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(m_selector).arg(attributes.join("\r\n    ")).toUtf8());
             }
-            newSelectors.append(m_selector);
+            if (!m_selector.isEmpty())
+                newSelectors.append(m_selector);
             foreach (const QObject *child, contentsList()) {
                 const CssRule *css = qobject_cast<const CssRule *>(child);
-                if (css && css->enabled() && !css->selector().isEmpty()) {
+                if (css && css->enabled()) {
                     css->generate(list, newSelectors);
                 }
             }
@@ -109,7 +109,7 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
 
         foreach (const QObject *child, contentsList()) {
             const CssRule *css = qobject_cast<const CssRule *>(child);
-            if (css && css->enabled() && !css->selector().isEmpty()) {
+            if (css && css->enabled()) {
                 css->generate(list, newSelectors);
             }
         }

@@ -24,16 +24,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Utils 1.0
 import Silk.Database 1.0
 import "./components"
 
-Http {
-    id: http
-
+Html {
     UserInput {
         id: input
 
@@ -83,49 +80,47 @@ Http {
     }
 
 
-    Html {
-        Head {
-            Title { id: title; text: "Sql Database" }
-        }
+    Head {
+        Title { id: title; text: "Sql Database" }
+    }
 
-        Body {
-            H1 { text: title.text }
-            Form {
-                method: 'POST'
-                Text { text: "value: " }
-                Input { type: 'text'; name: 'value' }
-                Input { type: 'submit'; value: 'Insert' }
-                Input { type: 'hidden'; name: 'action'; value: 'insert' }
-            }
-            Form {
-                method: 'POST'
-                Table {
-                    THead {
-                        Tr {
-                            Th { text: '&nbsp;' }
-                            Th { text: 'key' }
-                            Th { text: 'value' }
-                        }
+    Body {
+        H1 { text: title.text }
+        Form {
+            method: 'POST'
+            Text { text: "value: " }
+            Input { type: 'text'; name: 'value' }
+            Input { type: 'submit'; value: 'Insert' }
+            Input { type: 'hidden'; name: 'action'; value: 'insert' }
+        }
+        Form {
+            method: 'POST'
+            Table {
+                THead {
+                    Tr {
+                        Th { text: '&nbsp;' }
+                        Th { text: 'key' }
+                        Th { text: 'value' }
                     }
-                    TBody {
-                        Repeater {
-                            model: chat
-                            Component {
-                                Tr {
-                                    Td { Input { type: 'checkbox'; name: 'key_%1'.arg(model.key) } }
-                                    Td { text: model.key }
-                                    Td { text: model.value }
-                                }
+                }
+                TBody {
+                    Repeater {
+                        model: chat
+                        Component {
+                            Tr {
+                                Td { Input { type: 'checkbox'; name: 'key_%1'.arg(model.key) } }
+                                Td { text: model.key }
+                                Td { text: model.value }
                             }
                         }
                     }
-                    TFoot {
-                        Tr {
-                            Td {
-                                colspan: '3'
-                                Input { type: 'submit'; value: 'Remove checked data' }
-                                Input { type: 'hidden'; name: 'action'; value: 'remove' }
-                            }
+                }
+                TFoot {
+                    Tr {
+                        Td {
+                            colspan: '3'
+                            Input { type: 'submit'; value: 'Remove checked data' }
+                            Input { type: 'hidden'; name: 'action'; value: 'remove' }
                         }
                     }
                 }

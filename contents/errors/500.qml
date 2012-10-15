@@ -24,20 +24,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import QtQml 2.0
+import Silk.HTML 5.0
 
-Http {
-    id: root
-    status: 500
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+Html {
+    Component.onCompleted: http.status = 500
 
-    Html {
-        Head { Title { text: "500: Internal Server Error" } }
+    Head { Title { text: "500: Internal Server Error" } }
 
-        Body {
-            H1 { text: "500: Internal Server Error" }
-            P { text: root.message }
-        }
+    Body {
+        H1 { text: "500: Internal Server Error" }
+        P { text: http.message }
     }
 }

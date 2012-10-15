@@ -24,39 +24,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
 import Silk.Utils 1.0
 import "./components"
 
-Http {
-    id: http
-
+Html {
     SilkConfig {
         id: config
         property var websocket: {"host": http.host, "port": http.port }
     }
 
-    onReady: config.update()
+    Head {
+        Title { id: title; text: "WebSocket" }
+        Script { type: "text/javascript"; src: './websocket.js' }
+    }
 
-    Html {
-        Head {
-            Title { id: title; text: "WebSocket" }
-            Script { type: "text/javascript"; src: './websocket.js' }
+    Body {
+        onload: "connect('ws://%1:%2/examples/echo.qml'); document.getElementById('message').focus();".arg(config.websocket.host).arg(config.websocket.port)
+        H1 { text: title.text }
+        Form {
+            onsubmit: "send(document.getElementById('message')); return false;"
+            Input { _id: 'message'; type: 'text' }
+            Input { type: 'submit'; value: 'Send' }
         }
 
-        Body {
-            onload: "connect('ws://%1:%2/examples/echo.qml'); document.getElementById('message').focus();".arg(config.websocket.host).arg(config.websocket.port)
-            H1 { text: title.text }
-            Form {
-                onsubmit: "send(document.getElementById('message')); return false;"
-                Input { _id: 'message'; type: 'text' }
-                Input { type: 'submit'; value: 'Send' }
-            }
-
-            Ul {
-                _id: "ul"
-            }
+        Ul {
+            _id: "ul"
         }
     }
 }

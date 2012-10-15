@@ -45,6 +45,7 @@
 #include <silkconfig.h>
 #include <silkimportsinterface.h>
 
+#include "text.h"
 #include "httpobject.h"
 #include "websocketobject.h"
 #include "silk.h"
@@ -79,6 +80,8 @@ private:
     QMap<QObject*, QObject*> component2object;
     QMap<QObject*, QHttpRequest*> object2request;
     QMap<QObject*, QHttpReply*> object2reply;
+    QMap<QObject*, QQmlContext*> object2context;
+    QMap<QObject*, HttpObject*> object2http;
 };
 
 QmlHandler::Private::Private(QmlHandler *parent)
@@ -89,7 +92,10 @@ QmlHandler::Private::Private(QmlHandler *parent)
     context->setContextProperty(QLatin1String("Silk"), new Silk(this));
 
     qmlRegisterType<SilkAbstractHttpObject>();
-    qmlRegisterType<HttpObject>("Silk.HTTP", 1, 1, "Http");
+    qmlRegisterType<Text>("Silk.HTML", 4, 01, "Text");
+    qmlRegisterType<Text>("Silk.HTML", 5, 0, "Text");
+    qmlRegisterType<Text>("Silk.CSS", 2, 1, "Text");
+    qmlRegisterType<Text>("Silk.CSS", 3, 0, "Text");
     qmlRegisterUncreatableType<HttpFileData>("Silk.HTTP", 1, 1, "HttpFileData", QLatin1String("readonly"));
     qmlRegisterType<WebSocketObject>("Silk.WebSocket", 1, 0, "WebSocket");
 
@@ -171,7 +177,51 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         connect(component, SIGNAL(statusChanged(QQmlComponent::Status)), this, SLOT(statusChanged()), Qt::UniqueConnection);
         break;
     case QQmlComponent::Ready: {
-        SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject*>(component->create());
+        QQmlContext *context = new QQmlContext(&engine, this);
+        HttpObject *http = new HttpObject(this);
+        http->remoteAddress(request->remoteAddress());
+        http->method(QString::fromLatin1(request->method()));
+        QUrl url(request->url());
+        QString query(url.query());
+        url.setQuery(QString());
+        http->scheme(url.scheme());
+        http->host(url.host());
+        http->port(url.port());
+        http->path(url.path());
+        http->query(query);
+        http->data(QString(request->readAll()));
+        QList<HttpFileData *> files;
+        foreach (QHttpFileData *file, request->files()) {
+            files.append(new HttpFileData(file, this));
+        }
+        http->setFiles(files);
+
+        QVariantMap requestHeader;
+        foreach (const QByteArray &key, request->rawHeaderList()) {
+            requestHeader.insert(QString(key), QString(request->rawHeader(key)));
+        }
+        http->requestHeader(requestHeader);
+
+        QVariantMap cookies;
+        foreach (const QNetworkCookie &cookie, request->cookies()) {
+            QVariantMap c;
+            c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
+            c.insert(QLatin1String("expires"), cookie.expirationDate());
+            c.insert(QLatin1String("domain"), cookie.domain());
+            c.insert(QLatin1String("path"), cookie.path());
+            c.insert(QLatin1String("secure"), cookie.isSecure());
+            c.insert(QLatin1String("session"), cookie.isSessionCookie());
+            cookies.insert(QString::fromUtf8(cookie.name()), c);
+        }
+        http->requestCookies(cookies);
+
+        if (!message.isEmpty()) http->message(message);
+
+        context->setContextProperty(QLatin1String("http"), http);
+
+        QObject *o = component->create(context);
+        SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject*>(o);
+        object->setParent(http);
         if (!object) {
             emit q->error(403, request, reply, request->url().toString());
             return;
@@ -179,66 +229,19 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         if (!cache)
             connect(object, SIGNAL(destroyed()), this, SLOT(clearQmlCache()), Qt::QueuedConnection);
 
-        HttpObject *http = qobject_cast<HttpObject *>(object);
-        if (http) {
-            QCoreApplication::processEvents();
-            http->remoteAddress(request->remoteAddress());
-            http->method(QString::fromLatin1(request->method()));
-            QUrl url(request->url());
-            QString query(url.query());
-            url.setQuery(QString());
-            http->scheme(url.scheme());
-            http->host(url.host());
-            http->port(url.port());
-            http->path(url.path());
-            http->query(query);
-            http->data(QString(request->readAll()));
-            QList<HttpFileData *> files;
-            foreach (QHttpFileData *file, request->files()) {
-                files.append(new HttpFileData(file, this));
-            }
-            http->setFiles(files);
-
-            QVariantMap requestHeader;
-            foreach (const QByteArray &key, request->rawHeaderList()) {
-                requestHeader.insert(QString(key), QString(request->rawHeader(key)));
-            }
-            http->requestHeader(requestHeader);
-
-            QVariantMap cookies;
-            foreach (const QNetworkCookie &cookie, request->cookies()) {
-                QVariantMap c;
-                c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
-                c.insert(QLatin1String("expires"), cookie.expirationDate());
-                c.insert(QLatin1String("domain"), cookie.domain());
-                c.insert(QLatin1String("path"), cookie.path());
-                c.insert(QLatin1String("secure"), cookie.isSecure());
-                c.insert(QLatin1String("session"), cookie.isSessionCookie());
-                cookies.insert(QString::fromUtf8(cookie.name()), c);
-            }
-            http->requestCookies(cookies);
-
-            if (!message.isEmpty()) http->message(message);
-            QCoreApplication::processEvents();
-            QMetaObject::invokeMethod(http, "ready");
-
+        if (object->property("contentType").isValid()) {
             component2object.insert(component, object);
             object2request.insert(object, request);
             object2reply.insert(object, reply);
+            object2http.insert(object, http);
+            object2context.insert(object, context);
             if (!http->loading()) {
-                close(http);
+                close(object);
             } else {
                 connect(http, SIGNAL(loadingChanged(bool)), this, SLOT(loadingChanged(bool)));
             }
         } else {
-            if (object->property("contentType").isValid()) {
-                component2object.insert(component, object);
-                object2request.insert(object, request);
-                object2reply.insert(object, reply);
-                close(object);
-            } else {
-                q->emit error(403, request, reply, request->url().toString());
-            }
+            q->emit error(403, request, reply, request->url().toString());
         }
 
 
@@ -248,56 +251,59 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
 
 void QmlHandler::Private::close(SilkAbstractHttpObject *object)
 {
-    if (object2request.contains(object) && object2reply.contains(object)) {
-        QByteArray out = object->out();
 
+    if (object2request.contains(object) && object2reply.contains(object) && object2context.contains(object) && object2http.contains(object)) {
         QHttpRequest *request = object2request.take(object);
         QHttpReply *reply = object2reply.take(object);
+        QQmlContext *context = object2context.take(object);
+        HttpObject *http = object2http.take(object);
 
-        HttpObject *http = qobject_cast<HttpObject *>(object);
-        if (http) {
-            reply->setStatus(http->status());
+        QByteArray out = object->out();
 
-            QVariantMap header = http->responseHeader();
-            foreach (const QString &key, header.keys()) {
-                QString value = header.value(key).toString();
-                reply->setRawHeader(key.toUtf8(), value.toUtf8());
-            }
 
-            QList<QNetworkCookie> cookies;
-            foreach (const QString &name, http->responseCookies().keys()) {
-                QVariantMap c = http->responseCookies().value(name).toMap();
-                QNetworkCookie cookie;
-                cookie.setName(name.toUtf8());
-                if (c.contains("value")) cookie.setValue(c.value("value").toString().toUtf8());
-                if (c.contains("expires")) cookie.setExpirationDate(c.value("expires").toDateTime());
-                if (c.contains("domain")) cookie.setDomain(c.value("domain").toString());
-                if (c.contains("path")) cookie.setPath(c.value("path").toString());
-                if (c.contains("secure")) cookie.setSecure(c.value("secure").toBool());
-                cookies.append(cookie);
-            }
-            reply->setCookies(cookies);
-        } else {
-            reply->setStatus(200);
-            reply->setRawHeader("Content-Type", object->property("contentType").toByteArray());
-            QVariant docType = object->property("docType");
-            if (docType.isValid())
-                reply->write(docType.toByteArray());
+        reply->setStatus(http->status());
+        QVariantMap header = http->responseHeader();
+        foreach (const QString &key, header.keys()) {
+            QString value = header.value(key).toString();
+            reply->setRawHeader(key.toUtf8(), value.toUtf8());
         }
+
+        QList<QNetworkCookie> cookies;
+        foreach (const QString &name, http->responseCookies().keys()) {
+            QVariantMap c = http->responseCookies().value(name).toMap();
+            QNetworkCookie cookie;
+            cookie.setName(name.toUtf8());
+            if (c.contains("value")) cookie.setValue(c.value("value").toString().toUtf8());
+            if (c.contains("expires")) cookie.setExpirationDate(c.value("expires").toDateTime());
+            if (c.contains("domain")) cookie.setDomain(c.value("domain").toString());
+            if (c.contains("path")) cookie.setPath(c.value("path").toString());
+            if (c.contains("secure")) cookie.setSecure(c.value("secure").toBool());
+            cookies.append(cookie);
+        }
+        reply->setCookies(cookies);
+
+        if (object->property("contentType").isValid()) {
+            reply->setRawHeader("Content-Type", object->property("contentType").toByteArray());
+        }
+
+        QVariant docType = object->property("docType");
+        if (docType.isValid())
+            reply->write(docType.toByteArray());
 
         if (request->method() == "GET" || request->method() == "POST") {
             reply->write(out);
         }
         reply->close();
+        context->deleteLater();
+        http->deleteLater();
     }
-    object->deleteLater();
 }
 
 void QmlHandler::Private::loadingChanged(bool loading)
 {
     if (!loading) {
         HttpObject *http = qobject_cast<HttpObject *>(sender());
-        close(http);
+        close(qobject_cast<SilkAbstractHttpObject *>(http->children().first()));
     }
 }
 
@@ -329,6 +335,12 @@ void QmlHandler::Private::componentDestroyed(QObject *object)
         QObject *o = component2object.take(object);
         object2request.remove(o);
         object2reply.remove(o);
+        if (object2context.contains(o)) {
+            object2context.take(o)->deleteLater();
+        }
+        if (object2http.contains(o)) {
+            object2http.take(o)->deleteLater();
+        }
     }
 }
 

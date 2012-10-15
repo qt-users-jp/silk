@@ -24,32 +24,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
+import "./components/"
 import 'reverse.js' as Script
 
-Http {
-    id: http
+Html {
+    UserInput {
+        id: input
+        property string source
+    }
 
-    property string source: typeof http.data !== 'undefined' && http.data.indexOf("=") > 0 ? decodeURIComponent(http.data.substring(http.data.indexOf("=") + 1).replace('+', ' ')) : ''
+    Head {
+        Title { id: title; text: "javascript" }
+        Script { type: "text/javascript"; src: "./reverse.js" }
+    }
 
-    Html {
-        Head {
-            Title { id: title; text: "javascript" }
-            Script { type: "text/javascript"; src: "./reverse.js" }
-        }
+    Body {
+        H1 { text: title.text }
 
-        Body {
-            H1 { text: title.text }
-
-            Form {
-                action: "./javascript.qml"
-                method: "POST"
-                Input { id: source; _id: "source"; type: "text"; name: "source"; value: http.source.length > 0 ? http.source : "QML" }
-                Input { type: "submit"; value: "Exec on server side" }
-                Button { text: "Exec on client side"; onclick: "document.getElementById('result').innerHTML = reverse(document.getElementById('source').value); return false;" }
-                P { id: result; _id: "result"; text: Script.reverse(http.source) }
-            }
+        Form {
+            action: "./javascript.qml"
+            method: "POST"
+            Input { id: source; _id: "source"; type: "text"; name: "source"; value: input.source.length > 0 ? input.source : "QML" }
+            Input { type: "submit"; value: "Exec on server side" }
+            Button { text: "Exec on client side"; onclick: "document.getElementById('result').innerHTML = reverse(document.getElementById('source').value); return false;" }
+            P { id: result; _id: "result"; text: Script.reverse(input.source) }
         }
     }
 }

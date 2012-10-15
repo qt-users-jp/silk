@@ -24,14 +24,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Process 1.0
 
-Http {
-    id: http
-    loading: true
-
+Html {
     Process {
         id: date
         program: 'date'
@@ -42,19 +39,20 @@ Http {
         }
     }
 
-    Html {
-        Head {
-            Title { id: title; text: "Process" }
-        }
+    Head {
+        Title { id: title; text: "Process" }
+    }
 
-        Body {
-            H1 { text: title.text }
-            Pre {
-                id: output
-                text: '$ %1 %2\n'.arg(date.program).arg(date.arguments.join(' '))
-            }
+    Body {
+        H1 { text: title.text }
+        Pre {
+            id: output
+            text: '$ %1 %2\n'.arg(date.program).arg(date.arguments.join(' '))
         }
     }
 
-    onReady: date.start();
+    Component.onCompleted: {
+        http.loading = true;
+        date.start();
+    }
 }

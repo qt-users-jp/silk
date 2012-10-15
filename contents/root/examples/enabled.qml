@@ -24,39 +24,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
 
-Http {
-    id: root
+Html {
+    Head {
+        Title { id: title; text: "enabled" }
+    }
 
-    Html {
-        Head {
-            Title { id: title; text: "enabled" }
+    Body {
+        H1 { text: title.text }
+        Ul {
+            Li { A { href: "?%1".arg(text); text: "query1" } }
+            Li { A { href: "?%1".arg(text); text: "query2" } }
+            Li { A { href: "?%1".arg(text); text: "query3" } }
         }
-
-        Body {
-            H1 { text: title.text }
-            Ul {
-                Li { A { href: "?%1".arg(text); text: "query1" } }
-                Li { A { href: "?%1".arg(text); text: "query2" } }
-                Li { A { href: "?%1".arg(text); text: "query3" } }
-            }
-            Em {
-                property string __query: "query1"
-                text: "Contents for %1".arg(__query)
-                enabled: root.query == __query
-            }
-            Strong {
-                property string __query: "query2"
-                text: "Contents for %1".arg(__query)
-                enabled: root.query == __query
-            }
-            BlockQuote {
-                property string __query: "query3"
-                text: "Contents for %1".arg(__query)
-                enabled: root.query == __query
-            }
+        Em {
+            property string __query: "query1"
+            text: "Contents for %1".arg(__query)
+            enabled: http.query == __query
+        }
+        Strong {
+            property string __query: "query2"
+            text: "Contents for %1".arg(__query)
+            enabled: http.query == __query
+        }
+        BlockQuote {
+            property string __query: "query3"
+            text: "Contents for %1".arg(__query)
+            enabled: http.query == __query
         }
     }
 }

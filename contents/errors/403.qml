@@ -24,20 +24,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import QtQml 2.0
+import Silk.HTML 5.0
 
-Http {
-    id: root
-    status: 403
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+Html {
+    Component.onCompleted: http.status = 403
 
-    Html {
-        Head { Title { text: "403: Forbidden" } }
+    Head { Title { text: "403: Forbidden" } }
 
-        Body {
-            H1 { text: "403: Forbidden" }
-            P { text: "%1".arg(root.message) }
-        }
+    Body {
+        H1 { text: "403: Forbidden" }
+        P { text: "%1".arg(http.message) }
     }
+
 }

@@ -24,35 +24,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
 import Silk.Utils 1.0
 
-Http {
-    id: http
-
+Html {
     SilkConfig {
         id: config
         property variant listen: {'address': '', 'port': 0}
     }
 
-    Html {
-        Head {
-            Title { id: title; text: "Config" }
+    Head {
+        Title { id: title; text: "Config" }
+    }
+
+    Body {
+        H1 { text: title.text }
+        P {
+            text: 'SilkConfig element in Silk.Utils 1.0 allows you to get <a href="/config.qml">config values</a> in QML'
         }
 
-        Body {
-            H1 { text: title.text }
-            P {
-                text: 'SilkConfig element in Silk.Utils 1.0 allows you to get <a href="/config.qml">config values</a> in QML'
-            }
-
-            Dl {
-                Dt { text: 'listen.address' }
-                Dd { text: config.listen.address }
-                Dt { text: 'listen.port' }
-                Dd { text: config.listen.port }
-            }
+        Dl {
+            Dt { text: 'listen.address' }
+            Dd { text: config.listen.address }
+            Dt { text: 'listen.port' }
+            Dd { text: config.listen.port }
         }
     }
 }

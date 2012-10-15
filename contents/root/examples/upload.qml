@@ -28,9 +28,7 @@ import Silk.HTTP 1.1
 import Silk.HTML 5.0
 import "./components"
 
-Http {
-    id: http
-
+Html {
     UserInput {
         id: input
 
@@ -54,26 +52,24 @@ Http {
         }
     }
 
-    Html {
-        Head {
-            Title { id: title; text: "File upload" }
+    Head {
+        Title { id: title; text: "File upload" }
+    }
+
+    Body {
+        H1 { text: title.text }
+        P {
+            id: result
+            enabled: text.length > 0
         }
 
-        Body {
-            H1 { text: title.text }
-            P {
-                id: result
-                enabled: text.length > 0
-            }
-
-            Form {
-                action: http.path
-                method: 'POST'
-                enctype: "multipart/form-data"
-                Input { type: 'file'; name: 'file' }
-                Input { type: 'submit'; value: 'Upload' }
-                Input { type: 'hidden'; name: 'action'; value: 'upload' }
-            }
+        Form {
+            action: http.path
+            method: 'POST'
+            enctype: "multipart/form-data"
+            Input { type: 'file'; name: 'file' }
+            Input { type: 'submit'; value: 'Upload' }
+            Input { type: 'hidden'; name: 'action'; value: 'upload' }
         }
     }
 }

@@ -24,16 +24,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Cache 1.0
 import "./components/"
 
 SilkPageTemplate {
-    id: http
-
     subtitle: "Hello silk world"
-    loading: hello_qml.text.length === 0 || hellocss_qml.text.length === 0
 
     Article {
         Header {
@@ -131,12 +128,15 @@ SilkPageTemplate {
         }
     }
 
-    onReady: {
+    Component.onCompleted: {
+        http.loading = true;
         loadQml("HelloSource.qml", function(ret) {
-            hello_qml.text = ret
+            hello_qml.text = ret;
+            if (hellocss_qml.text.length > 0) http.loading = false;
         })
         loadQml("HelloCssSource.qml", function(ret) {
-            hellocss_qml.text = ret
+            hellocss_qml.text = ret;
+            if (hello_qml.text.length > 0) http.loading = false;
         })
     }
 }

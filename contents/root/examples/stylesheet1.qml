@@ -29,7 +29,7 @@ import Silk.CSS 3.0
 
 Html {
     Head {
-        Title { id: title; text: "file" }
+        Title { id: title; text: "CSS 1" }
         Style {
             type: "text/css"
             Comment {

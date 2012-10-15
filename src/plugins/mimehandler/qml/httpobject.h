@@ -56,7 +56,7 @@ private:
     QHttpFileData *m_data;
 };
 
-class HttpObject : public SilkAbstractHttpObject
+class HttpObject : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString remoteAddress READ remoteAddress NOTIFY remoteAddressChanged)
@@ -96,12 +96,9 @@ class HttpObject : public SilkAbstractHttpObject
 public:
     explicit HttpObject(QObject *parent = 0);
 
-    virtual QByteArray out();
-
     QQmlListProperty<HttpFileData> files();
     void setFiles(const QList<HttpFileData *> &files);
 signals:
-    void ready();
     void remoteAddressChanged(const QString &remoteAddress);
     void methodChanged(const QString &method);
     void schemeChanged(const QString &scheme);

@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.CSS 2.1
+import Silk.CSS 3.0
 
 Css {
     Rule {

@@ -24,24 +24,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PLUGIN_H
-#define PLUGIN_H
+import Silk.CSS 2.1
 
-#include <QtCore/QObject>
-#include <QtCore/QtPlugin>
-#include <silkimportsinterface.h>
-#include "text.h"
+Css {
 
-class HtmlPlugin : public QObject, SilkImportsInterface
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
-    Q_INTERFACES(SilkImportsInterface)
-public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<Text>("Silk.HTTP", 1, 1, "Text");
+    Rule {
+        selector: "body"
+        background: "#111"
+
+        Rule {
+            selector: " a"
+
+            // rules without selector work for parent
+            Rule {
+                color: "#FFFFFF"
+            }
+        }
     }
-};
 
-#endif // PLUGIN_H
+    IPhoneCSS {
+        selector: " .iphone"
+    }
+}

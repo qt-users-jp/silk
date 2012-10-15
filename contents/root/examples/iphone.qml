@@ -24,44 +24,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 4.01
-import Silk.CSS 2.1
 
-Http {
-    id: http
-
-    property string mode: typeof http.query !== 'undefined' && http.query.indexOf("=") > 0 ? decodeURIComponent(http.query.substring(http.query.indexOf("=") + 1).replace('+', ' ')) : ''
-
-    Html {
-        enabled: http.mode != "css"
-        Head {
-            Title { id: title; text: "Creating Single Element iPhone using CSS3" }
-            Link { rel: "stylesheet"; type: "text/css"; href: "%1?mode=%2".arg(http.path).arg("css") }
-        }
-
-        Body {
-            H1 { A { href: "http://cssdeck.com/labs/creating-single-element-iphone-using-css3"; text: title.text } }
-            Div { _class: "iphone" }
-        }
+Html {
+    Head {
+        Title { id: title; text: "Creating Single Element iPhone using CSS3" }
+        Link { rel: "stylesheet"; type: "text/css"; href: "iphone_css.qml" }
     }
 
-    Rule {
-        enabled: http.mode == "css"
-        selector: "body"
-        background: "#111"
-
-        Rule {
-            selector: " a"
-
-            // rules without selector work for parent
-            Rule {
-                color: "#FFFFFF"
-            }
-        }
-
-        IPhoneCSS {
-            selector: " .iphone"
-        }
+    Body {
+        H1 { A { href: "http://cssdeck.com/labs/creating-single-element-iphone-using-css3"; text: title.text } }
+        Div { _class: "iphone" }
     }
 }

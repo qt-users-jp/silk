@@ -8,10 +8,12 @@ HEADERS += \
     qmlhandler.h \
     httpobject.h \
     silk.h \
-    websocketobject.h
+    websocketobject.h \
+    text.h
 
 SOURCES += \
     qmlhandler.cpp \
     httpobject.cpp \
     silk.cpp \
-    websocketobject.cpp
+    websocketobject.cpp \
+    text.cpp

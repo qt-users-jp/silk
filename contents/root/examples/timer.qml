@@ -25,30 +25,27 @@
  */
 
 import QtQuick 2.0
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
 
-Http {
-    id: http
-    loading: true
+Html {
+    Head {
+        Title { id: title; text: "wait 5 secs using Timer" }
+    }
 
-    Html {
-        Head {
-            Title { id: title; text: "wait 5 secs using Timer" }
-        }
-
-        Body {
-            H1 { text: title.text }
-            Dl {
-                Dt { text: "Start" }
-                Dd { id: start }
-                Dt { text: "Finish" }
-                Dd { id: finish }
-            }
+    Body {
+        H1 { text: title.text }
+        Dl {
+            Dt { text: "Start" }
+            Dd { id: start }
+            Dt { text: "Finish" }
+            Dd { id: finish }
         }
     }
 
-    Component.onCompleted: start.text = Qt.formatTime(new Date(), 'hh:mm:ss')
+    Component.onCompleted: {
+        http.loading = true;
+        start.text = Qt.formatTime(new Date(), 'hh:mm:ss');
+    }
 
     Timer {
         interval: 5000

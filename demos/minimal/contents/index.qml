@@ -24,24 +24,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
 
-Http {
-    id: http
-    status: 200
-    responseHeader: {"Content-Type": "text/html; charset=utf-8;"}
+Html {
+    Head {
+        Title { id: title; text: "Minimal Service" }
+    }
 
-    DocType {}
-
-    Html {
-        Head {
-            Title { id: title; text: "Minimal Service" }
-        }
-
-        Body {
-            H1 { text: title.text }
-            P { text: "copy silk/demos/minimal/ and rename all minimal* to your service name." }
-        }
+    Body {
+        H1 { text: title.text }
+        P { text: "copy silk/demos/minimal/ and rename all minimal* to your service name." }
     }
 }

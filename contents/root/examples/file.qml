@@ -24,24 +24,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 
-Http {
-    id: http
-
-    Html {
-        Head {
-            Title { id: title; text: "file" }
-        }
-
-        Body {
-            H1 { text: title.text }
-            Pre { id: pre }
-        }
+Html {
+    Head {
+        Title { id: title; text: "file" }
     }
 
-    onReady: {
+    Body {
+        H1 { text: title.text }
+        Pre { id: pre }
+    }
+
+    Component.onCompleted: {
         http.loading = true;
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {

@@ -28,7 +28,7 @@ import Silk.HTML 5.0
 
 Html {
     Head {
-        Title { id: title; text: "file" }
+        Title { id: title; text: "CSS 2" }
         Link { rel: "stylesheet"; type: "text/css"; href: "./css.qml" }
     }
 

@@ -24,20 +24,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import QtQml 2.0
+import Silk.HTML 5.0
 
-Http {
-    id: root
-    status: 404
-    responseHeader: {'Content-Type': 'text/html; charset=utf-8;'}
+Html {
+    Component.onCompleted: http.status = 404
 
-    Html {
-        Head { Title { text: "404: File Not Found" } }
+    Head { Title { text: "404: File Not Found" } }
 
-        Body {
-            H1 { text: "404: File Not Found" }
-            P { text: "%1 is not found on this server.".arg(root.message) }
-        }
+    Body {
+        H1 { text: "404: File Not Found" }
+        P { text: "%1 is not found on this server.".arg(http.message) }
     }
 }

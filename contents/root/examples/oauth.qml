@@ -24,14 +24,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
 import Silk.Cache 1.0
 import "./components"
 
-Http {
-    id: http
-
+Html {
     Cache { id: cache }
 
     UserInput {
@@ -127,40 +124,40 @@ Http {
         }
     }
 
-    Html {
-        Head {
-            Title { id: title; text: "OAuth" }
-        }
+    Head {
+        enabled: http.status === 200
+        Title { id: title; text: "OAuth" }
+    }
 
-        Body {
-            H1 { text: title.text }
-            P {
-                enabled: twitter.consumerKey.length === 0
-                Text {
-                    text: 'to test oauth.qml you have to add oauth config to <a href="/config.qml">silkrc</a> like below.'
-                }
-                Pre {
-                    text: '{
+    Body {
+        enabled: http.status === 200
+        H1 { text: title.text }
+        P {
+            enabled: twitter.consumerKey.length === 0
+            Text {
+                text: 'to test oauth.qml you have to add oauth config to <a href="/config.qml">silkrc</a> like below.'
+            }
+            Pre {
+                text: '{
     "oauth:" {
         "consumerKey": "<em>consumerKey</em>"
         , "consumerSecret": "<em>consumerSecret</em>"
     }
 }'
-                }
             }
-            P {
-                enabled: profile_image.src.length > 0
-                Img { id: profile_image; }
-                Text { id: name }
-            }
+        }
+        P {
+            enabled: profile_image.src.length > 0
+            Img { id: profile_image; }
+            Text { id: name }
+        }
 
-            Form {
-                id: form
-                enabled: twitter.consumerKey.length > 0
-                method: 'POST'
-                Input { type: 'submit'; value: twitter.user_id.length === 0 ? 'Sign in with twitter' : 'Sign out' }
-                Input { type: 'hidden'; name: 'action'; value: twitter.user_id.length === 0 ? 'authorize' : 'unauthorize' }
-            }
+        Form {
+            id: form
+            enabled: twitter.consumerKey.length > 0
+            method: 'POST'
+            Input { type: 'submit'; value: twitter.user_id.length === 0 ? 'Sign in with twitter' : 'Sign out' }
+            Input { type: 'hidden'; name: 'action'; value: twitter.user_id.length === 0 ? 'authorize' : 'unauthorize' }
         }
     }
 }

@@ -66,7 +66,7 @@ bool HttpFileData::remove()
 }
 
 HttpObject::HttpObject(QObject *parent)
-    : SilkAbstractHttpObject(parent)
+    : QObject(parent)
     , m_loading(false)
     , m_status(200)
     , m_escapeHTML(false)
@@ -81,22 +81,4 @@ QQmlListProperty<HttpFileData> HttpObject::files()
 void HttpObject::setFiles(const QList<HttpFileData *> &files)
 {
     m_files = files;
-}
-
-QByteArray HttpObject::out()
-{
-    QByteArray ret;
-    foreach (QObject *child, contentsList()) {
-        SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
-        if (object && object->enabled()) {
-            if (!m_responseHeader.contains("Content-Type")) {
-                QVariant contentType = object->property("contentType");
-                if (!contentType.isNull()) {
-                    m_responseHeader.insert(QLatin1String("Content-Type"), contentType);
-                }
-            }
-            ret.append(object->out());
-        }
-    }
-    return ret;
 }

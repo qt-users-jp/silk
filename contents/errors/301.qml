@@ -24,11 +24,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
-import Silk.HTML 4.01
+import QtQml 2.0
+import Silk.HTML 5.0
 
-Http {
-    id: root
-    status: 301
-    responseHeader: {'Location': root.message}
+Html {
+    Component.onCompleted: {
+        http.status = 301;
+        console.debug(http.message);
+        var responseHeader = http.responseHeader;
+        responseHeader['Location'] = http.message;
+        http.responseHeader = responseHeader;
+    }
 }

@@ -24,17 +24,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Utils 1.0
 import "./components"
 
-Http {
-    id: http
-
-    property var cookies: http.requestCookies
-
+Html {
     UserInput {
         id: input
 
@@ -42,8 +37,10 @@ Http {
         property string name
         property string value
 
+        property var cookies: http.requestCookies
+
         onSubmit: {
-            var cookies = http.cookies;
+            var cookies = input.cookies
             var responseCookies = http.responseCookies;
             switch(input.action) {
             case 'remove':
@@ -61,48 +58,46 @@ Http {
                 break
             }
             http.responseCookies = responseCookies;
-            http.cookies = cookies;
+            input.cookies = cookies;
         }
     }
 
-    Html {
-        Head {
-            Title { id: title; text: "Cookies" }
-        }
+    Head {
+        Title { id: title; text: "Cookies" }
+    }
 
-        Body {
-            H1 { text: title.text }
+    Body {
+        H1 { text: title.text }
 
-            Dl {
-                Repeater {
-                    model: http.cookies
-                    Component {
-                        Dt { id: name; text: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
-                    }
-                    Component {
-                        Dd {
-                            Form {
-                                method: "POST"
-                                Input { type: "hidden"; name: "action"; value: "remove" }
-                                Input { type: "hidden"; name: "name"; value: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
-                                Text { text: model.value.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
-                                Br {}
-                                Input { type: "submit"; value: "Remove" }
-                            }
+        Dl {
+            Repeater {
+                model: input.cookies
+                Component {
+                    Dt { id: name; text: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                }
+                Component {
+                    Dd {
+                        Form {
+                            method: "POST"
+                            Input { type: "hidden"; name: "action"; value: "remove" }
+                            Input { type: "hidden"; name: "name"; value: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                            Text { text: model.value.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                            Br {}
+                            Input { type: "submit"; value: "Remove" }
                         }
                     }
                 }
             }
+        }
 
-            Form {
-                action: http.path
-                method: "POST"
-                Input { type: "text"; name: "name" }
-                Text { text: '=' }
-                Input { type: "text"; name: "value" }
-                Input { type: "hidden"; name: "action"; value: "set" }
-                Input { type: "submit"; value: "Add/Update" }
-            }
+        Form {
+            action: http.path
+            method: "POST"
+            Input { type: "text"; name: "name" }
+            Text { text: '=' }
+            Input { type: "text"; name: "value" }
+            Input { type: "hidden"; name: "action"; value: "set" }
+            Input { type: "submit"; value: "Add/Update" }
         }
     }
 }

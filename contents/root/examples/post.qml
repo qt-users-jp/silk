@@ -24,30 +24,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
 import Silk.HTML 5.0
-import 'reverse.js' as Script
 
-Http {
-    id: root
+Html {
+    Head {
+        Title { id: title; text: "post" }
+    }
 
-    property string source: root.data.indexOf("=") > 0 ? decodeURIComponent(root.data.substring(root.data.indexOf("=") + 1).replace('+', ' ')) : ''
+    Body {
+        H1 { text: title.text }
 
-    DocType {}
-    Html {
-        Head {
-            Title { id: title; text: "post" }
-        }
-
-        Body {
-            H1 { text: title.text }
-
-            Form {
-                action: "./post.qml"
-                method: "POST"
-                Input { type: "text"; name: "source"; value: root.source.replace(/"/g, '&quot;') }
-                Input { type: "submit" }
+        Form {
+            action: "./post.qml"
+            method: "POST"
+            Input {
+                type: "text"
+                name: "source"
+                value: http.data.indexOf("=") > 0 ?
+                           decodeURIComponent(http.data.substring(http.data.indexOf("=") + 1).replace('+', ' ')).replace(/"/g, '&quot;') : ''
             }
+            Input { type: "submit" }
         }
     }
 }

@@ -24,17 +24,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Cache 1.0
 
 import "./components/"
 
 SilkPageTemplate {
-    id: http
-
     subtitle: "Configuration"
-    loading: silkrc.text.length == 0
 
     Article {
 //        Header {
@@ -102,23 +99,26 @@ SilkPageTemplate {
 
     Cache { id: cache }
 
-    onReady: {
-        var file = "qrc:/silkrc"
-        var value = cache.fetch(file)
+    Component.onCompleted: {
+        http.loading = true;
+        var file = "qrc:/silkrc";
+        var value = cache.fetch(file);
         if (typeof value !== 'undefined') {
-            silkrc.text = value
+            silkrc.text = value;
+            http.loading = false;
         } else {
-            var request = new XMLHttpRequest()
+            var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
                 switch (request.readyState) {
                 case 4: // Done
-                    cache.add(file, request.responseText)
-                    silkrc.text = request.responseText
+                    cache.add(file, request.responseText);
+                    silkrc.text = request.responseText;
+                    http.loading = false;
                     break
                 }
             }
-            request.open("GET", file)
-            request.send()
+            request.open("GET", file);
+            request.send();
         }
     }
 }

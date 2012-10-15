@@ -24,23 +24,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 2.0
-import Silk.HTTP 1.1
+import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Utils 1.0
 import "./components"
 
-Http {
-    id: http
-
+Html {
     Client {
         id: client
         connectionName: 'websocketChatServer'
         onRespond: messages.model = message.messages;
     }
 
-    onReady: {
-        config.update();
+    Component.onCompleted: {
         client.request({"action": "messages"}, client);
     }
 
@@ -49,38 +45,36 @@ Http {
         property var websocket: {"host": http.host, "port": http.port }
     }
 
-    Html {
-        Head {
-            Title { id: title; text: "chat" }
-            Script { type: "text/javascript"; src: "./chat.js" }
-        }
+    Head {
+        Title { id: title; text: "chat" }
+        Script { type: "text/javascript"; src: "./chat.js" }
+    }
 
-        Body {
-            onload: "connect('ws://%1:%2/examples/chatserver.qml');".arg(config.websocket.host).arg(config.websocket.port)
-            H1 { text: title.text }
+    Body {
+        onload: "connect('ws://%1:%2/examples/chatserver.qml');".arg(config.websocket.host).arg(config.websocket.port)
+        H1 { text: title.text }
 
-            Form {
-                onsubmit: "post(); return false;"
+        Form {
+            onsubmit: "post(); return false;"
 
-                Dl {
-                    _id: "dl"
+            Dl {
+                _id: "dl"
 
-                    Dt { Input { _id: "name"; type: "text"; name: "name"; size: '10'; placeholder: "Name" } }
-                    Dd {
-                        _id: "input"
-                        Input { _id: "message"; type: "text"; name: "message"; size: '30'; placeholder: "Message..." }
-                        Input { type: "submit"; value: "Send" }
+                Dt { Input { _id: "name"; type: "text"; name: "name"; size: '10'; placeholder: "Name" } }
+                Dd {
+                    _id: "input"
+                    Input { _id: "message"; type: "text"; name: "message"; size: '30'; placeholder: "Message..." }
+                    Input { type: "submit"; value: "Send" }
+                }
+
+                Repeater {
+                    id: messages
+                    model: []
+                    Component {
+                        Dt { text: model.user.replace(/&/g, '&amp;') }
                     }
-
-                    Repeater {
-                        id: messages
-                        model: []
-                        Component {
-                            Dt { text: model.user.replace(/&/g, '&amp;') }
-                        }
-                        Component {
-                            Dd { text: model.message.replace(/&/g, '&amp;') }
-                        }
+                    Component {
+                        Dd { text: model.message.replace(/&/g, '&amp;') }
                     }
                 }
             }
