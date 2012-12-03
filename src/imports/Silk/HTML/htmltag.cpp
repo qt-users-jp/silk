@@ -61,7 +61,7 @@ QByteArray HtmlTag::out()
                 text = value;
             } else if (!value.isNull()){
                 if (value.isEmpty()) {
-                    attributes.append(QString(" %1").arg(key));
+//                    attributes.append(QString(" %1").arg(key));
                 } else {
                     attributes.append(QString(" %1=\"%2\"").arg(key).arg(value));
                 }
@@ -80,16 +80,18 @@ QByteArray HtmlTag::out()
         }
     }
 
-    ret.append(QString("<%1%2").arg(tagName()).arg(attributes.join("")));
+    if (!tagName().isEmpty())
+        ret.append(QString("<%1%2").arg(tagName()).arg(attributes.join("")));
 
     bool hasChildObjects = false;
 
-    if (text.isNull()) {
+    if (text.isEmpty()) {
         foreach (QObject *child, contentsList()) {
             SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
             if (object && object->enabled()) {
                 if (!hasChildObjects) {
-                    ret.append(">");
+                    if (!tagName().isEmpty())
+                        ret.append(">");
                     hasChildObjects = true;
                 }
                 ret.append(object->out());
@@ -97,15 +99,21 @@ QByteArray HtmlTag::out()
         }
     } else {
         hasChildObjects = true;
-        ret.append(">");
+        if (!tagName().isEmpty())
+            ret.append(">");
         ret.append(text);
     }
 
-    if (hasChildObjects) {
-        ret.append(QString("</%1>").arg(tagName()));
-    } else {
-        ret.append(QLatin1String(" />"));
+    if (!tagName().isEmpty()) {
+        if (hasChildObjects) {
+            ret.append(QString("</%1>").arg(tagName()));
+        } else if (!text.isNull()){
+            ret.append(QString("></%1>").arg(tagName()));
+        } else {
+            ret.append(QLatin1String(" />"));
+        }
     }
+
     QVariant escapeHTML = property("escapeHTML");
     if (escapeHTML.isValid() && escapeHTML.toBool()) {
         QString str = QString::fromUtf8(ret);

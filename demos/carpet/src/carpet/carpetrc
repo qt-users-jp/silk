@@ -1,0 +1,19 @@
+{
+    "listen": {
+            "address": "localhost"
+            , "port": 18080
+        }
+    , "silk": {
+            "tasks": [":/app/service/carpet.qml"]
+        }
+    , "contents": {
+            "*": ":/app/web/"
+        }
+    , "cache": {
+            "qml": true
+        }
+    , "carpet": {
+            "from": "/home/tasuku"
+            , "to": "/home/tasuku/.carpet"
+        }
+}

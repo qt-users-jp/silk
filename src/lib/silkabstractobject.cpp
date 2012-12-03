@@ -26,6 +26,7 @@
 
 #include "silkabstractobject.h"
 
+#include <QtCore/QDebug>
 #include <QtCore/QChildEvent>
 
 SilkAbstractObject::SilkAbstractObject(QObject *parent)
@@ -51,4 +52,10 @@ void SilkAbstractObject::childEvent(QChildEvent *event)
         }
     }
     QObject::childEvent(event);
+}
+
+void SilkAbstractObject::insert(int index, QObject *item)
+{
+    m_contents.insert(index, item);
+    item->setParent(this);
 }

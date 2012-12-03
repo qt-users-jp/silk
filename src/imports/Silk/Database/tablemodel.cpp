@@ -232,7 +232,6 @@ void TableModel::Private::select()
     if (!q->m_select) return;
 
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
-
     q->beginRemoveRows(QModelIndex(), 0, data.count() - 1);
     data.clear();
     q->endRemoveRows();
@@ -252,6 +251,7 @@ void TableModel::Private::select()
     }
     q->beginInsertRows(QModelIndex(), 0, data.count() - 1);
     q->endInsertRows();
+    emit q->countChanged(data.count());
 }
 
 QString TableModel::Private::toSql(const QVariant &value)

@@ -32,10 +32,11 @@
 #include <QtCore/QtPlugin>
 #include <silkimportsinterface.h>
 
-#include "repeater.h"
 #include "config.h"
 #include "server.h"
 #include "client.h"
+#include "repeater.h"
+#include "recursive.h"
 
 class UtilsPlugin : public QObject, SilkImportsInterface
 {
@@ -45,10 +46,11 @@ class UtilsPlugin : public QObject, SilkImportsInterface
 public:
     virtual void silkRegisterObject()
     {
-        qmlRegisterType<Repeater>("Silk.Utils", 1, 0, "Repeater");
         qmlRegisterType<Config>("Silk.Utils", 1, 0, "SilkConfig");
         qmlRegisterType<Server>("Silk.Utils", 1, 0, "Server");
         qmlRegisterType<Client>("Silk.Utils", 1, 0, "Client");
+        qmlRegisterType<Repeater>("Silk.Utils", 1, 0, "Repeater");
+        qmlRegisterType<Recursive>("Silk.Utils", 1, 0, "Recursive");
     }
 };
 

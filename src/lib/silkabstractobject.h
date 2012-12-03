@@ -55,6 +55,8 @@ public:
     
     QQmlListProperty<QObject> contents();
 
+    Q_INVOKABLE void insert(int index, QObject *item);
+
 protected:
     void childEvent(QChildEvent *event);
     QList<QObject *> contentsList() const;

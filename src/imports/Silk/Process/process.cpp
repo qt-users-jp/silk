@@ -37,6 +37,7 @@ public:
 
 private slots:
     void readyRead();
+    void error();
 
 private:
     Process *q;
@@ -48,6 +49,7 @@ Process::Private::Private(Process *parent)
 {
     connect(this, SIGNAL(started()), q, SIGNAL(started()));
     connect(this, SIGNAL(readyReadStandardOutput()), this, SLOT(readyRead()));
+    connect(this, SIGNAL(readyReadStandardError()), this, SLOT(error()));
     connect(this, SIGNAL(finished(int)), q, SIGNAL(finished(int)));
 }
 
@@ -55,6 +57,11 @@ void Process::Private::readyRead()
 {
     while (canReadLine())
         emit q->output(readLine());
+}
+
+void Process::Private::error()
+{
+    qWarning() << readAllStandardError();
 }
 
 Process::Process(QObject *parent)
@@ -66,6 +73,12 @@ Process::Process(QObject *parent)
 void Process::start()
 {
     d->start(m_program, m_arguments);
+}
+
+void Process::write(const QByteArray &data)
+{
+    d->write(data);
+    d->closeWriteChannel();
 }
 
 void Process::terminate()

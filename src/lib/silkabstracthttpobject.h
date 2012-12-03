@@ -30,6 +30,8 @@
 #include "silkglobal.h"
 #include "silkabstractobject.h"
 
+class QQmlContext;
+
 class SILK_EXPORT SilkAbstractHttpObject : public SilkAbstractObject
 {
     Q_OBJECT

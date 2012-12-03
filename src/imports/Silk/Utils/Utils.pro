@@ -5,10 +5,12 @@ HEADERS += \
     repeater.h \
     config.h \
     server.h \
-    client.h
+    client.h \
+    recursive.h
 
 SOURCES += \
     repeater.cpp \
     config.cpp \
     server.cpp \
-    client.cpp
+    client.cpp \
+    recursive.cpp

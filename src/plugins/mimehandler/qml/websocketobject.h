@@ -59,6 +59,7 @@ public:
     void setWebSocket(QWebSocket *socket);
 public slots:
     void accept(const QByteArray &protocol = QByteArray());
+    void close();
     void send(const QByteArray &data);
 
 signals:

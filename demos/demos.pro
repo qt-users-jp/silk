@@ -1,3 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS += minimal ssso
-
+SUBDIRS += minimal ssso carpet

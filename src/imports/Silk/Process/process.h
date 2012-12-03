@@ -53,6 +53,7 @@ public:
     explicit Process(QObject *parent = 0);
 
     Q_INVOKABLE void start();
+    Q_INVOKABLE void write(const QByteArray &data);
     Q_INVOKABLE void terminate();
     Q_INVOKABLE void kill();
 

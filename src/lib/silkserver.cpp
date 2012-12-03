@@ -275,8 +275,11 @@ void SilkServer::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *requ
         // TODO cache
         QFile file(fileInfo.absoluteFilePath());
         if (file.open(QFile::ReadOnly)) {
-            QDateTime lastModified = fileInfo.lastModified().toUTC();
-            reply->setRawHeader("Last-Modified", lastModified.toString("ddd, d, MMM yyyy hh:mm:ss UTC").toUtf8());
+            QDateTime lastModified = fileInfo.lastModified();
+            if (lastModified.isNull()) {
+                lastModified.setTime_t(0);
+            }
+            reply->setRawHeader("Last-Modified", lastModified.toUTC().toString("ddd, d, MMM yyyy hh:mm:ss UTC").toUtf8());
             reply->write(file.readAll());
             file.close();
             reply->close();

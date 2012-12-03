@@ -134,7 +134,13 @@ QmlHandler::Private::Private(QmlHandler *parent)
 
     QVariantList tasks = SilkConfig::value("silk.tasks").toList();
     foreach (const QVariant &task, tasks) {
-        QQmlComponent *component = new QQmlComponent(&engine, QUrl::fromLocalFile(task.toString()), this);
+        QUrl url;
+        if (task.toString().startsWith(":")) {
+            url = QUrl(QLatin1String("qrc") + task.toString());
+        } else {
+            url = QUrl::fromLocalFile(task.toString());
+        }
+        QQmlComponent *component = new QQmlComponent(&engine, url, this);
         switch (component->status()) {
         case QQmlComponent::Null:
             break;
@@ -177,7 +183,6 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         connect(component, SIGNAL(statusChanged(QQmlComponent::Status)), this, SLOT(statusChanged()), Qt::UniqueConnection);
         break;
     case QQmlComponent::Ready: {
-        QQmlContext *context = new QQmlContext(&engine, this);
         HttpObject *http = new HttpObject(this);
         http->remoteAddress(request->remoteAddress());
         http->method(QString::fromLatin1(request->method()));
@@ -217,9 +222,11 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
 
         if (!message.isEmpty()) http->message(message);
 
+        QQmlContext *context = new QQmlContext(&engine, this);
         context->setContextProperty(QLatin1String("http"), http);
 
         QObject *o = component->create(context);
+
         SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject*>(o);
         object->setParent(http);
         if (!object) {
@@ -235,6 +242,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
             object2reply.insert(object, reply);
             object2http.insert(object, http);
             object2context.insert(object, context);
+            QCoreApplication::processEvents();
             if (!http->loading()) {
                 close(object);
             } else {
@@ -290,6 +298,7 @@ void QmlHandler::Private::close(SilkAbstractHttpObject *object)
         if (docType.isValid())
             reply->write(docType.toByteArray());
 
+//        qDebug() << out;
         if (request->method() == "GET" || request->method() == "POST") {
             reply->write(out);
         }

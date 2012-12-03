@@ -44,6 +44,11 @@ void WebSocketObject::accept(const QByteArray &protocol)
     m_socket->accept(protocol);
 }
 
+void WebSocketObject::close()
+{
+    m_socket->close();
+}
+
 void WebSocketObject::send(const QByteArray &data)
 {
     m_socket->send(data);

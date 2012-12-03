@@ -103,30 +103,23 @@ QByteArray Repeater::out()
         break; }
     }
 
-
-    QQmlContext *context = qmlEngine(this)->rootContext();
-    QVariant model = context->contextProperty("model");
     foreach (const QVariant &m, list) {
-        context->setContextProperty("model", m);
-
         // TODO: workaround for duplication of Component
-        QList<QObject *> done;
+        QList<QQmlComponent *> done;
 
-        foreach (QObject *object, contentsList()) {
-            if (done.contains(object)) continue;
-            done.append(object);
-            QQmlComponent *component = qobject_cast<QQmlComponent *>(object);
-            if (component) {
-                QObject *obj = component->create(context);
-                SilkAbstractHttpObject *http = qobject_cast<SilkAbstractHttpObject *>(obj);
-                if (http) {
-                    ret.append(http->out());
-                }
-                delete obj;
+        foreach (QQmlComponent *component, m_contents) {
+            QQmlContext *c = new QQmlContext(component->creationContext());
+            c->setContextProperty("model", m);
+            if (done.contains(component)) continue;
+            QObject *obj = component->create(c);
+            SilkAbstractHttpObject *http = qobject_cast<SilkAbstractHttpObject *>(obj);
+            if (http && http->enabled()) {
+                ret.append(http->out());
             }
+            obj->deleteLater();
+            c->deleteLater();
         }
     }
-    context->setContextProperty("model", model);
     return ret;
 }
 
