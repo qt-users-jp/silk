@@ -72,7 +72,7 @@ Html {
         TableModel {
             id: chat
             select: false
-            name: 'Chat'
+            tableName: 'Chat'
             primaryKey: 'key'
             property int key
             property string value

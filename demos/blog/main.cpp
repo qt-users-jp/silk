@@ -24,12 +24,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQml 2.0
+#include <QtCore/QCoreApplication>
+#include <silkserver.h>
+#include <silkconfig.h>
 
-Timer {
-    triggeredOnStart: true
-    interval: 60000
-    repeat: true
-    running: true
-    onTriggered: console.debug(Qt.formatDateTime("yyyy/MM/dd hh:mm:ss"), new Date())
+int main(int argc, char **argv)
+{
+    QCoreApplication app(argc, argv);
+
+    SilkConfig::initialize(argc, argv);
+
+    SilkServer server;
+    if (!server.isListening()) {
+        return -1;
+    }
+
+	return app.exec();
 }
+

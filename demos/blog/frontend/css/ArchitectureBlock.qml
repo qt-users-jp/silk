@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,36 +24,64 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQml 2.0
-import Silk.HTML 5.0
+import Silk.CSS 3.0
 
-Html {
-    Head {
-        Title { id: title; text: "wait 5 secs using Timer" }
+Rule {
+    id: root
+    Rule {
+        selector: '.architecture_block'
+
+        property string margin: '10px'
+        property string padding: '1.0em 0em'
+        property string border_radius: '.3em'
+        property string _moz_border_radius: border_radius
+
+        font: "bold 1.5em 'Trebuchet MS',Arial, Helvetica"
+        text_align: 'center'
     }
 
-    Body {
-        H1 { text: title.text }
-        Dl {
-            Dt { text: "Start" }
-            Dd { id: start }
-            Dt { text: "Finish" }
-            Dd { id: finish }
-        }
+    Rule {
+        selector: '.arch_html'
+        background: '#F16427'
+        color: 'white'
     }
 
-    Component.onCompleted: {
-        http.loading = true;
-        start.text = Qt.formatTime(new Date(), 'hh:mm:ss');
+    Rule {
+        selector: '.arch_js'
+        background: '#029A9C'
+        color: 'white'
     }
 
-    Timer {
-        interval: 5000
-        running: true
-        repeat: false
-        onTriggered: {
-            finish.text = Qt.formatTime(new Date(), 'hh:mm:ss')
-            http.loading = false
-        }
+    Rule {
+        selector: '.arch_css'
+        background: '#27A7E2'
+        color: 'white'
+    }
+
+    Rule {
+        selector: '.arch_qml'
+        background: css.firefox ? '-moz-linear-gradient(left, #80C342, #029A9C)' : '-webkit-gradient(linear, center center, right center, from(#80C342), to(#029A9C) )'
+        color: 'white'
+    }
+
+    Rule {
+        selector: '.arch_plangs'
+        background: css.firefox ? '-moz-linear-gradient(left, #B60800, #F30100)' : '-webkit-gradient(linear, left top, right bottom, from(#B60800), to(#F30100) )'
+        color: 'white'
+    }
+    Rule {
+        selector: '.arch_server'
+        background: css.firefox ? '-moz-linear-gradient(left, #FD00CB, #1A3F98)' : '-webkit-gradient(linear, left top, right bottom, from(#FD00CB), to(#1A3F98) )'
+        color: 'white'
+    }
+    Rule {
+        selector: '.arch_qt'
+        background: '#80C342'
+        color: 'white'
+    }
+    Rule {
+        selector: '.arch_op50'
+        opacity: '0.50'
+        color: '#ccc'
     }
 }

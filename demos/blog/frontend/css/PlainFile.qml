@@ -24,12 +24,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQml 2.0
+import Silk.CSS 3.0
 
-Timer {
-    triggeredOnStart: true
-    interval: 60000
-    repeat: true
-    running: true
-    onTriggered: console.debug(Qt.formatDateTime("yyyy/MM/dd hh:mm:ss"), new Date())
+Rule {
+    selector: '.file'
+    font_family: 'monospace'
+    property string line_height: '1.2'
+    border: '4px solid %1'.arg(css.darkColor)
+    background: 'white'
+    property string padding: '10px'
+    property string _webkit_box_shadow: '0 5px 10px #aaa'
+    property string _moz_box_shadow: _webkit_box_shadow
+    property string box_shadow: _webkit_box_shadow
+
+    Rule {
+        selector: ' .number'
+        color: '#000000'
+    }
+    Rule {
+        selector: ' .string'
+        color: '#339933'
+    }
+    Rule {
+        selector: ' .key'
+        color: '#993333'
+    }
+
+    Rule {
+        selector: ' .keyword'
+        color: '#999933'
+    }
+
+    Rule {
+        selector: ' .element'
+        color: '#993399'
+    }
+
+    Rule {
+        selector: ' .namespace'
+        color: '#993399'
+    }
+
+    Rule {
+        selector: ' .property'
+        color: '#993333'
+    }
+
+    Rule {
+        selector: ' .comment'
+        color: '#339933'
+    }
+
+    Rule {
+        selector: ' .blah3'
+        color: '#339933'
+    }
 }

@@ -25,11 +25,12 @@
  */
 
 import QtQml 2.0
+import Silk.Database 1.0
 
-Timer {
-    triggeredOnStart: true
-    interval: 60000
-    repeat: true
-    running: true
-    onTriggered: console.debug(Qt.formatDateTime("yyyy/MM/dd hh:mm:ss"), new Date())
+TableModel {
+    id: root
+    select: false
+    primaryKey: 'id'
+    property int id
+    property string slug
 }

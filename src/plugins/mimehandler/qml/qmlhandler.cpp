@@ -167,7 +167,6 @@ void QmlHandler::Private::load(const QUrl &url, QHttpRequest *request, QHttpRepl
 
 void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    static bool cache = SilkConfig::value("cache.qml").toBool();
     switch (component->status()) {
     case QQmlComponent::Null:
         // TODO: any check?
@@ -228,13 +227,11 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         QObject *o = component->create(context);
 
         SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject*>(o);
-        object->setParent(http);
         if (!object) {
             emit q->error(403, request, reply, request->url().toString());
             return;
         }
-        if (!cache)
-            connect(object, SIGNAL(destroyed()), this, SLOT(clearQmlCache()), Qt::QueuedConnection);
+        object->setParent(http);
 
         if (object->property("contentType").isValid()) {
             component2object.insert(component, object);
@@ -259,7 +256,6 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
 
 void QmlHandler::Private::close(SilkAbstractHttpObject *object)
 {
-
     if (object2request.contains(object) && object2reply.contains(object) && object2context.contains(object) && object2http.contains(object)) {
         QHttpRequest *request = object2request.take(object);
         QHttpReply *reply = object2reply.take(object);
@@ -328,22 +324,24 @@ void QmlHandler::Private::statusChanged()
 
 void QmlHandler::Private::componentDestroyed(QObject *object)
 {
+    static bool cache = SilkConfig::value("cache.qml").toBool();
+
     if (component2request.contains(object)) {
-        component2request.remove(object);
+        component2request.take(object);
     }
     if (component2reply.contains(object)) {
-        component2reply.remove(object);
+        component2reply.take(object);
     }
     if (component2socket.contains(object)) {
-        component2socket.remove(object);
+        component2socket.take(object);
     }
     if (component2message.contains(object)) {
-        component2message.remove(object);
+        component2message.take(object);
     }
     if (component2object.contains(object)) {
         QObject *o = component2object.take(object);
-        object2request.remove(o);
-        object2reply.remove(o);
+        object2request.take(o);
+        object2reply.take(o);
         if (object2context.contains(o)) {
             object2context.take(o)->deleteLater();
         }
@@ -351,6 +349,8 @@ void QmlHandler::Private::componentDestroyed(QObject *object)
             object2http.take(o)->deleteLater();
         }
     }
+    if (!cache)
+        clearQmlCache();
 }
 
 void QmlHandler::Private::clearQmlCache()

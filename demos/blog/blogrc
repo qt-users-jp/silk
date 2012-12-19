@@ -1,0 +1,6 @@
+{
+    "listen": { "address": "localhost", "port": 6109 }
+    , "contents": { "*": "~/blog/" }
+    , "oauth": { "consumerKey": "obwfhfHLJbXltjKefxzAdQ", "consumerSecret": "o7d8eNdmH9YUD1Lj0UpBSaxFWvADf2EhPZ0V6Hrm5bg" }
+    , "blog": { "author": "task_jp", "database": "~/blog/blog.sqlite" }
+}

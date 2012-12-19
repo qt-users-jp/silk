@@ -24,12 +24,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQml 2.0
+import Silk.OAuth 1.0
+import Silk.Utils 1.0
 
-Timer {
-    triggeredOnStart: true
-    interval: 60000
-    repeat: true
-    running: true
-    onTriggered: console.debug(Qt.formatDateTime("yyyy/MM/dd hh:mm:ss"), new Date())
+OAuth {
+    id: root
+    property string user_id
+    property string screen_name
+
+    SilkConfig {
+        id: config
+        property variant oauth: {'consumerKey': '', 'consumerSecret': ''}
+    }
+
+    requestTokenUrl: 'https://api.twitter.com/oauth/request_token'
+    authorizeUrl: 'https://api.twitter.com/oauth/authorize'
+    accessTokenUrl: 'https://api.twitter.com/oauth/access_token'
+
+    consumerKey: config.oauth.consumerKey
+    consumerSecret: config.oauth.consumerSecret
 }

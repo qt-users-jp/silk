@@ -51,7 +51,7 @@ class TableModel : public QAbstractListModel, public QQmlParserStatus
     Q_PROPERTY(bool select READ select WRITE select NOTIFY selectChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(Database *database READ database WRITE setDatabase NOTIFY databaseChanged)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString tableName READ tableName WRITE setTableName NOTIFY tableNameChanged)
     Q_PROPERTY(QString primaryKey READ primaryKey WRITE setPrimaryKey NOTIFY primaryKeyChanged)
     Q_PROPERTY(QString condition READ condition WRITE condition NOTIFY conditionChanged)
     Q_PROPERTY(QString order READ order WRITE order NOTIFY orderChanged)
@@ -70,7 +70,7 @@ public:
 //    void clear();
 
     Database *database() const;
-    const QString &name() const;
+    const QString &tableName() const;
     const QString &primaryKey() const;
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -82,7 +82,7 @@ public:
 
 public slots:
     void setDatabase(Database *database);
-    void setName(const QString &name);
+    void setTableName(const QString &tableName);
     void setPrimaryKey(const QString &primaryKey);
 
 
@@ -90,7 +90,7 @@ signals:
     void selectChanged(bool select);
     void countChanged(int count);
     void databaseChanged(Database *database);
-    void nameChanged(const QString &name);
+    void tableNameChanged(const QString &tableName);
     void primaryKeyChanged(const QString &primaryKey);
     void conditionChanged(const QString &condition);
     void orderChanged(const QString &order);

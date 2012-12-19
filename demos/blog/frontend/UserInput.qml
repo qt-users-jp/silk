@@ -26,10 +26,40 @@
 
 import QtQml 2.0
 
-Timer {
-    triggeredOnStart: true
-    interval: 60000
-    repeat: true
-    running: true
-    onTriggered: console.debug(Qt.formatDateTime("yyyy/MM/dd hh:mm:ss"), new Date())
+QtObject {
+    id: root
+
+    signal submit(variant data)
+
+    Component.onCompleted: {
+        var data = {}
+        var i, arr, arr2, key, val
+        if (http.query.length > 0) {
+            arr = http.query.split(/&/)
+            for (i = 0; i < arr.length; i++) {
+                arr2 = arr[i].split(/=/)
+                key = decodeURIComponent(arr2.shift().replace(/\+/g, ' '))
+                val = decodeURIComponent(arr2.join('=').replace(/\+/g, ' '))
+
+                if (typeof root[key] !== 'undefined')
+                    root[key] = val
+                else
+                    data[key] = val
+            }
+        }
+        if (http.data.length > 0) {
+            arr = http.data.split(/&/)
+            for (i = 0; i < arr.length; i++) {
+                arr2 = arr[i].split(/=/)
+                key = decodeURIComponent(arr2.shift().replace(/\+/g, ' '))
+                val = decodeURIComponent(arr2.join('=').replace(/\+/g, ' '))
+
+                if (typeof root[key] !== 'undefined')
+                    root[key] = val
+                else
+                    data[key] = val
+            }
+        }
+        root.submit(data)
+    }
 }

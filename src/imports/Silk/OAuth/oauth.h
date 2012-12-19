@@ -64,6 +64,8 @@ class OAuth : public SilkAbstractObject
     ADD_PROPERTY(const QString &, token, QString)
     Q_PROPERTY(QString tokenSecret READ tokenSecret WRITE tokenSecret NOTIFY tokenSecretChanged)
     ADD_PROPERTY(const QString &, tokenSecret, QString)
+    Q_PROPERTY(QUrl callbackUrl READ callbackUrl WRITE callbackUrl NOTIFY callbackUrlChanged)
+    ADD_PROPERTY(const QUrl &, callbackUrl, QUrl)
     Q_PROPERTY(bool authorized READ authorized NOTIFY authorizedChanged)
     ADD_PROPERTY(bool, authorized, bool)
 public:
@@ -107,6 +109,7 @@ signals:
     void consumerSecretChanged(const QString &consumerSecret);
     void tokenChanged(const QString &token);
     void tokenSecretChanged(const QString &tokenSecret);
+    void callbackUrlChanged(const QUrl &callbackUrl);
     void authorizedChanged(bool isAuthorized);
 
     void networkAccessManagerChanged(QNetworkAccessManager *networkAccessManager);

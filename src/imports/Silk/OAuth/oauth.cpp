@@ -161,10 +161,13 @@ QNetworkReply *OAuth::Private::request(const QString &method, const QUrl &url, c
         requestParams["oauth_consumer_key"] = q->m_consumerKey.toUtf8();
         if (!q->m_token.isEmpty())
             requestParams["oauth_token"] = q->m_token.toUtf8();
+        if (!q->m_callbackUrl.isEmpty())
+            requestParams["oauth_callback"] = q->m_callbackUrl.toString().toUtf8();
+//        qDebug() << QUrl::toPercentEncoding(q->m_callbackUrl.toString());
     }
     requestParams["oauth_nonce"] = nonce.toUtf8();
     requestParams["oauth_timestamp"] = timestamp.toUtf8();
-//    qDebug() << Q_FUNC_INFO << __LINE__ << url.host();
+
     if (url.host() == "upload.twitter.com") {
         requestParams["oauth_signature"] =  signature(method,
                                                       url,
@@ -174,6 +177,9 @@ QNetworkReply *OAuth::Private::request(const QString &method, const QUrl &url, c
                                                       url,
                                                       normalize(signatureParams(params)));
     }
+
+//    qDebug() << Q_FUNC_INFO << __LINE__ << requestParams;
+
     if (method == "POST") {
         switch (authorizeBy) {
         case AuthorizeByHeader:
@@ -312,10 +318,14 @@ QString OAuth::Private::sign(const QString &method, const QUrl &url, const QVari
         requestParams["oauth_consumer_key"] = q->m_consumerKey.toUtf8();
         if (!q->m_token.isEmpty())
             requestParams["oauth_token"] = q->m_token.toUtf8();
+        if (!q->m_callbackUrl.isEmpty())
+            requestParams["oauth_callback"] = q->m_callbackUrl.toString().toUtf8();
     }
     requestParams["oauth_nonce"] = nonce.toUtf8();
     requestParams["oauth_timestamp"] = timestamp.toUtf8();
     requestParams["oauth_signature"] =  signature(method, url, normalize(signatureParams(params2)));
+
+//    qDebug() << Q_FUNC_INFO << __LINE__ << requestParams;
 
     QMultiMap<QString, QByteArray> allParams(requestParams);
     allParams += params2;
@@ -351,10 +361,12 @@ QString OAuth::Private::authHeader(const QString &method, const QUrl &url, const
         requestParams["oauth_consumer_key"] = q->m_consumerKey.toUtf8();
         if (!q->m_token.isEmpty())
             requestParams["oauth_token"] = q->m_token.toUtf8();
+        if (!q->m_callbackUrl.isEmpty())
+            requestParams["oauth_callback"] = q->m_callbackUrl.toString().toUtf8();
     }
     requestParams["oauth_nonce"] = nonce.toUtf8();
     requestParams["oauth_timestamp"] = timestamp.toUtf8();
-//    qDebug() << Q_FUNC_INFO << __LINE__ << url.host();
+    qDebug() << Q_FUNC_INFO << __LINE__ << requestParams;
     QMultiMap<QString, QByteArray> params2;
     foreach (const QString &key, params.keys()) {
         params2.insert(key, params.value(key).toString().toUtf8());

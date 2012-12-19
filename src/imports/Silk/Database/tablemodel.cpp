@@ -65,7 +65,7 @@ private:
 
 public:
     Database *database;
-    QString name;
+    QString tableName;
     QString primaryKey;
     QList<QVariantList> data;
     QHash<int, QByteArray> roleNames;
@@ -130,7 +130,7 @@ void TableModel::Private::databaseChanged(Database *database)
 void TableModel::Private::openChanged(bool open)
 {
     if (open) {
-        if (q->name().isEmpty()) {
+        if (q->tableName().isEmpty()) {
             qWarning() << "table name is empty.";
             return;
         }
@@ -143,11 +143,11 @@ void TableModel::Private::create()
 {
     if (fieldNames.isEmpty()) return;
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
-    if (db.tables().contains(q->name().toLower())) return;
+    if (db.tables().contains(q->tableName().toLower())) return;
 
     QString type = db.driverName();
 
-    QString sql = QString("CREATE TABLE%2 %1 (").arg(q->name()).arg(ifNotExistsMap.value(type));
+    QString sql = QString("CREATE TABLE%2 %1 (").arg(q->tableName()).arg(ifNotExistsMap.value(type));
 
     const QMetaObject *mo = q->metaObject();
     int start = initialProperties.count();
@@ -213,7 +213,7 @@ void TableModel::Private::create()
 
 QString TableModel::Private::selectSql() const
 {
-    QString ret = QString("SELECT %2 FROM %1").arg(q->name()).arg(fieldNames.isEmpty() ? "*" : fieldNames.join(", "));
+    QString ret = QString("SELECT %2 FROM %1").arg(q->tableName()).arg(fieldNames.isEmpty() ? "*" : fieldNames.join(", "));
     if (!q->m_condition.isEmpty())
         ret += QString(" WHERE %1").arg(q->m_condition);
     if (!q->m_order.isEmpty())
@@ -314,16 +314,16 @@ void TableModel::setDatabase(Database *database)
     emit databaseChanged(database);
 }
 
-const QString &TableModel::name() const
+const QString &TableModel::tableName() const
 {
-    return d->name;
+    return d->tableName;
 }
 
-void TableModel::setName(const QString &name)
+void TableModel::setTableName(const QString &tableName)
 {
-    if (d->name == name) return;
-    d->name = name;
-    emit nameChanged(name);
+    if (d->tableName == tableName) return;
+    d->tableName = tableName;
+    emit tableNameChanged(tableName);
 }
 
 const QString &TableModel::primaryKey() const
@@ -389,7 +389,7 @@ QVariant TableModel::insert(const QVariantMap &data)
 
     QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
     QSqlQuery query(db);
-    if (!query.prepare(QString("INSERT INTO %1(%2) VALUES(%3)").arg(name()).arg(keys.join(", ")).arg(placeHolders.join(", ")))) {
+    if (!query.prepare(QString("INSERT INTO %1(%2) VALUES(%3)").arg(tableName()).arg(keys.join(", ")).arg(placeHolders.join(", ")))) {
         qWarning() << Q_FUNC_INFO << __LINE__ << query.lastQuery() << query.lastError().text();
         return false;
     }
@@ -458,7 +458,7 @@ void TableModel::update(const QVariantMap &data)
 
     QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
     QSqlQuery query(db);
-    if (!query.prepare(QString("UPDATE %1 SET %2%3").arg(name()).arg(sets.join(", ")).arg(where))) {
+    if (!query.prepare(QString("UPDATE %1 SET %2%3").arg(tableName()).arg(sets.join(", ")).arg(where))) {
         qWarning() << Q_FUNC_INFO << __LINE__ << query.lastQuery() << query.lastError().text();
         return;
     }
@@ -495,7 +495,7 @@ void TableModel::update(const QVariantMap &data)
 bool TableModel::remove(const QVariantMap &data)
 {
     QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
-    QString sql = QString("DELETE FROM %1 WHERE %2=%3;").arg(name()).arg(primaryKey()).arg(d->toSql(data.value(primaryKey())));
+    QString sql = QString("DELETE FROM %1 WHERE %2=%3;").arg(tableName()).arg(primaryKey()).arg(d->toSql(data.value(primaryKey())));
     QSqlQuery query(sql, db);
     bool ret = query.exec();
     if (ret) {
