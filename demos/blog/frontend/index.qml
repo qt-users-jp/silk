@@ -33,11 +33,13 @@ import './components/'
 
 Theme {
     id: root
+    __title: config.blog.title
 
     Cache { id: cache }
     SilkConfig {
         id: config
-        property variant blog: {author: 'task_jp'; database: ':memory:'}
+        property variant blog: {author: 'task_jp'; database: ':memory:'; title: 'Qt { version: 5 }'}
+        onBlogChanged: console.debug(blog.database)
     }
 
     UserInput {
