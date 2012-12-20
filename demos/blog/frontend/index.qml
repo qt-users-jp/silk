@@ -35,11 +35,9 @@ Theme {
     id: root
     __title: config.blog.title
 
-    Cache { id: cache }
     SilkConfig {
         id: config
         property variant blog: {author: 'task_jp'; database: ':memory:'; title: 'Qt { version: 5 }'}
-        onBlogChanged: console.debug(blog.database)
     }
 
     UserInput {
@@ -81,11 +79,7 @@ Theme {
                     account.verified()
                     return
                 } else if (typeof http.requestCookies.session_id !== 'undefined') {
-                    var session_data = cache.fetch(http.requestCookies.session_id.value)
-                    if (typeof session_data !== 'undefined') {
-                        account.user_id = session_data.user_id
-                        account.screen_name = session_data.screen_name
-                    }
+                    account.restoreSession()
                 }
                 break
             }
@@ -135,73 +129,9 @@ Theme {
         }
     }
 
-    QtObject {
+    Account {
         id: account
-        property bool loggedIn: account.user_id.length > 0 && account.screen_name.length > 0
-        property string user_id
-        property string screen_name
-
-        function login() {
-            http.loading = true
-            twitter.callbackUrl = '%1://%2:%3/'.arg(http.scheme).arg(http.host).arg(http.port)
-            twitter.requestToken()
-        }
-
-        function logout() {
-            twitter.token = '';
-            twitter.tokenSecret = '';
-            twitter.user_id = '';
-            twitter.screen_name = '';
-            var cookies = http.responseCookies
-            cookies.session_id = { value: undefined, expires: new Date(0) }
-            http.responseCookies = cookies
-            cache.remove(http.requestCookies.session_id)
-            http.status = 302
-            http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': http.path}
-        }
-
-        function authorize(url) {
-            cache.add(twitter.token, twitter.tokenSecret)
-            http.status = 302
-            http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': url};
-            http.loading = false
-        }
-
-        function verified() {
-            http.loading = true
-            twitter.token = input.oauth_token
-            twitter.tokenSecret = cache.fetch(input.oauth_token)
-            cache.remove(input.oauth_token)
-            twitter.accessToken(input.oauth_verifier)
-        }
-
-        function authorized() {
-            if (twitter.authorized) {
-                if (twitter.screen_name === config.blog.author) {
-                    var session_id = Silk.uuid()
-                    var session_data = {}
-                    session_data.token = twitter.token
-                    session_data.tokenSecret = twitter.tokenSecret
-                    session_data.user_id = twitter.user_id
-                    session_data.screen_name = twitter.screen_name
-                    cache.add(session_id, session_data)
-
-                    var cookies = http.responseCookies
-                    cookies.session_id = { 'value': session_id }
-                    http.responseCookies = cookies
-                }
-
-            }
-            http.status = 302
-            http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': http.path}
-            http.loading = false
-        }
-    }
-
-    Twitter {
-        id: twitter
-        onAuthorize: account.authorize(url)
-        onAuthorizedChanged: account.authorized()
+        author: config.blog.author
     }
 
     // Editor

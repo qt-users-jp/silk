@@ -29,8 +29,6 @@ import Silk.Utils 1.0
 
 OAuth {
     id: root
-    property string user_id
-    property string screen_name
 
     SilkConfig {
         id: config
