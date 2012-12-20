@@ -39,4 +39,5 @@ AbstractSlugModel {
     property date published
     property date lastModified
     property int status: 0
+    order: 'published DESC, id DESC'
 }

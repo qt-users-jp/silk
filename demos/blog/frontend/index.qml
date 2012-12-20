@@ -120,10 +120,14 @@ Theme {
 
             // view
             if (input.action.length === 0) {
+                var conditions = []
+                if (!account.loggedIn)
+                    conditions.push('published <> ""')
                 if (input.page > 0)
                     articleModel.offset = articleModel.limit * input.page
                 if (input.no > 0)
-                    articleModel.condition = 'id=%1'.arg(input.no)
+                    conditions.push( 'id=%1'.arg(input.no))
+                articleModel.condition = conditions.join(' AND ')
                 articleModel.select = true
             }
         }
