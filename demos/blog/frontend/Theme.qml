@@ -58,11 +58,6 @@ Html {
                         href: '/'
                         text: root.__title
                     }
-
-                    Text {
-                        enabled: root.__subtitle.length > 0
-                        text: ' - %1'.arg(root.__subtitle)
-                    }
                 }
 
                 Nav {
