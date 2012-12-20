@@ -125,6 +125,8 @@ Theme {
                     conditions.push( 'id=%1'.arg(input.no))
                 articleModel.condition = conditions.join(' AND ')
                 articleModel.select = true
+                if (input.no > 0 && articleModel.count === 1)
+                    root.__subtitle = articleModel.get(0).title
             }
         }
     }
