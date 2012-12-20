@@ -89,31 +89,33 @@ Theme {
             }
 
             // edit
-            switch(input.action) {
-            case 'edit':
-                switch(input.subaction) {
-                case 'save':
-                    editor.save()
+            if (account.loggedIn) {
+                switch(input.action) {
+                case 'edit':
+                    switch(input.subaction) {
+                    case 'save':
+                        editor.save()
+                        break
+                    default:
+                        editor.load()
+                        break
+                    }
                     break
-                default:
-                    editor.load()
-                    break
-                }
-                break
-            case 'remove':
-                switch(input.subaction) {
                 case 'remove':
-                    editor.remove()
+                    switch(input.subaction) {
+                    case 'remove':
+                        editor.remove()
+                        break
+                    default:
+                        articleModel.condition = 'id=%1'.arg(input.no)
+                        articleModel.select = true
+                        editor.confirmRemove = true
+                        break
+                    }
                     break
                 default:
-                    articleModel.condition = 'id=%1'.arg(input.no)
-                    articleModel.select = true
-                    editor.confirmRemove = true
                     break
                 }
-                break
-            default:
-                break
             }
 
             // view
