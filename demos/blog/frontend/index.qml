@@ -190,7 +190,7 @@ Theme {
                 article.body = input.body
                 article.body2 = input.body2
                 article.head = input.head
-                article.published = new Date(input.yymmdd + input.hhmm)
+                article.published = new Date(input.yymmdd + ' ' + input.hhmm)
 
                 if (editor.isNew) {
                     input.no = articleModel.insert(article)
