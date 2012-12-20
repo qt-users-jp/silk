@@ -26,7 +26,12 @@
 
 import Silk.HTML 5.0
 
-Td {
-    property string __class
-    _class: "architecture_block %1".arg(__class)
+Script {
+    property string __trackingCode
+    text: "
+var _gaq=[['_setAccount','%1'],['_trackPageview']];
+(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+s.parentNode.insertBefore(g,s)}(document,'script'));
+".arg(__trackingCode)
 }

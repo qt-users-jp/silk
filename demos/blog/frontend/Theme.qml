@@ -123,9 +123,9 @@ Html {
             }
         }
 
-//        GoogleAnalytics {
-//            enabled: http.host === "silk.qtquick.me"
-//            __trackingCode: 'UA-33461556-1'
-//        }
+        GoogleAnalytics {
+            enabled: http.host === "qt5.jp"
+            __trackingCode: 'UA-37175896-1'
+        }
     }
 }
