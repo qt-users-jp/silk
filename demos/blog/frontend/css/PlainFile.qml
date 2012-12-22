@@ -36,6 +36,7 @@ Rule {
     property string _webkit_box_shadow: '0 5px 10px #aaa'
     property string _moz_box_shadow: _webkit_box_shadow
     property string box_shadow: _webkit_box_shadow
+    property string overflow: 'auto'
 
     Rule {
         selector: ' .number'

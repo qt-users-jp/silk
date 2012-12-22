@@ -35,6 +35,7 @@ Rule {
     border_right: border_left
     background: css.blackColor
     property string padding: '10px'
+    property string overflow: 'auto'
 
     property string _webkit_box_shadow: '0 5px 10px #aaa'
     property string _moz_box_shadow: _webkit_box_shadow
