@@ -34,6 +34,7 @@ import './components/'
 Theme {
     id: root
     __title: config.blog.title
+    __tracking: !account.loggedIn
 
     SilkConfig {
         id: config

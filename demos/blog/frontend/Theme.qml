@@ -33,6 +33,7 @@ Html {
     property string __subtitle
     default property alias contents: main.contents
     property alias sideBar: sideBar.contents
+    property bool __tracking: true
 
     DocType { enabled: http.status === 200 }
 
@@ -119,7 +120,7 @@ Html {
         }
 
         GoogleAnalytics {
-            enabled: http.host === "qt5.jp"
+            enabled: http.host === "qt5.jp" && root.__tracking
             __trackingCode: 'UA-37175896-1'
         }
     }
