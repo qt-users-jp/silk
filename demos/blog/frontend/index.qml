@@ -292,8 +292,17 @@ Theme {
         }
     ]
 
+    function escapeHTML(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    }
+    function escapeAll(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    }
+
+
     Article {
         enabled: input.action === 'edit'
+
         Header {
             H2 { text: editor.isNew ? qsTr('New') : qsTr('Edit') }
             Repeater {
@@ -308,18 +317,19 @@ Theme {
         Form {
             action: http.path
             method: 'POST'
+
             Input {
                 type: 'text'
                 name: 'title'
                 placeholder: qsTr('Title')
-                value: input.title
+                value: escapeAll(input.title)
                 property string style: "width: 100%"
             }
             Input {
                 type: 'text'
                 name: 'slug'
                 placeholder: qsTr('Slug')
-                value: input.slug
+                value: escapeAll(input.slug)
                 property string style: "width: 100%"
             }
             TextArea {
@@ -327,14 +337,14 @@ Theme {
                 placeholder: qsTr('Body')
                 rows: '5'
                 property string style: "width: 100%"
-                Text { text: input.body }
+                Text { text: escapeAll(input.body) }
             }
             TextArea {
                 name: 'body2'
                 placeholder: qsTr('Continue')
                 rows: '20'
                 property string style: "width: 100%"
-                Text { text: input.body2 }
+                Text { text: escapeAll(input.body2) }
             }
             Input { type: 'date'; name: 'yymmdd'; value: input.yymmdd }
             Input { type: 'time'; name: 'hhmm'; value: input.hhmm }
