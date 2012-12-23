@@ -372,7 +372,7 @@ Theme {
                     H2 {
                         A {
                             href: '%1?no=%2'.arg(http.path).arg(model.id)
-                            text: model.title
+                            text: escapeHTML(model.title)
                         }
                     }
                     P { text: Qt.formatDateTime(model.published, 'yyyy年MM月dd日 hh時mm分') }
