@@ -29,6 +29,7 @@
 
 #include <silkabstracthttpobject.h>
 
+#include <QtCore/QTemporaryFile>
 #include <QtCore/QUrl>
 
 class QHttpFileData;
@@ -45,15 +46,15 @@ class HttpFileData : public QObject
 public:
     HttpFileData(QHttpFileData *data, QObject *parent = 0);
 
-    Q_INVOKABLE bool save(const QString &as) const;
-    Q_INVOKABLE bool remove();
+    Q_INVOKABLE bool save(const QString &fileName);
+
 signals:
     void fileNameChanged(const QString &fileName);
     void filePathChanged(const QString &filePath);
     void contentTypeChanged(const QString &contentType);
 
 private:
-    QHttpFileData *m_data;
+    QTemporaryFile m_file;
 };
 
 class HttpObject : public QObject

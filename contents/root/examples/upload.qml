@@ -39,11 +39,6 @@ Html {
             case 'upload':
                 for (var i = 0; i < http.files.length; i++) {
                     result.text = '%1(%2) uploaded to %3'.arg(http.files[i].fileName).arg(http.files[i].contentType).arg(http.files[i].filePath);
-                    if (http.files[i].remove()) {
-                        result.text += ' and removed safely.';
-                    } else {
-                        result.text += '. please remove the file manually.';
-                    }
                 }
                 break;
             default:

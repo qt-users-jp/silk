@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,48 +24,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "httpobject.h"
+(function($) { $(function() {
+    $(':file').change(fileChanged)
 
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <qhttprequest.h>
-
-HttpFileData::HttpFileData(QHttpFileData *data, QObject *parent)
-    : QObject(parent)
-{
-    fileName(data->fileName());
-    contentType(data->contentType());
-    if (m_file.open()) {
-        m_file.write(data->readAll());
-        m_file.close();
-        filePath(m_file.fileName());
+    function fileChanged() {
+        var $files = $(':file')
+        if ($(this).val().length === 0) {
+            $(this).next().remove()
+            $(this).remove()
+        } else {
+            if ($files.index($(this)) === $files.length  - 1) {
+                var $clone = $(this).clone()
+                $clone.insertAfter($files.last().next())
+                $('<br />').insertAfter($clone)
+                $clone.change(fileChanged)
+            }
+        }
     }
-}
-
-bool HttpFileData::save(const QString &fileName)
-{
-    bool ret = false;
-    QFileInfo fi(fileName);
-    if (QDir::root().mkpath(fi.dir().absolutePath()))
-        ret = m_file.copy(fileName);
-    return ret;
-}
-
-HttpObject::HttpObject(QObject *parent)
-    : QObject(parent)
-    , m_loading(false)
-    , m_status(200)
-    , m_escapeHTML(false)
-{
-}
-
-QQmlListProperty<HttpFileData> HttpObject::files()
-{
-    return QQmlListProperty<HttpFileData>(this, m_files);
-}
-
-void HttpObject::setFiles(const QList<HttpFileData *> &files)
-{
-    m_files = files;
-}
+}); })(jQuery);

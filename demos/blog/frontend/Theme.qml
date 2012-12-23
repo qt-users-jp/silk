@@ -32,19 +32,23 @@ Html {
     property string __title: 'Qt { version: 5 }'
     property string __subtitle
     default property alias contents: main.contents
-    property alias sideBar: sideBar.contents
+    property alias aside: aside.contents
+    property alias head: head.contents
     property bool __tracking: true
 
     DocType { enabled: http.status === 200 }
 
     Head {
+        id: head
         enabled: http.status === 200
         Meta { charset: "utf-8" }
         Meta { http_equiv: "X-UA-Compatible"; content: "IE=edge,chrome=1" }
-        Title { text: root.__subtitle.length > 0 ? '%1 - %2'.arg(root.__subtitle).arg(root.__title) : root.__title }
         Meta { name: "description"; content: "" }
         Meta { name: "viewport"; content: "width=device-width" }
+        Title { text: root.__subtitle.length > 0 ? '%1 - %2'.arg(root.__subtitle).arg(root.__title) : root.__title }
+        Link { rel: "shortcut icon"; href: "/favicon.ico" }
         Link { rel: "stylesheet"; href: "/css/" }
+        Script { type: 'text/javascript'; src: 'http://code.jquery.com/jquery-1.8.3.min.js' }
     }
 
     Body {
@@ -100,7 +104,7 @@ Html {
 //                    property string style: "width: 100%"
                 }
 
-                Aside { id: sideBar }
+                Aside { id: aside }
             }
         }
 

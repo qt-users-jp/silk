@@ -203,6 +203,11 @@ Theme {
                 }
 
                 if (db.commit()) {
+                    if (http.files.length > 0) {
+                        for (var i = 0; i < http.files.length; i++) {
+                            http.files[i].save('%1%2/%3'.arg(config.blog.upload).arg(input.no).arg(http.files[i].fileName))
+                        }
+                    }
                     http.status = 302
                     http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': '%1?no=%2'.arg(http.path).arg(input.no)}
                 } else {
@@ -247,7 +252,10 @@ Theme {
     TagModel { id: tagModel; database: db }
     ArticleModel { id: articleModel; database: db; limit: 10 }
 
-    sideBar: [
+    head: [
+        Script { type: 'text/javascript'; src: '/edit.js'; enabled: input.action === 'edit' }
+    ]
+    aside: [
         Ul {
             Li {
                 A {
@@ -318,6 +326,7 @@ Theme {
         Form {
             action: http.path
             method: 'POST'
+            enctype: "multipart/form-data"
 
             Input {
                 type: 'text'
@@ -347,6 +356,7 @@ Theme {
                 property string style: "width: 100%"
                 Text { text: escapeAll(input.body2) }
             }
+            Input { type: 'file'; name: 'file' } Br {}
             Input { type: 'date'; name: 'yymmdd'; value: input.yymmdd }
             Input { type: 'time'; name: 'hhmm'; value: input.hhmm }
             Input { type: 'submit'; value: qsTr('Save') }

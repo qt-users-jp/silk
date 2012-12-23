@@ -196,7 +196,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         http->data(QString(request->readAll()));
         QList<HttpFileData *> files;
         foreach (QHttpFileData *file, request->files()) {
-            files.append(new HttpFileData(file, this));
+            files.append(new HttpFileData(file, http));
         }
         http->setFiles(files);
 
