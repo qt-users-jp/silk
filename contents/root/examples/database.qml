@@ -60,6 +60,7 @@ Html {
                 break;
             }
             chat.select = true;
+            select.select = true
         }
     }
 
@@ -76,6 +77,13 @@ Html {
             primaryKey: 'key'
             property int key
             property string value
+        }
+
+        SelectSqlModel {
+            id: select
+            select: false
+            query: "SELECT COUNT(key) as keys FROM Chat WHERE value LIKE ?"
+            params: ['%Qt%']
         }
     }
 
@@ -126,5 +134,7 @@ Html {
                 }
             }
         }
+
+        P { text: 'the number of values that contains "Qt" is %1.'.arg(select.count > 0 ? select.get(0).keys : '"not selected yet"') }
     }
 }

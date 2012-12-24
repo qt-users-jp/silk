@@ -6,9 +6,11 @@ QT -= gui
 HEADERS += \
     databaseplugin.h \
     database.h \
-    tablemodel.h
+    tablemodel.h \
+    selectsqlmodel.h
 
 SOURCES += \
     database.cpp \
-    tablemodel.cpp
+    tablemodel.cpp \
+    selectsqlmodel.cpp
 

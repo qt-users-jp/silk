@@ -64,20 +64,13 @@ class Database : public SilkAbstractObject, public QQmlParserStatus
     Q_OBJECT
 
     Q_PROPERTY(QString connectionName READ connectionName WRITE connectionName NOTIFY connectionNameChanged)
-    ADD_DB_PROPERTY(const QString &, connectionName, QString)
     Q_PROPERTY(QString type READ type WRITE type NOTIFY typeChanged)
-    ADD_DB_PROPERTY(const QString &, type, QString)
     Q_PROPERTY(QString databaseName READ databaseName WRITE databaseName NOTIFY databaseNameChanged)
-    ADD_DB_PROPERTY(const QString &, databaseName, QString)
     Q_PROPERTY(QString hostName READ hostName WRITE hostName NOTIFY hostNameChanged)
-    ADD_DB_PROPERTY(const QString &, hostName, QString)
     Q_PROPERTY(QString userName READ userName WRITE userName NOTIFY userNameChanged)
-    ADD_DB_PROPERTY(const QString &, userName, QString)
     Q_PROPERTY(QString password READ password WRITE password NOTIFY passwordChanged)
-    ADD_DB_PROPERTY(const QString &, password, QString)
 
-    Q_PROPERTY(bool open READ open WRITE open NOTIFY openChanged)
-    ADD_PROPERTY(bool, open, bool)
+    Q_PROPERTY(bool open READ open NOTIFY openChanged)
 
     Q_INTERFACES(QQmlParserStatus)
 public:
@@ -90,6 +83,11 @@ public:
     virtual void classBegin();
     virtual void componentComplete();
 
+    bool open();
+
+public slots:
+    void open(bool open);
+
 signals:
     void connectionNameChanged(const QString &connectionName);
     void typeChanged(const QString &type);
@@ -101,6 +99,13 @@ signals:
     void transactionChanged(bool transaction);
 
 private:
+    ADD_DB_PROPERTY(const QString &, connectionName, QString)
+    ADD_DB_PROPERTY(const QString &, type, QString)
+    ADD_DB_PROPERTY(const QString &, databaseName, QString)
+    ADD_DB_PROPERTY(const QString &, hostName, QString)
+    ADD_DB_PROPERTY(const QString &, userName, QString)
+    ADD_DB_PROPERTY(const QString &, password, QString)
+    bool m_open;
     class Private;
     Private *d;
 };

@@ -230,6 +230,7 @@ QString TableModel::Private::selectSql() const
 void TableModel::Private::select()
 {
     if (!q->m_select) return;
+    if (!database || !database->open()) return;
 
     QSqlDatabase db = QSqlDatabase::database(database->connectionName());
     q->beginRemoveRows(QModelIndex(), 0, data.count() - 1);

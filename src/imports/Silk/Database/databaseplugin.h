@@ -34,6 +34,7 @@
 
 #include "database.h"
 #include "tablemodel.h"
+#include "selectsqlmodel.h"
 
 class DatabasePlugin : public QObject, SilkImportsInterface
 {
@@ -45,6 +46,7 @@ public:
     {
         qmlRegisterType<Database>("Silk.Database", 1, 0, "Database");
         qmlRegisterType<TableModel>("Silk.Database", 1, 0, "TableModel");
+        qmlRegisterType<SelectSqlModel>("Silk.Database", 1, 0, "SelectSqlModel");
     }
 };
 

@@ -101,6 +101,21 @@ Database::Database(QObject *parent)
 {
 }
 
+bool Database::open()
+{
+    if (!m_open) {
+        d->open();
+    }
+    return m_open;
+}
+
+void Database::open(bool open)
+{
+    if (m_open == open) return;
+    m_open = open;
+    emit openChanged(open);
+}
+
 bool Database::transaction()
 {
     QSqlDatabase db = QSqlDatabase::database(m_connectionName);

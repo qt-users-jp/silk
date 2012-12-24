@@ -48,7 +48,7 @@ Theme {
 
         // for list
         property string label: ''
-        property int page: 0
+        property int page: 1
 
         // for details
         property int no
@@ -121,13 +121,14 @@ Theme {
                 if (!account.loggedIn)
                     conditions.push('published <> ""')
                 if (input.page > 0)
-                    articleModel.offset = articleModel.limit * input.page
+                    articleModel.offset = articleModel.limit * Math.max(0, input.page - 1)
                 if (input.no > 0)
                     conditions.push( 'id=%1'.arg(input.no))
                 articleModel.condition = conditions.join(' AND ')
                 articleModel.select = true
                 if (input.no > 0 && articleModel.count === 1)
                     root.__subtitle = articleModel.get(0).title
+                articleCount.select = true
             }
         }
     }
@@ -250,7 +251,20 @@ Theme {
 
     UserModel { id: userModel; database: db }
     TagModel { id: tagModel; database: db }
-    ArticleModel { id: articleModel; database: db; limit: 10 }
+    ArticleModel {
+        id: articleModel
+        database: db
+        limit: 10
+    }
+    SelectSqlModel {
+        id: articleCount
+        database: db
+        select: false
+        query: 'SELECT COUNT(id) AS article_count FROM Article%1'.arg(account.loggedIn ? '' : ' WHERE published <> ""')
+
+        property int article_count: 0
+        onCountChanged: if (count > 0) article_count = get(0).article_count
+    }
 
     head: [
         Script { type: 'text/javascript'; src: '/edit.js'; enabled: input.action === 'edit' }
@@ -294,6 +308,23 @@ Theme {
                             href: "/?action=logout"
                             Img { width: '22'; height: '22'; src: '/icons/system-log-out.png' }
                             Text { text: "Logout" }
+                        }
+                    }
+                }
+            }
+            Repeater {
+                model: Math.floor(articleCount.article_count / 10 + (articleCount.article_count % 10 > 0 ? 1 : 0))
+                enabled: input.no === 0 && model > 1
+                Component {
+                    Li {
+                        A {
+                            enabled: model.modelData !== input.page - 1
+                            href: '%1?page=%2'.arg(http.path).arg(model.modelData + 1)
+                            text: 'Page: %1'.arg(model.modelData + 1)
+                        }
+                        Strong {
+                            enabled: model.modelData === input.page - 1
+                            text: 'Page: %1'.arg(model.modelData + 1)
                         }
                     }
                 }
