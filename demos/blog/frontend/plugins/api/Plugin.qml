@@ -23,43 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import QtQml 2.0
 
-#include "silk.h"
-
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QUuid>
-
-Silk::Silk(QObject *parent)
-    : QObject(parent)
-{
-}
-
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
-}
-
-QString Silk::readFile(const QString &filePath) const
-{
-    QString ret;
-    QFile file(filePath);
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        ret = QString::fromUtf8(file.readAll());
-        file.close();
-    }
-    return ret;
-}
-
-QVariantList Silk::readDir(const QString &path) const
-{
-    QVariantList ret;
-    QDir dir(path);
-    foreach (const QString &file, dir.entryList(QDir::Files)) {
-        ret.append(file);
-    }
-    return ret;
+QtObject {
+    property string name
+    property variant config
+    function exec(argument, str) { return str }
 }

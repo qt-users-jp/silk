@@ -39,6 +39,7 @@ Theme {
     SilkConfig {
         id: config
         property variant blog: {author: 'task_jp'; database: ':memory:'; title: 'Qt { version: 5 }'}
+        property variant contents: {}
     }
 
     UserInput {
@@ -240,6 +241,49 @@ Theme {
     QtObject {
         id: viewer
         property bool detail: input.no > 0
+
+        property var plugins
+
+        Component.onCompleted: {
+            var plugins = {}
+            var dir = config.contents['*'] + 'plugins/'
+            var files = Silk.readDir(dir)
+            for (var i = 0; i < files.length; i++) {
+                var component = Qt.createComponent(dir + files[i])
+                switch (component.status) {
+                case Component.Ready: {
+                    var plugin = component.createObject(viewer, {config: config})
+                    plugins[plugin.name] = plugin.exec
+                    break }
+                case Component.Error:
+                    console.debug(component.errorString())
+                    break
+                default:
+                    console.debug(component.status)
+                    break
+                }
+            }
+            viewer.plugins = plugins
+        }
+
+        function show(html, no) {
+            html = html.replace(/<plugin type=\"([^"]+)\" argument=\"([^"]+)\">(.*)<\/plugin>/g, function(str, plugin, argument, innerText) {
+                var ret = str
+                if (innerText.match(/<plugin/)) {
+                    innerText = show(innerText, no)
+                }
+
+                if (typeof viewer.plugins[plugin] === 'undefined') {
+                    console.debug('plugin %1 not found.'.arg(plugin))
+                    ret = innerText
+                } else {
+                    ret = (viewer.plugins[plugin])(argument.replace('[id]', no), innerText)
+                }
+
+                return ret
+            })
+            return html
+        }
     }
 
     Database {
@@ -387,6 +431,19 @@ Theme {
                 property string style: "width: 100%"
                 Text { text: escapeAll(input.body2) }
             }
+            Repeater {
+                model: Silk.readDir('%1%2'.arg(config.blog.upload).arg(input.no))
+                Component {
+                    Input { type: 'checkbox'; _id: value; value: model.modelData }
+                }
+                Component {
+                    Label { _for: text; text: model.modelData }
+                }
+                Component {
+                    Br {}
+                }
+            }
+
             Input { type: 'file'; name: 'file' } Br {}
             Input { type: 'date'; name: 'yymmdd'; value: input.yymmdd }
             Input { type: 'time'; name: 'hhmm'; value: input.hhmm }
@@ -415,16 +472,21 @@ Theme {
                             href: '%1?no=%2'.arg(http.path).arg(model.id)
                             text: escapeHTML(model.title)
                         }
+                        A {
+                            enabled: account.loggedIn
+                            href: '%1?action=edit&no=%2'.arg(http.path).arg(model.id)
+                            Img { width: '22'; height: '22'; src: '/icons/document-properties.png' }
+                        }
                     }
                     P { text: Qt.formatDateTime(model.published, 'yyyy年MM月dd日 hh時mm分') }
                 }
 
                 Section {
                     id: body
-                    Text { text: model.body }
+                    Text { text: viewer.show(model.body, model.id) }
                     Text {
                         enabled: viewer.detail && model.body2.length > 0
-                        text: model.body2
+                        text: viewer.show(model.body2, model.id)
                     }
                     P {
                         A {

@@ -24,42 +24,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+import './api/'
 
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QUuid>
+Plugin {
+    id: root
+    name: 'include'
 
-Silk::Silk(QObject *parent)
-    : QObject(parent)
-{
-}
-
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
-}
-
-QString Silk::readFile(const QString &filePath) const
-{
-    QString ret;
-    QFile file(filePath);
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        ret = QString::fromUtf8(file.readAll());
-        file.close();
+    function exec(argument, str) {
+        return Silk.readFile('%1%2'.arg(config.blog.upload).arg(argument))
     }
-    return ret;
-}
-
-QVariantList Silk::readDir(const QString &path) const
-{
-    QVariantList ret;
-    QDir dir(path);
-    foreach (const QString &file, dir.entryList(QDir::Files)) {
-        ret.append(file);
-    }
-    return ret;
 }

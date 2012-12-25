@@ -27,7 +27,8 @@
 #ifndef SILK_H
 #define SILK_H
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtCore/QVariantList>
 
 class Silk : public QObject
 {
@@ -36,6 +37,8 @@ public:
     explicit Silk(QObject *parent = 0);
     
     Q_INVOKABLE QString uuid();
+    Q_INVOKABLE QString readFile(const QString &filePath) const;
+    Q_INVOKABLE QVariantList readDir(const QString &path) const;
 };
 
 #endif // SILK_H

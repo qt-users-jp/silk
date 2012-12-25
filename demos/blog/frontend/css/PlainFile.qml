@@ -43,7 +43,7 @@ Rule {
         color: '#000000'
     }
     Rule {
-        selector: ' .string'
+        selector: ' .literal'
         color: '#339933'
     }
     Rule {

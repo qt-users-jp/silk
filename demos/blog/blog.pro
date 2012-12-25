@@ -16,5 +16,8 @@ OTHER_FILES += \
     frontend/UserModel.qml \
     frontend/TagModel.qml \
     frontend/ArticleModel.qml \
-    frontend/edit.js
+    frontend/edit.js \
+    frontend/plugins/include.qml \
+    frontend/plugins/api/Plugin.qml \
+    frontend/plugins/highlight/test.js
 

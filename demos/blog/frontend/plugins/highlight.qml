@@ -24,42 +24,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "silk.h"
+import './api/'
+import './highlight/highlighter.js' as Script
+import './highlight/qml.js' as QmlParser
 
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QUuid>
+Plugin {
+    id: root
+    name: 'highlight'
 
-Silk::Silk(QObject *parent)
-    : QObject(parent)
-{
-}
+    function exec(argument, str) {
+        var parser
+        var ret = str
+        switch (argument) {
+        case 'json':
+            ret = Script.highlightJson(str)
+            break
+        case 'qml':
+            parser = new QmlParser.QmlLexter()
+            ret = parser.to_html(parser.parse(str))
+            break
+        default:
+            break
+        }
 
-QString Silk::uuid()
-{
-    QString ret = QUuid::createUuid().toString().mid(1);
-    ret.chop(1);
-    return ret;
-}
-
-QString Silk::readFile(const QString &filePath) const
-{
-    QString ret;
-    QFile file(filePath);
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        ret = QString::fromUtf8(file.readAll());
-        file.close();
+        return ret
     }
-    return ret;
-}
-
-QVariantList Silk::readDir(const QString &path) const
-{
-    QVariantList ret;
-    QDir dir(path);
-    foreach (const QString &file, dir.entryList(QDir::Files)) {
-        ret.append(file);
-    }
-    return ret;
 }
