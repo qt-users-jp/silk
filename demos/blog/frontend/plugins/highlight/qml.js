@@ -203,6 +203,13 @@ QmlLexter.prototype = {
             str = this.advance()
             type = 'semicolon'
             break
+        case '\r':
+            str += this.advance()
+            while (this.m_current && this.m_current === '\n') {
+                str += this.advance()
+            }
+            type = 'linefeed'
+            break
         case '\n':
             str = this.advance()
             type = 'linefeed'
