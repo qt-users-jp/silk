@@ -267,7 +267,7 @@ Theme {
         }
 
         function show(html, no) {
-            html = html.replace(/<plugin type=\"([^"]+)\" argument=\"([^"]+)\">(.*)<\/plugin>/g, function(str, plugin, argument, innerText) {
+            html = html.replace(/<plugin type=\"([^"]+)\" argument=\"([^"]+)\">([\s\S]*)<\/plugin>/gm, function(str, plugin, argument, innerText) {
                 var ret = str
                 if (innerText.match(/<plugin/)) {
                     innerText = show(innerText, no)
