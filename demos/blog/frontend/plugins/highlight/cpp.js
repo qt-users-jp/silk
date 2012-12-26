@@ -64,6 +64,7 @@ function CppParser() {
                        , 'class'
                        , 'struct'
                        , 'typedef'
+                       , 'virtual'
          ]
 }
 
