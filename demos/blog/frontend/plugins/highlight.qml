@@ -27,6 +27,7 @@
 import './api/'
 import './highlight/qml.js' as QmlParser
 import './highlight/json.js' as JsonParser
+import './highlight/pro.js' as ProParser
 
 Plugin {
     id: root
@@ -42,6 +43,10 @@ Plugin {
             break
         case 'qml':
             parser = new QmlParser.QmlLexter()
+            ret = parser.to_html(parser.parse(str))
+            break
+        case 'pro':
+            parser = new ProParser.ProParser()
             ret = parser.to_html(parser.parse(str))
             break
         default:

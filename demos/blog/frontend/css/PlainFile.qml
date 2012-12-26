@@ -40,7 +40,7 @@ Rule {
 
     Rule {
         selector: ' .number'
-        color: '#000000'
+        color: '#333399'
     }
     Rule {
         selector: ' .literal'
@@ -54,6 +54,16 @@ Rule {
     Rule {
         selector: ' .keyword'
         color: '#999933'
+    }
+
+    Rule {
+        selector: ' .function'
+        color: '#999933'
+    }
+
+    Rule {
+        selector: ' .variable'
+        color: '#993399'
     }
 
     Rule {
