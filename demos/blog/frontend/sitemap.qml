@@ -53,7 +53,7 @@ Text {
             console.debug(count)
             var urls = []
             for (var i = 0; i < count; i++) {
-                urls.push('%1://%2:%3/?no=%4'.arg(http.scheme).arg(http.host).arg(http.port).arg(articleModel.get(i).id))
+                urls.push('%1://%2/?no=%3'.arg(http.scheme).arg(http.host).arg(articleModel.get(i).id))
             }
             root.text = urls.join('\n')
             console.debug(root.text)
