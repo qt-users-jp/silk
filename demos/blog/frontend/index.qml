@@ -267,21 +267,20 @@ Theme {
         }
 
         function show(html, no) {
-            html = html.replace(/<plugin type=\"([^"]+)\" argument=\"([^"]+)\">([\s\S]*)<\/plugin>/gm, function(str, plugin, argument, innerText) {
-                var ret = str
-                if (innerText.match(/<plugin/)) {
-                    innerText = show(innerText, no)
-                }
-
-                if (typeof viewer.plugins[plugin] === 'undefined') {
-                    console.debug('plugin %1 not found.'.arg(plugin))
-                    ret = innerText
-                } else {
-                    ret = (viewer.plugins[plugin])(argument.replace('[id]', no), innerText)
-                }
-
-                return ret
-            })
+            html = html.replace(/plugin/g, '\v')
+            while (html.match(/<\v/)) {
+                html = html.replace(/<\v type=\"([^"]+)\" argument=\"([^"]+)\">([^\v]*?)<\/\v>/gm, function(str, plugin, argument, innerText) {
+                    var ret = str
+                    if (typeof viewer.plugins[plugin] === 'undefined') {
+                        console.debug('plugin %1 not found.'.arg(plugin))
+                        ret = innerText
+                    } else {
+                        ret = (viewer.plugins[plugin])(argument.replace('[id]', no), innerText)
+                    }
+                    return ret
+                })
+            }
+            html = html.replace(/\v/g, 'plugin')
             return html
         }
     }

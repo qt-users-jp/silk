@@ -25,8 +25,8 @@
  */
 
 import './api/'
-import './highlight/highlighter.js' as Script
 import './highlight/qml.js' as QmlParser
+import './highlight/json.js' as JsonParser
 
 Plugin {
     id: root
@@ -37,7 +37,8 @@ Plugin {
         var ret = str
         switch (argument) {
         case 'json':
-            ret = Script.highlightJson(str)
+            parser = new JsonParser.JsonParser()
+            ret = parser.to_html(parser.parse(str))
             break
         case 'qml':
             parser = new QmlParser.QmlLexter()

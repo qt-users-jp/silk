@@ -31,6 +31,6 @@ Plugin {
     name: 'include'
 
     function exec(argument, str) {
-        return Silk.readFile('%1%2'.arg(config.blog.upload).arg(argument))
+        return Silk.readFile('%1%2'.arg(config.blog.upload).arg(argument)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     }
 }

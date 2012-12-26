@@ -25,42 +25,11 @@
  */
 .pragma library
 
-function QmlLexter() {
-    this.m_reserved = ['import'
-                       , 'as'
-                       , 'property'
-                       , 'default'
-                       , 'true'
-                       , 'false'
-                       , 'for'
-                       , 'if'
-                       , 'else'
-                       , 'while'
-                       , 'switch'
-                       , 'case'
-                       , 'break'
-                       , 'return'
-                       , 'continue'
-                       , 'new'
-                       , 'function'
-                       , 'signal'
-                       , 'string'
-                       , 'real'
-                       , 'bool'
-                       , 'variant'
-                       , 'var'
-                       , 'int'
-                       , 'color'
-                       , 'size'
-                       , 'date'
-                       , 'signal'
-                       , 'alias'
-                       , 'typeof'
-                       , 'undefined'
-         ]
+function JsonParser() {
+    this.m_reserved = ['true', 'false', 'null']
 }
 
-QmlLexter.prototype = {
+JsonParser.prototype = {
     parse: function(chars) {
         this.m_pos = 0
         this.m_chars = chars
@@ -68,75 +37,11 @@ QmlLexter.prototype = {
         this.m_current = chars[0]
 
         var ret = []
-        var token = []
-        var t
-        var flag = ''
+
         while (this.m_pos < this.m_size ) {
-            t = this.lex()
-            switch (t.type) {
-            case 'keyword':
-                if (t.str === 'property') {
-                    flag = 'property'
-                } else if (flag === 'property') {
-                    flag = 'property2'
-                } else {
-                    flag = ''
-                }
-                break
-            case 'string':
-                if (flag === 'property2') {
-                    t.type = 'property'
-                }
-                flag = ''
-                break
-            case 'String':
-                if (flag === 'property') {
-                    flag = 'property2'
-                } else {
-                    flag = ''
-                }
-                break
-            }
-
-            token.unshift(t)
+            ret.push(this.lex())
         }
 
-        flag = ''
-
-        while (token.length > 0) {
-            t = token.shift()
-            switch (t.type) {
-            case 'colon':
-                flag = 'property'
-                break
-            case 'curly brace begin':
-                flag = 'element'
-                break
-            case 'space':
-                break
-            case 'string':
-                if (flag === 'property') {
-                    t.type = 'property'
-                    flag = ''
-                }
-                break
-            case 'String':
-                if (flag === 'element') {
-                    t.type = 'element'
-                    flag = ''
-                } else if (flag === 'property') {
-                    t.type = 'property'
-                    flag = ''
-                }
-
-                break
-            default:
-                flag = ''
-                break
-            }
-
-            ret.unshift(t)
-        }
         return ret
     }
 
@@ -195,13 +100,21 @@ QmlLexter.prototype = {
             str = this.advance()
             type = 'round parentheses end'
             break
+        case '[':
+            str = this.advance()
+            type = 'square parentheses begin'
+            break
+        case ']':
+            str = this.advance()
+            type = 'square parentheses end'
+            break
         case ':':
             str = this.advance()
             type = 'colon'
             break
-        case ';':
+        case ',':
             str = this.advance()
-            type = 'semicolon'
+            type = 'comma'
             break
         case '\r':
             str += this.advance()
@@ -214,31 +127,6 @@ QmlLexter.prototype = {
             str = this.advance()
             type = 'linefeed'
             break
-        case '/':
-            switch (this.next()) {
-            case '/':
-                str += this.advance() // /
-                while (this.m_current && this.m_current !== '\n') {
-                    str += this.advance()
-                }
-                type = 'comment'
-                break
-            case '*':
-                str += this.advance() // /
-                str += this.advance() // *
-                while (this.m_current && !(this.m_current === '*' && this.next() === '/')) {
-                    str += this.advance()
-                }
-                str += this.advance() // *
-                str += this.advance() // /
-                type = 'comment'
-                break
-            default:
-                str = this.advance()
-                type = 'operator'
-                break
-            }
-            break
         case '"':
 //            str += this.advance() // "
             while (this.m_current && !(this.m_current !== '\\' && this.next() === '"')) {
@@ -248,27 +136,13 @@ QmlLexter.prototype = {
             str += this.advance() // "
             type = 'literal'
             break
-        case '\'':
-//            str += this.advance() // '
-            while (this.m_current && !(this.m_current !== '\\' && this.next() === '\'')) {
-                str += this.advance()
-            }
-            str += this.advance() // ?
-            str += this.advance() // '
-            type = 'literal'
-            break
         default:
-            if (/[A-Z]/.test(this.m_current)) {
-                while (this.m_current && this.m_current.match(/[A-Za-z0-9_\.]/)) {
-                    str += this.advance()
-                }
-                type = 'String'
-            } else if (/[a-z_]/.test(this.m_current)) {
-                while (this.m_current && this.m_current.match(/[A-Za-z0-9_\.]/)) {
+            if (/[a-z]/.test(this.m_current)) {
+                while (this.m_current && this.m_current.match(/[a-z]/)) {
                     str += this.advance()
                 }
                 if (this.m_reserved.indexOf(str) < 0)
-                    type = 'string'
+                    type = 'other'
                 else
                     type = 'keyword'
             } else if (/[\-0-9\.]/.test(this.m_current)) {
