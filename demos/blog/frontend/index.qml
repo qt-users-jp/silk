@@ -78,7 +78,7 @@ Theme {
                 return
             default:
                 if (input.oauth_verifier.length > 0) {
-                    account.verified()
+                    account.verified(input.oauth_token, input.oauth_verifier)
                     return
                 } else if (typeof http.requestCookies.session_id !== 'undefined') {
                     account.restoreSession()
@@ -268,7 +268,7 @@ Theme {
 
         function show(html, no) {
             html = html.replace(/plugin/g, '\v')
-            while (html.match(/<\v/)) {
+            while (html.match(/<\v type=\"([^"]+)\" argument=\"([^"]+)\">([^\v]*?)<\/\v>/)) {
                 html = html.replace(/<\v type=\"([^"]+)\" argument=\"([^"]+)\">([^\v]*?)<\/\v>/gm, function(str, plugin, argument, innerText) {
                     var ret = str
                     if (typeof viewer.plugins[plugin] === 'undefined') {

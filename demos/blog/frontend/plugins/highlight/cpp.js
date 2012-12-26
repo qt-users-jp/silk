@@ -25,14 +25,12 @@
  */
 .pragma library
 
-function QmlParser() {
-    this.m_reserved = ['import'
-                       , 'as'
-                       , 'property'
-                       , 'default'
+function CppParser() {
+    this.m_reserved = ['auto'
                        , 'true'
                        , 'false'
                        , 'for'
+                       , 'foreach'
                        , 'if'
                        , 'else'
                        , 'while'
@@ -42,100 +40,44 @@ function QmlParser() {
                        , 'return'
                        , 'continue'
                        , 'new'
-                       , 'function'
-                       , 'signal'
-                       , 'string'
-                       , 'real'
+                       , 'delete'
+                       , 'emit'
+                       , 'SIGNAL'
+                       , 'SLOT'
+                       , 'void'
                        , 'bool'
-                       , 'variant'
-                       , 'var'
                        , 'int'
-                       , 'color'
-                       , 'size'
-                       , 'date'
-                       , 'signal'
-                       , 'alias'
-                       , 'typeof'
-                       , 'undefined'
+                       , 'float'
+                       , 'double'
+                       , 'unsigned'
+                       , 'sizeof'
+                       , 'mutable'
+                       , 'register'
+                       , 'const'
+                       , 'static'
+                       , 'public'
+                       , 'protected'
+                       , 'private'
+                       , 'signals'
+                       , 'slots'
+                       , 'explicit'
+                       , 'class'
+                       , 'struct'
+                       , 'typedef'
          ]
 }
 
-QmlParser.prototype = {
+CppParser.prototype = {
     parse: function(chars) {
         this.m_pos = 0
         this.m_chars = chars
         this.m_size = chars.length
         this.m_current = chars[0]
+        this.m_flag = ''
 
         var ret = []
-        var token = []
-        var t
-        var flag = ''
         while (this.m_pos < this.m_size ) {
-            t = this.lex()
-            switch (t.type) {
-            case 'keyword':
-                if (t.str === 'property') {
-                    flag = 'property'
-                } else if (flag === 'property') {
-                    flag = 'property2'
-                } else {
-                    flag = ''
-                }
-                break
-            case 'string':
-                if (flag === 'property2') {
-                    t.type = 'property'
-                }
-                flag = ''
-                break
-            case 'String':
-                if (flag === 'property') {
-                    flag = 'property2'
-                } else {
-                    flag = ''
-                }
-                break
-            }
-
-            token.unshift(t)
-        }
-
-        flag = ''
-
-        while (token.length > 0) {
-            t = token.shift()
-            switch (t.type) {
-            case 'colon':
-                flag = 'property'
-                break
-            case 'curly brace begin':
-                flag = 'element'
-                break
-            case 'space':
-                break
-            case 'string':
-                if (flag === 'property') {
-                    t.type = 'property'
-                    flag = ''
-                }
-                break
-            case 'String':
-                if (flag === 'element') {
-                    t.type = 'element'
-                    flag = ''
-                } else if (flag === 'property') {
-                    t.type = 'property'
-                    flag = ''
-                }
-
-                break
-            default:
-                flag = ''
-                break
-            }
-
-            ret.unshift(t)
+            ret.push(this.lex())
         }
         return ret
     }
@@ -178,30 +120,37 @@ QmlParser.prototype = {
                 str += this.advance()
             }
             type = 'space'
+//            this.m_flag = ' '
             break
         case '{':
             str = this.advance()
             type = 'curly brace begin'
+            this.m_flag = '{'
             break
         case '}':
             str = this.advance()
             type = 'curly brace end'
+            this.m_flag = '}'
             break
         case '(':
             str = this.advance()
             type = 'round parentheses begin'
+            this.m_flag = '('
             break
         case ')':
             str = this.advance()
             type = 'round parentheses end'
+            this.m_flag = ')'
             break
         case ':':
             str = this.advance()
             type = 'colon'
+            this.m_flag = ':'
             break
         case ';':
             str = this.advance()
             type = 'semicolon'
+            this.m_flag = ';'
             break
         case '\r':
             str += this.advance()
@@ -209,10 +158,12 @@ QmlParser.prototype = {
                 str += this.advance()
             }
             type = 'linefeed'
+            this.m_flag = '$'
             break
         case '\n':
             str = this.advance()
             type = 'linefeed'
+            this.m_flag = '$'
             break
         case '/':
             switch (this.next()) {
@@ -222,6 +173,7 @@ QmlParser.prototype = {
                     str += this.advance()
                 }
                 type = 'comment'
+                this.m_flag = '$'
                 break
             case '*':
                 str += this.advance() // /
@@ -240,29 +192,61 @@ QmlParser.prototype = {
             }
             break
         case '"':
-//            str += this.advance() // "
             while (this.m_current && !(this.m_current !== '\\' && this.next() === '"')) {
                 str += this.advance()
             }
             str += this.advance() // ?
             str += this.advance() // "
             type = 'literal'
+            this.m_flag = '""'
             break
         case '\'':
-//            str += this.advance() // '
             while (this.m_current && !(this.m_current !== '\\' && this.next() === '\'')) {
                 str += this.advance()
             }
             str += this.advance() // ?
             str += this.advance() // '
             type = 'literal'
+            this.m_flag = '\''
             break
+        case '<':
+            if (this.m_flag === '#') {
+                while (this.m_current && this.m_current !== '>') {
+                    str += this.advance()
+                }
+                str += this.advance() // >
+                type = 'literal'
+                this.m_flag = '\''
+            } else {
+                str = this.advance()
+                type = 'operator'
+                this.m_flag = '<'
+            }
+            break
+        case '#':
+            if (this.m_flag === '$') {
+                str += this.advance()
+                while (this.m_current && this.m_current.match(/[A-Za-z0-9_]/)) {
+                    str += this.advance()
+                }
+                type = 'preprocessor'
+                this.m_flag = '#'
+                break
+            }
+
+            // fall through
         default:
             if (/[A-Z]/.test(this.m_current)) {
                 while (this.m_current && this.m_current.match(/[A-Za-z0-9_\.]/)) {
                     str += this.advance()
                 }
-                type = 'String'
+                if (str.toUpperCase() === str)
+                    type = 'macro'
+                else if (str[0] === 'Q')
+                    type = 'class'
+                else
+                    type = 'String'
+                this.m_flag = 'S'
             } else if (/[a-z_]/.test(this.m_current)) {
                 while (this.m_current && this.m_current.match(/[A-Za-z0-9_\.]/)) {
                     str += this.advance()
@@ -271,16 +255,21 @@ QmlParser.prototype = {
                     type = 'string'
                 else
                     type = 'keyword'
+                this.m_flag = 's'
             } else if (/[0-9\.]/.test(this.m_current)) {
                 while (this.m_current && this.m_current.match(/[0-9\.x]/)) {
                     str += this.advance()
                 }
                 type = 'number'
+                this.m_flag = '0'
             } else {
                 console.debug(this.m_current)
-                while (this.m_current && this.m_current !== ' ') {
+                var head = this.m_current
+                str += this.advance()
+                while (this.m_current && this.m_current !== this.m_current) {
                     str += this.advance()
                 }
+                this.m_flag = '?'
             }
             break
         }

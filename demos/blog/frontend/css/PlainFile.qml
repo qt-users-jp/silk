@@ -42,6 +42,17 @@ Rule {
         selector: ' .number'
         color: '#333399'
     }
+
+    Rule {
+        selector: ' .macro'
+        color: '#333399'
+    }
+
+    Rule {
+        selector: ' .preprocessor'
+        color: '#333399'
+    }
+
     Rule {
         selector: ' .literal'
         color: '#339933'
@@ -68,6 +79,11 @@ Rule {
 
     Rule {
         selector: ' .element'
+        color: '#993399'
+    }
+
+    Rule {
+        selector: ' .class'
         color: '#993399'
     }
 

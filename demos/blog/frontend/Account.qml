@@ -44,12 +44,12 @@ Twitter {
         http.loading = false
     }
     
-    function verified() {
+    function verified(token, verifier) {
         http.loading = true
-        root.token = input.oauth_token
-        root.tokenSecret = cache.fetch(input.oauth_token)
-        cache.remove(input.oauth_token)
-        root.accessToken(input.oauth_verifier)
+        root.token = token
+        root.tokenSecret = cache.fetch(token)
+        cache.remove(token)
+        root.accessToken(verifier)
     }
     
     function restoreSession() {

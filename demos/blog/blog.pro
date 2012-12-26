@@ -21,5 +21,6 @@ OTHER_FILES += \
     frontend/plugins/api/Plugin.qml \
     frontend/plugins/highlight/qml.js \
     frontend/plugins/highlight/json.js \
-    frontend/plugins/highlight/pro.js
+    frontend/plugins/highlight/pro.js \
+    frontend/plugins/highlight/cpp.js
 

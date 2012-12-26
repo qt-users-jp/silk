@@ -28,6 +28,7 @@ import './api/'
 import './highlight/qml.js' as QmlParser
 import './highlight/json.js' as JsonParser
 import './highlight/pro.js' as ProParser
+import './highlight/cpp.js' as CppParser
 
 Plugin {
     id: root
@@ -37,12 +38,16 @@ Plugin {
         var parser
         var ret = str
         switch (argument) {
-        case 'json':
-            parser = new JsonParser.JsonParser()
+        case 'qml':
+            parser = new QmlParser.QmlParser()
             ret = parser.to_html(parser.parse(str))
             break
-        case 'qml':
-            parser = new QmlParser.QmlLexter()
+        case 'cpp':
+            parser = new CppParser.CppParser()
+            ret = parser.to_html(parser.parse(str))
+            break
+        case 'json':
+            parser = new JsonParser.JsonParser()
             ret = parser.to_html(parser.parse(str))
             break
         case 'pro':
