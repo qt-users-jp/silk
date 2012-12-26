@@ -485,7 +485,7 @@ Theme {
                     Text { text: viewer.show(model.body, model.id) }
                     Text {
                         enabled: viewer.detail && model.body2.length > 0
-                        text: viewer.show(model.body2, model.id)
+                        text: enabled ? viewer.show(model.body2, model.id) : ''
                     }
                     P {
                         A {
