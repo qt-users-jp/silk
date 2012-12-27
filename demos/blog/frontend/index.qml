@@ -35,6 +35,7 @@ Theme {
     id: root
     __title: config.blog.title
     __tracking: !account.loggedIn
+    __mode: input.action
 
     SilkConfig {
         id: config
@@ -196,6 +197,7 @@ Theme {
                 article.body2 = input.body2
                 article.head = input.head
                 article.published = new Date(input.yymmdd + ' ' + input.hhmm)
+                article.lastModified = new Date()
 
                 if (editor.isNew) {
                     input.no = articleModel.insert(article)
@@ -477,7 +479,14 @@ Theme {
                             Img { width: '22'; height: '22'; src: '/icons/document-properties.png' }
                         }
                     }
-                    P { text: Qt.formatDateTime(model.published, 'yyyy年MM月dd日 hh時mm分') }
+                    P {
+                        _class: 'dates'
+                        Text { text: qsTr('Published: %1').arg(Qt.formatDateTime(model.published, qsTr('yyyy-MM-dd'))) }
+                        Text {
+                            enabled: model.published < model.lastModified
+                            text: qsTr(' / Last modified: %1').arg(Qt.formatDateTime(model.lastModified, qsTr('yyyy-MM-dd')))
+                        }
+                    }
                 }
 
                 Section {
@@ -488,6 +497,7 @@ Theme {
                         text: enabled ? viewer.show(model.body2, model.id) : ''
                     }
                     P {
+                        _class: 'continue'
                         A {
                             enabled: !viewer.detail && model.body2.length > 0
                             href: '%1?no=%2'.arg(http.path).arg(model.id)

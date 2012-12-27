@@ -86,6 +86,13 @@ Css {
     }
 
     Rule {
+        selector: 'header'
+        border: '0'
+        property string margin: '0'
+        property string padding: '0'
+    }
+
+    Rule {
         selector: 'textarea'
         resize: 'vertical'
     }
@@ -210,7 +217,7 @@ Css {
 
             Rule {
                 selector: 'h1,h2,h3,h4,h5,h6'
-                property string margin: '5px 0px'
+                property string margin: '0px'
             }
             Rule {
                 selector: 'h1'
@@ -222,6 +229,14 @@ Css {
                 selector: 'h2'
                 font_size: '2em'
                 property string line_height: '1.5em'
+                property string border_left: '15px %1 solid'.arg(css.darkColor)
+                property string padding_left: '10px'
+                property string border_bottom: '2px %1 solid'.arg(css.darkColor)
+
+                Rule {
+                    selector: 'a'
+                    text_decoration: 'none'
+                }
             }
 
             Rule {
@@ -234,6 +249,19 @@ Css {
                 selector: 'h4'
                 font_size: '1.25em'
                 property string line_height: '1.125em'
+            }
+
+            Rule {
+                selector: 'p.dates'
+                text_align: 'right'
+                property string margin: '0px'
+                property string border_right: '10px %1 solid'.arg(css.darkColor)
+                property string padding_right: '10px'
+            }
+
+            Rule {
+                selector: 'p.continue'
+                text_align: 'right'
             }
 
             Rule {
@@ -311,7 +339,7 @@ Css {
             Rule {
                 selector: 'section'
                 property string margin_bottom: '20px'
-                border_bottom: '1px solid %1'.arg(css.darkColor)
+//                border_bottom: '1px solid %1'.arg(css.darkColor)
             }
 
             Rule {

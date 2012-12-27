@@ -35,6 +35,7 @@ Html {
     property alias aside: aside.contents
     property alias head: head.contents
     property bool __tracking: true
+    property string __mode
 
     DocType { enabled: http.status === 200 }
 
@@ -48,7 +49,10 @@ Html {
         Title { text: root.__subtitle.length > 0 ? '%1 - %2'.arg(root.__subtitle).arg(root.__title) : root.__title }
         Link { rel: "shortcut icon"; href: "/favicon.ico" }
         Link { rel: "stylesheet"; href: "/css/" }
-        Script { type: 'text/javascript'; src: 'http://code.jquery.com/jquery-1.8.3.min.js' }
+        Script {
+            enabled: root.__mode == 'edit'
+            type: 'text/javascript'; src: 'http://code.jquery.com/jquery-1.8.3.min.js'
+        }
     }
 
     Body {
