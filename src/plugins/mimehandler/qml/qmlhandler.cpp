@@ -68,6 +68,7 @@ private slots:
     void statusChanged();
     void componentDestroyed(QObject *object);
     void clearQmlCache();
+    void registerObject(const char *uri, int major, int minor);
 
 private:
     QmlHandler *q;
@@ -92,10 +93,6 @@ QmlHandler::Private::Private(QmlHandler *parent)
     context->setContextProperty(QLatin1String("Silk"), new Silk(this));
 
     qmlRegisterType<SilkAbstractHttpObject>();
-    qmlRegisterType<Text>("Silk.HTML", 4, 01, "Text");
-    qmlRegisterType<Text>("Silk.HTML", 5, 0, "Text");
-    qmlRegisterType<Text>("Silk.CSS", 2, 1, "Text");
-    qmlRegisterType<Text>("Silk.CSS", 3, 0, "Text");
     qmlRegisterUncreatableType<HttpFileData>("Silk.HTTP", 1, 1, "HttpFileData", QLatin1String("readonly"));
     qmlRegisterType<WebSocketObject>("Silk.WebSocket", 1, 0, "WebSocket");
 
@@ -107,6 +104,8 @@ QmlHandler::Private::Private(QmlHandler *parent)
         importsDir.cdUp();
     }
     importsDir.cd(SILK_IMPORTS_PATH);
+
+    QMap<QString, QObject*> plugins;
     foreach (const QString &lib, importsDir.entryList(QDir::Files)) {
         QPluginLoader pluginLoader(importsDir.absoluteFilePath(lib));
         if (pluginLoader.load()) {
@@ -114,7 +113,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
             if (object) {
                 SilkImportsInterface *plugin = qobject_cast<SilkImportsInterface *>(object);
                 if (plugin) {
-                    plugin->silkRegisterObject();
+                    plugins.insert(plugin->name(), object);
                 } else {
                     qWarning() << object;
                 }
@@ -124,6 +123,18 @@ QmlHandler::Private::Private(QmlHandler *parent)
         } else {
             qWarning() << pluginLoader.errorString() << importsDir.absoluteFilePath(lib);
         }
+    }
+
+    foreach (QObject *plugin, plugins.values()) {
+        connect(plugin, SIGNAL(registerObject(const char*,int,int)), this, SLOT(registerObject(const char*,int,int)));
+        foreach (const QString &parent, qobject_cast<SilkImportsInterface *>(plugin)->parents()) {
+            if (plugins.contains(parent)) {
+                connect(plugin, SIGNAL(registerObject(const char*,int,int)), plugins.value(parent), SLOT(silkRegisterObject(const char*,int,int)));
+            }
+        }
+    }
+    foreach (QObject *plugin, plugins.values()) {
+        qobject_cast<SilkImportsInterface *>(plugin)->silkRegisterObject();
     }
 
     engine.setOfflineStoragePath(appDir.absoluteFilePath(SilkConfig::value("storage.path").toString()));
@@ -156,6 +167,12 @@ QmlHandler::Private::Private(QmlHandler *parent)
             break; }
         }
     }
+}
+
+void QmlHandler::Private::registerObject(const char *uri, int major, int minor)
+{
+    // @uri Silk.HTML
+    qmlRegisterType<Text>(uri, major, minor, "Text");
 }
 
 void QmlHandler::Private::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message)
@@ -290,9 +307,9 @@ void QmlHandler::Private::close(SilkAbstractHttpObject *object)
             reply->setRawHeader("Content-Type", object->property("contentType").toByteArray());
         }
 
-        QVariant docType = object->property("docType");
-        if (docType.isValid())
-            reply->write(docType.toByteArray());
+        QVariant prolog = object->property("prolog");
+        if (prolog.isValid())
+            reply->write(prolog.toByteArray());
 
 //        qDebug() << out;
         if (request->method() == "GET" || request->method() == "POST") {

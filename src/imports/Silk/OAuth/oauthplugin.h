@@ -40,10 +40,19 @@ class OAuthPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<OAuth>("Silk.OAuth", 1, 0, "OAuth");
+    virtual QString name() const { return QLatin1String("oauth"); }
+    virtual void silkRegisterObject() {
+        silkRegisterObject("Silk.OAuth", 1, 0);
     }
+
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor) {
+        // @uri Silk.OAuth
+        qmlRegisterType<OAuth>(uri, major, minor, "OAuth");
+    }
+
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
 #endif // OAUTHPLUGIN_H

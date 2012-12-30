@@ -69,6 +69,7 @@ public:
     QString primaryKey;
     QList<QVariantList> data;
     QHash<int, QByteArray> roleNames;
+    QHash<QByteArray, QVariant::Type> name2type;
 };
 
 TableModel::Private::Private(TableModel *parent)
@@ -109,6 +110,15 @@ void TableModel::Private::init()
             QMetaProperty property = mo->property(i);
             roleNames.insert(Qt::UserRole + j, QByteArray(property.name()));
             fieldNames.append(property.name());
+            switch (property.type()) {
+            case QVariant::Int:
+                name2type.insert(QByteArray(property.name()), QVariant::LongLong);
+                break;
+            default:
+                name2type.insert(QByteArray(property.name()), property.type());
+                break;
+            }
+
             j++;
         }
     }
@@ -246,7 +256,11 @@ void TableModel::Private::select()
     while (query.next()) {
         QVariantList d;
         for (int i = 0; i < roleNames.keys().count(); i++) {
-            d.append(query.value(i));
+            QVariant v = query.value(i);
+            if (v.type() != name2type.value(roleNames.value(i + Qt::UserRole))) {
+                v.convert(name2type.value(roleNames.value(i + Qt::UserRole)));
+            }
+            d.append(v);
         }
         data.append(d);
     }

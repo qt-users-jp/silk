@@ -24,24 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTMLTAG_H
-#define HTMLTAG_H
+import Silk.XML 1.0
 
-#include <silkabstracthttpobject.h>
-
-class HtmlTag : public SilkAbstractHttpObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString tagName READ tagName WRITE tagName NOTIFY tagNameChanged)
-    SILK_ADD_PROPERTY(const QString &, tagName, QString)
-public:
-    explicit HtmlTag(QObject *parent = 0);
-    
-    virtual QByteArray out();
-
-signals:
-    void tagNameChanged(const QString &tagName);
-};
-
-#endif // HTMLTAG_H
+Tag {
+    tagName: 'channel'
+}

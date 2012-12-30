@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/imports/Silk/RSS">
+        <file>20_Author.qml</file>
+        <file>20_Category.qml</file>
+        <file>20_Channel.qml</file>
+        <file>20_Cloud.qml</file>
+        <file>20_Comments.qml</file>
+        <file>20_Copyright.qml</file>
+        <file>20_Description.qml</file>
+        <file>20_Docs.qml</file>
+        <file>20_Enclosure.qml</file>
+        <file>20_Generator.qml</file>
+        <file>20_Guid.qml</file>
+        <file>20_Image.qml</file>
+        <file>20_Item.qml</file>
+        <file>20_Language.qml</file>
+        <file>20_LastBuildDate.qml</file>
+        <file>20_Link.qml</file>
+        <file>20_ManagingEditor.qml</file>
+        <file>20_PubDate.qml</file>
+        <file>20_Rss.qml</file>
+        <file>20_SkipDays.qml</file>
+        <file>20_SkipHours.qml</file>
+        <file>20_Source.qml</file>
+        <file>20_TextInput.qml</file>
+        <file>20_Title.qml</file>
+        <file>20_Ttl.qml</file>
+        <file>qmldir</file>
+    </qresource>
+</RCC>

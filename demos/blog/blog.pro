@@ -23,5 +23,6 @@ OTHER_FILES += \
     frontend/plugins/highlight/json.js \
     frontend/plugins/highlight/pro.js \
     frontend/plugins/highlight/cpp.js \
-    frontend/sitemap.qml
+    frontend/sitemap.qml \
+    frontend/rss.qml
 

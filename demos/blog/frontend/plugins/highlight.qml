@@ -34,7 +34,8 @@ Plugin {
     id: root
     name: 'highlight'
 
-    function exec(argument, str) {
+    function exec(argument, str, preview) {
+        if (preview) return str
         var parser
         var ret = str
         switch (argument) {

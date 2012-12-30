@@ -40,10 +40,19 @@ class ProcessPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<Process>("Silk.Process", 1, 0, "Process");
+    virtual QString name() const { return QLatin1String("process"); }
+    virtual void silkRegisterObject() {
+        silkRegisterObject("Silk.Process", 1, 0);
     }
+
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor) {
+        // @uri Silk.Process
+        qmlRegisterType<Process>(uri, major, minor, "Process");
+    }
+
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
 #endif // PROCESSPLUGIN_H

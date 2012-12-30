@@ -277,7 +277,7 @@ Theme {
                         console.debug('plugin %1 not found.'.arg(plugin))
                         ret = innerText
                     } else {
-                        ret = (viewer.plugins[plugin])(argument.replace('[id]', no), innerText)
+                        ret = (viewer.plugins[plugin])(argument.replace('[id]', no), innerText, false)
                     }
                     return ret
                 })

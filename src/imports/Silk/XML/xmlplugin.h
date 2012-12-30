@@ -24,31 +24,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKIMPORTSINTERFACE_H
-#define SILKIMPORTSINTERFACE_H
+#ifndef XMLPLUGIN_H
+#define XMLPLUGIN_H
 
+#include <QtCore/QDebug>
 #include <QtCore/QObject>
-#include <QtCore/QStringList>
+#include <QtCore/QtPlugin>
+#include <silkimportsinterface.h>
+#include "xmltag.h"
+#include "xmlcomment.h"
 
-#include <QtQml/qqml.h>
-
-class SilkImportsInterface
+class XmlPlugin : public QObject, SilkImportsInterface
 {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
+    Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual ~SilkImportsInterface() {}
-    virtual void silkRegisterObject() {}
-    virtual QString name() const = 0;
-    virtual QStringList parents() const { return QStringList(); }
+    virtual QString name() const { return QLatin1String("xml"); }
+    virtual void silkRegisterObject()
+    {
+        silkRegisterObject("Silk.XML", 1, 0);
+    }
 
-//public slots:
-//    virtual void silkRegisterObject(const char *uri, int major, int minor) { Q_UNUSED(uri) Q_UNUSED(major) Q_UNUSED(minor) }
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor)
+    {
+        // @uri Silk.XML
+        qmlRegisterType<XmlTag>(uri, major, minor, "Tag");
+        // @uri Silk.XML
+        qmlRegisterType<XmlComment>(uri, major, minor, "Comment");
+    }
 
-//signals:
-//    void registerObject(const char *uri, int major, int minor);
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
-#define SilkImportsInterface_iid "me.qtquick.silk.imports"
-
-Q_DECLARE_INTERFACE(SilkImportsInterface, SilkImportsInterface_iid)
-
-#endif // SILKIMPORTSINTERFACE_H
+#endif // XMLPLUGIN_H

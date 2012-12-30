@@ -28,5 +28,5 @@ import QtQml 2.0
 QtObject {
     property string name
     property variant config
-    function exec(argument, str) { return str }
+    function exec(argument, str, preview) { return str }
 }

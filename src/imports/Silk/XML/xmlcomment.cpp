@@ -24,14 +24,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "htmlcomment.h"
+#include "xmlcomment.h"
 
-HtmlComment::HtmlComment(QObject *parent)
+XmlComment::XmlComment(QObject *parent)
     : SilkAbstractHttpObject(parent)
 {
 }
 
-QByteArray HtmlComment::out()
+QByteArray XmlComment::out()
 {
     QByteArray ret("<!--");
     if (m_text.isNull()) {

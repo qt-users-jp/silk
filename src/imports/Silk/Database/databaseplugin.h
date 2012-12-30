@@ -42,12 +42,22 @@ class DatabasePlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<Database>("Silk.Database", 1, 0, "Database");
-        qmlRegisterType<TableModel>("Silk.Database", 1, 0, "TableModel");
-        qmlRegisterType<SelectSqlModel>("Silk.Database", 1, 0, "SelectSqlModel");
+    virtual QString name() const { return QLatin1String("database"); }
+
+    virtual void silkRegisterObject() {
+        silkRegisterObject("Silk.Database", 1, 0);
     }
+
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor) {
+        // @uri Silk.Database
+        qmlRegisterType<Database>(uri, major, minor, "Database");
+        qmlRegisterType<TableModel>(uri, major, minor, "TableModel");
+        qmlRegisterType<SelectSqlModel>(uri, major, minor, "SelectSqlModel");
+    }
+
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
 #endif // DATABASEPLUGIN_H

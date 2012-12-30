@@ -43,7 +43,7 @@ public:
     explicit SilkAbstractProtocolHandler(QObject *parent = 0);
     
     virtual bool load(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString()) = 0;
-    virtual bool load(const QUrl &url, QWebSocket *socket, const QString &message = QString()) { return false; }
+    virtual bool load(const QUrl &url, QWebSocket *socket, const QString &message = QString()) { Q_UNUSED(url) Q_UNUSED(socket) Q_UNUSED(message) return false; }
 
 signals:
     void error(int code, QHttpRequest *request, QHttpReply *reply, const QString &errorString = QString());

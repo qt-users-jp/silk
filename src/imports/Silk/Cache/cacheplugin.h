@@ -39,10 +39,20 @@ class CachePlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<CacheObject>("Silk.Cache", 1, 0, "Cache");
+    virtual QString name() const { return QLatin1String("cache"); }
+
+    virtual void silkRegisterObject() {
+        silkRegisterObject("Silk.Cache", 1, 0);
     }
+
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor) {
+        // @uri Silk.Cache
+        qmlRegisterType<CacheObject>(uri, major, minor, "Cache");
+    }
+
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
 #endif // CACHEPLUGIN_H

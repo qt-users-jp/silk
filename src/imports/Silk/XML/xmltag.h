@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,31 +24,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKIMPORTSINTERFACE_H
-#define SILKIMPORTSINTERFACE_H
+#ifndef XMLTAG_H
+#define XMLTAG_H
 
-#include <QtCore/QObject>
-#include <QtCore/QStringList>
+#include <silkabstracthttpobject.h>
 
-#include <QtQml/qqml.h>
-
-class SilkImportsInterface
+class XmlTag : public SilkAbstractHttpObject
 {
+    Q_OBJECT
+
+    Q_PROPERTY(QString tagName READ tagName WRITE tagName NOTIFY tagNameChanged)
+    Q_PROPERTY(QString prolog READ prolog WRITE prolog NOTIFY prologChanged)
 public:
-    virtual ~SilkImportsInterface() {}
-    virtual void silkRegisterObject() {}
-    virtual QString name() const = 0;
-    virtual QStringList parents() const { return QStringList(); }
+    explicit XmlTag(QObject *parent = 0);
+    
+    virtual QByteArray out();
 
-//public slots:
-//    virtual void silkRegisterObject(const char *uri, int major, int minor) { Q_UNUSED(uri) Q_UNUSED(major) Q_UNUSED(minor) }
+signals:
+    void tagNameChanged(const QString &tagName);
+    void prologChanged(const QString &prolog);
 
-//signals:
-//    void registerObject(const char *uri, int major, int minor);
+private:
+    Q_DISABLE_COPY(XmlTag)
+    SILK_ADD_PROPERTY(const QString &, tagName, QString)
+    SILK_ADD_PROPERTY(const QString &, prolog, QString)
+
+    int m_index;
 };
 
-#define SilkImportsInterface_iid "me.qtquick.silk.imports"
-
-Q_DECLARE_INTERFACE(SilkImportsInterface, SilkImportsInterface_iid)
-
-#endif // SILKIMPORTSINTERFACE_H
+#endif // XMLTAG_H

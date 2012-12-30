@@ -24,18 +24,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "htmltag.h"
+#include "xmltag.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QMetaProperty>
 #include <QtCore/QStringList>
 
-HtmlTag::HtmlTag(QObject *parent)
+XmlTag::XmlTag(QObject *parent)
     : SilkAbstractHttpObject(parent)
+    , m_index(metaObject()->propertyCount())
 {
 }
 
-QByteArray HtmlTag::out()
+QByteArray XmlTag::out()
 {
     QByteArray ret;
 
@@ -43,7 +44,7 @@ QByteArray HtmlTag::out()
     QStringList attributes;
 
     int count = metaObject()->propertyCount();
-    for (int i = 0; i < count; i++) {
+    for (int i = m_index; i < count; i++) {
         QMetaProperty p = metaObject()->property(i);
         QString key(p.name());
         if (key != key.toLower()) continue;

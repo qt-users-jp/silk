@@ -48,16 +48,25 @@ class CarpetPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<Backup>("Carpet", 1, 0, "Backup");
-        qmlRegisterType<PathModel>("Carpet", 1, 0, "PathModel");
-        qmlRegisterType<EntryModel>("Carpet", 1, 0, "EntryModel");
-        qmlRegisterType<HistoryModel>("Carpet", 1, 0, "HistoryModel");
-        qmlRegisterType<RecentlyChangedModel>("Carpet", 1, 0, "RecentlyChangedModel");
-        qmlRegisterType<FrequentlyChangedModel>("Carpet", 1, 0, "FrequentlyChangedModel");
-        qmlRegisterType<SizeConsumedModel>("Carpet", 1, 0, "SizeConsumedModel");
+    virtual QString name() const { return QLatin1String("carpet"); }
+    virtual void silkRegisterObject() {
+        silkRegisterObject("Carpet", 1, 0);
     }
+
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor) {
+        // @uri Carpet
+        qmlRegisterType<Backup>(uri, major, minor, "Backup");
+        qmlRegisterType<PathModel>(uri, major, minor, "PathModel");
+        qmlRegisterType<EntryModel>(uri, major, minor, "EntryModel");
+        qmlRegisterType<HistoryModel>(uri, major, minor, "HistoryModel");
+        qmlRegisterType<RecentlyChangedModel>(uri, major, minor, "RecentlyChangedModel");
+        qmlRegisterType<FrequentlyChangedModel>(uri, major, minor, "FrequentlyChangedModel");
+        qmlRegisterType<SizeConsumedModel>(uri, major, minor, "SizeConsumedModel");
+    }
+
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
 #endif // CARPETPLUGIN_H

@@ -31,8 +31,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QtPlugin>
 #include <silkimportsinterface.h>
-#include "htmltag.h"
-#include "htmlcomment.h"
 
 class HtmlPlugin : public QObject, SilkImportsInterface
 {
@@ -40,14 +38,20 @@ class HtmlPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<HtmlTag>("Silk.HTML", 4, 01, "Tag");
-        qmlRegisterType<HtmlComment>("Silk.HTML", 4, 01, "Comment");
-
-        qmlRegisterType<HtmlTag>("Silk.HTML", 5, 0, "Tag");
-        qmlRegisterType<HtmlComment>("Silk.HTML", 5, 0, "Comment");
+    virtual QString name() const { return QLatin1String("html"); }
+    virtual QStringList parents() const { return QStringList() << QLatin1String("xml"); }
+    virtual void silkRegisterObject() {
+        silkRegisterObject("Silk.HTML", 4, 01);
+        silkRegisterObject("Silk.HTML", 5, 0);
     }
+
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor) {
+        emit registerObject(uri, major, minor);
+    }
+
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
 #endif // HTMLPLUGIN_H

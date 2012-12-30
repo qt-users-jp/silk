@@ -44,14 +44,23 @@ class UtilsPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual void silkRegisterObject()
-    {
-        qmlRegisterType<Config>("Silk.Utils", 1, 0, "SilkConfig");
-        qmlRegisterType<Server>("Silk.Utils", 1, 0, "Server");
-        qmlRegisterType<Client>("Silk.Utils", 1, 0, "Client");
-        qmlRegisterType<Repeater>("Silk.Utils", 1, 0, "Repeater");
-        qmlRegisterType<Recursive>("Silk.Utils", 1, 0, "Recursive");
+    virtual QString name() const { return QLatin1String("utils"); }
+    virtual void silkRegisterObject() {
+        silkRegisterObject("Silk.Utils", 1, 0);
     }
+
+public slots:
+    virtual void silkRegisterObject(const char *uri, int major, int minor) {
+        // @uri Silk.Utils
+        qmlRegisterType<Config>(uri, major, minor, "SilkConfig");
+        qmlRegisterType<Server>(uri, major, minor, "Server");
+        qmlRegisterType<Client>(uri, major, minor, "Client");
+        qmlRegisterType<Repeater>(uri, major, minor, "Repeater");
+        qmlRegisterType<Recursive>(uri, major, minor, "Recursive");
+    }
+
+signals:
+    void registerObject(const char *uri, int major, int minor);
 };
 
 #endif // UTILSPLUGIN_H

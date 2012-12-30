@@ -24,31 +24,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SILKIMPORTSINTERFACE_H
-#define SILKIMPORTSINTERFACE_H
+import Silk.XML 1.0
 
-#include <QtCore/QObject>
-#include <QtCore/QStringList>
-
-#include <QtQml/qqml.h>
-
-class SilkImportsInterface
-{
-public:
-    virtual ~SilkImportsInterface() {}
-    virtual void silkRegisterObject() {}
-    virtual QString name() const = 0;
-    virtual QStringList parents() const { return QStringList(); }
-
-//public slots:
-//    virtual void silkRegisterObject(const char *uri, int major, int minor) { Q_UNUSED(uri) Q_UNUSED(major) Q_UNUSED(minor) }
-
-//signals:
-//    void registerObject(const char *uri, int major, int minor);
-};
-
-#define SilkImportsInterface_iid "me.qtquick.silk.imports"
-
-Q_DECLARE_INTERFACE(SilkImportsInterface, SilkImportsInterface_iid)
-
-#endif // SILKIMPORTSINTERFACE_H
+Tag {
+    tagName: 'generator'
+    property string text
+}
