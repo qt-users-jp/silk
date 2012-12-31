@@ -43,9 +43,6 @@ public:
 
     Q_INVOKABLE void update();
 
-private slots:
-    void load();
-
 private:
     int propertyCount;
 };
