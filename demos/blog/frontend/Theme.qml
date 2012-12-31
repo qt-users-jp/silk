@@ -48,6 +48,8 @@ Html {
         Meta { name: "viewport"; content: "width=device-width" }
         Title { text: root.__subtitle.length > 0 ? '%1 - %2'.arg(root.__subtitle).arg(root.__title) : root.__title }
         Link { rel: "shortcut icon"; href: "/favicon.ico" }
+        Link { rel: "contents"; href: "http://%1%2/sitemap.qml".arg(http.host).arg(http.port === 80 ? '' : ':' + http.port) }
+        Link { rel: "alternate"; type: "application/rss+xml"; title: "RSS"; href: "http://%1%2/rss.qml".arg(http.host).arg(http.port === 80 ? '' : ':' + http.port) }
         Link { rel: "stylesheet"; href: "/css/" }
         Script {
             enabled: root.__mode == 'edit'

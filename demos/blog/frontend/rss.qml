@@ -103,7 +103,7 @@ Rss {
     }
 
     Channel {
-        Title { text: 'Test' }
+        Title { text: config.blog.title }
         Link { text: 'http://%1%2'.arg(http.host).arg(http.port === 80 ? '' : ':' + http.port) }
         Language { text: 'ja' }
         PubDate { text: (new Date()).toUTCString() }

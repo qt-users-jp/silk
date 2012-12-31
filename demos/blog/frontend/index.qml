@@ -365,13 +365,22 @@ Theme {
                         A {
                             enabled: model.modelData !== input.page - 1
                             href: '%1?page=%2'.arg(http.path).arg(model.modelData + 1)
-                            text: 'Page: %1'.arg(model.modelData + 1)
+                            Img { width: '22'; height: '22'; src: '/icons/page.png' }
+                            Text { text: 'Page: %1'.arg(model.modelData + 1) }
                         }
                         Strong {
                             enabled: model.modelData === input.page - 1
-                            text: 'Page: %1'.arg(model.modelData + 1)
+                            Img { width: '22'; height: '22'; src: '/icons/page.png' }
+                            Text { text: 'Page: %1'.arg(model.modelData + 1) }
                         }
                     }
+                }
+            }
+            Li {
+                A {
+                    href: "http://%1%2/rss.qml".arg(http.host).arg(http.port === 80 ? '' : ':' + http.port)
+                    Img { width: '22'; height: '22'; src: '/icons/rss.png' }
+                    Text { text: qsTr('RSS') }
                 }
             }
         }
