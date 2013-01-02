@@ -68,6 +68,7 @@ private slots:
     void statusChanged();
     void componentDestroyed(QObject *object);
     void clearQmlCache();
+    void onError();
     void registerObject(const char *uri, int major, int minor);
 
 private:
@@ -91,6 +92,9 @@ QmlHandler::Private::Private(QmlHandler *parent)
 {
     QQmlContext *context = engine.rootContext();
     context->setContextProperty(QLatin1String("Silk"), new Silk(this));
+
+    connect(q, SIGNAL(error(int,QHttpRequest*,QHttpReply*, QString)), this, SLOT(onError()));
+    connect(q, SIGNAL(error(int,QWebSocket*, QString)), this, SLOT(onError()));
 
     qmlRegisterType<SilkAbstractHttpObject>();
     qmlRegisterUncreatableType<HttpFileData>("Silk.HTTP", 1, 1, "HttpFileData", QLatin1String("readonly"));
@@ -199,7 +203,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         connect(component, SIGNAL(statusChanged(QQmlComponent::Status)), this, SLOT(statusChanged()), Qt::UniqueConnection);
         break;
     case QQmlComponent::Ready: {
-        HttpObject *http = new HttpObject(this);
+        HttpObject *http = new HttpObject(component);
         http->remoteAddress(request->remoteAddress());
         http->method(QString::fromLatin1(request->method()));
         QUrl url(request->url());
@@ -242,13 +246,13 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         context->setContextProperty(QLatin1String("http"), http);
 
         QObject *o = component->create(context);
+        o->setParent(http);
 
         SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject*>(o);
         if (!object) {
             emit q->error(403, request, reply, request->url().toString());
             return;
         }
-        object->setParent(http);
 
         if (object->property("contentType").isValid()) {
             component2object.insert(component, object);
@@ -263,7 +267,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
                 connect(http, SIGNAL(loadingChanged(bool)), this, SLOT(loadingChanged(bool)));
             }
         } else {
-            q->emit error(403, request, reply, request->url().toString());
+            emit q->error(403, request, reply, request->url().toString());
         }
 
 
@@ -373,6 +377,11 @@ void QmlHandler::Private::componentDestroyed(QObject *object)
 void QmlHandler::Private::clearQmlCache()
 {
     engine.trimComponentCache();
+}
+
+void QmlHandler::Private::onError()
+{
+    engine.clearComponentCache();
 }
 
 void QmlHandler::Private::load(const QUrl &url, QWebSocket *socket, const QString &message)
