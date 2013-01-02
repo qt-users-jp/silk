@@ -309,6 +309,7 @@ Theme {
 
         property int article_count: 0
         onCountChanged: if (count > 0) article_count = get(0).article_count
+        property int pages: Math.floor(articleCount.article_count / 10 + (articleCount.article_count % 10 > 0 ? 1 : 0))
     }
 
     head: [
@@ -358,7 +359,7 @@ Theme {
                 }
             }
             Repeater {
-                model: Math.floor(articleCount.article_count / 10 + (articleCount.article_count % 10 > 0 ? 1 : 0))
+                model: articleCount.pages
                 enabled: input.no === 0 && model > 1
                 Component {
                     Li {
@@ -528,6 +529,29 @@ Theme {
                     }
                 }
             }
+        }
+    }
+
+    Nav {
+        _class: 'footer-nav'
+        A {
+            enabled: input.page > 1
+            href: '%1?page=%2'.arg(http.path).arg(input.page - 1)
+            text: qsTr('Previous')
+        }
+        Span {
+            enabled: input.page < 2
+            text: qsTr('Previous')
+        }
+        A { href: '#top'; text: qsTr('Top') }
+        A {
+            enabled: input.page < articleCount.pages
+            href: '%1?page=%2'.arg(http.path).arg(input.page + 1)
+            text: qsTr('Next')
+        }
+        Span {
+            enabled: input.page > articleCount.pages - 1
+            text: qsTr('Next')
         }
     }
 }

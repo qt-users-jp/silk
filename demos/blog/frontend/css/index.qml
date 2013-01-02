@@ -367,6 +367,33 @@ Css {
                 }
             }
         }
+
+    }
+
+    Rule {
+        selector: '.footer-nav'
+        text_align: 'center'
+
+        Rule {
+            selector: '*'
+            property string margin: '2em'
+        }
+
+        Rule {
+            selector: 'a'
+            color: css.darkColor
+            text_decoration: 'none'
+
+            Rule {
+                selector: ':visited'
+                color: css.darkColor
+            }
+
+            Rule {
+                selector: ':hover'
+                text_decoration: 'underline'
+            }
+        }
     }
 
     /* ==========================================================================
