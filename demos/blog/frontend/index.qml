@@ -125,7 +125,9 @@ Theme {
                 if (input.page > 0)
                     articleModel.offset = articleModel.limit * Math.max(0, input.page - 1)
                 if (input.no > 0)
-                    conditions.push( 'id=%1'.arg(input.no))
+                    conditions.push('id=%1'.arg(input.no))
+                if (input.slug.length > 0)
+                    conditions.push("slug='%1'".arg(input.slug))
                 articleModel.condition = conditions.join(' AND ')
                 articleModel.select = true
                 if (input.no > 0 && articleModel.count === 1)
@@ -480,7 +482,7 @@ Theme {
                 Header {
                     H2 {
                         A {
-                            href: '%1?no=%2'.arg(http.path).arg(model.id)
+                            href: '%1%2.html'.arg(http.path).arg(model.slug)
                             text: escapeHTML(model.title)
                         }
                         A {

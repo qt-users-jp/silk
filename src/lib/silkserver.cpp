@@ -34,6 +34,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QMimeDatabase>
 #include <QtCore/QPluginLoader>
+#include <QtCore/QRegularExpression>
 #include <QtCore/QUrl>
 
 #include <qhttprequest.h>
@@ -44,6 +45,8 @@
 #include <silkabstractmimehandler.h>
 #include <silkprotocolhandlerinterface.h>
 #include <silkabstractprotocolhandler.h>
+
+typedef QPair<QRegularExpression, QString> RewriteRule;
 
 class SilkServer::Private : public QObject
 {
@@ -70,7 +73,7 @@ private:
     QMimeDatabase mimeDatabase;
     QMap<QString, SilkAbstractMimeHandler*> mimeHandlers;
     QMap<QString, SilkAbstractProtocolHandler*> protocolHandlers;
-
+    QList<RewriteRule> rewriteRules;
 public:
     QMap<QString, QString> documentRoots;
 };
@@ -164,6 +167,15 @@ SilkServer::Private::Private(SilkServer *parent)
         }
     }
 
+    foreach (const QVariant &val, SilkConfig::value("rewrite").toList()) {
+        QVariantMap map = val.toMap();
+        foreach (const QString &key, map.keys()) {
+            rewriteRules.append(RewriteRule(QRegularExpression(key), map.value(key).toString()));
+        }
+    }
+
+
+
     if (!q->listen(address, port)) {
         qWarning() << q->errorString();
         QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
@@ -184,6 +196,19 @@ QString SilkServer::Private::documentRootForRequest(const QUrl &url) const
 void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
 {
 //    qDebug() << Q_FUNC_INFO << __LINE__ << request->url();
+
+    QString str = request->url().toString();
+    foreach (const RewriteRule &rule, rewriteRules) {
+        QRegularExpressionMatch match = rule.first.match(str);
+        if (match.hasMatch()) {
+            QString url = rule.second;
+            for (int i = 0; i <= match.lastCapturedIndex(); i++) {
+                url = url.replace(QString("$%1").arg(i), match.captured(i));
+            }
+            request->setUrl(QUrl(url));
+            break;
+        }
+    }
 
     QString documentRoot = documentRootForRequest(request->url());
 

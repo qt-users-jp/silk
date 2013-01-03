@@ -50,13 +50,11 @@ Text {
         select: true
         condition: 'published <> ""'
         onCountChanged: {
-            console.debug(count)
             var urls = []
             for (var i = 0; i < count; i++) {
-                urls.push('%1://%2/?no=%3'.arg(http.scheme).arg(http.host).arg(articleModel.get(i).id))
+                urls.push('%1://%2/%3.html'.arg(http.scheme).arg(http.host).arg(articleModel.get(i).slug))
             }
             root.text = urls.join('\n')
-            console.debug(root.text)
         }
     }
 }

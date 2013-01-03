@@ -264,7 +264,7 @@ CppParser.prototype = {
                 type = 'number'
                 this.m_flag = '0'
             } else {
-                console.debug(this.m_current)
+//                console.debug(this.m_current)
                 var head = this.m_current
                 str += this.advance()
                 while (this.m_current && this.m_current !== this.m_current) {

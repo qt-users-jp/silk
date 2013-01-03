@@ -151,7 +151,7 @@ JsonParser.prototype = {
                 }
                 type = 'number'
             } else {
-                console.debug(this.m_current)
+//                console.debug(this.m_current)
                 while (this.m_current && this.m_current !== ' ') {
                     str += this.advance()
                 }
