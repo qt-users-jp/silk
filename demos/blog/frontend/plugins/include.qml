@@ -25,13 +25,21 @@
  */
 
 import './api/'
+import Silk.Cache 1.0
 
 Plugin {
     id: root
     name: 'include'
 
+    property Cache cache: Cache { id: cache }
+
     function exec(argument, str, preview) {
-        return Silk.readFile('%1%2'.arg(config.blog.upload).arg(argument))
-//        return Silk.readFile('%1%2'.arg(config.blog.upload).arg(argument)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        var file = '%1%2'.arg(config.blog.upload).arg(argument)
+        var ret = cache.fetch(file);
+        if (typeof ret === 'undefined') {
+            ret = Silk.readFile('%1%2'.arg(config.blog.upload).arg(argument))
+            cache.add(file, ret)
+        }
+        return ret
     }
 }
