@@ -150,7 +150,7 @@ var disqus_shortname = 'silkqml'; // required: replace example with your forum s
                 H3 {
                     A {
                         href: 'http://silk.qtquick.me/'
-                        text: "Copyright (c) 2012 Silk Project. All rights reserved."
+                        text: "Copyright (c) 2012 - %1 Silk Project. All rights reserved.".arg(Qt.formatDate(new Date(), 'yyyy'))
                     }
                 }
             }
