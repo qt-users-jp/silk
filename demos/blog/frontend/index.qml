@@ -433,7 +433,7 @@ Theme {
             TextArea {
                 name: 'body'
                 placeholder: qsTr('Body')
-                rows: '5'
+                rows: '15'
                 property string style: "width: 100%"
                 Text { text: escapeAll(input.body) }
             }
@@ -512,7 +512,7 @@ Theme {
                         _class: 'continue'
                         A {
                             enabled: !viewer.detail && model.body2.length > 0
-                            href: '%1?no=%2'.arg(http.path).arg(model.id)
+                            href: '%1/%2.html'.arg(http.path).arg(model.slug)
                             text: qsTr('Continue reading...')
                         }
                     }

@@ -117,7 +117,7 @@ Rss {
                     Link { text: 'http://%1%2/%3.html'.arg(http.host).arg(http.port === 80 ? '' : ':' + http.port).arg(model.slug) }
                     Description { text: root.escapeHTML(viewer.show(model.body, model.id)) }
                     PubDate { text: model.published.toUTCString() }
-                    Guid { text: 'http://%1%2/%3.html'.arg(http.host).arg(http.port === 80 ? '' : ':' + http.port).arg(model.slug); isPermaLink: 'false' }
+                    Guid { text: 'http://%1%2/?no=%3'.arg(http.host).arg(http.port === 80 ? '' : ':' + http.port).arg(model.id); isPermaLink: 'false' }
                 }
             }
         }
