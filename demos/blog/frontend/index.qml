@@ -244,7 +244,7 @@ Theme {
     // Viewer
     QtObject {
         id: viewer
-        property bool detail: input.no > 0
+        property bool detail: input.no > 0 || input.slug.length > 0
 
         property var plugins
 
@@ -512,7 +512,7 @@ Theme {
                         _class: 'continue'
                         A {
                             enabled: !viewer.detail && model.body2.length > 0
-                            href: '%1/%2.html'.arg(http.path).arg(model.slug)
+                            href: '%1%2.html'.arg(http.path).arg(model.slug)
                             text: qsTr('Continue reading...')
                         }
                     }
