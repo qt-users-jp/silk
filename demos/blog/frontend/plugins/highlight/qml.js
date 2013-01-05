@@ -28,6 +28,7 @@
 function QmlParser() {
     this.m_reserved = ['import'
                        , 'as'
+                       , 'on'
                        , 'property'
                        , 'default'
                        , 'true'
@@ -110,25 +111,46 @@ QmlParser.prototype = {
                 flag = 'property'
                 break
             case 'curly brace begin':
-                flag = 'element'
+                flag = 'brace'
+                break
+            case 'keyword':
+                switch (t.str) {
+                case 'on':
+                    flag = 'valuesource'
+                    break
+                default:
+                    flag = 'keyword'
+                    break
+                }
                 break
             case 'space':
                 break
             case 'string':
-                if (flag === 'property') {
+                switch (flag) {
+                case 'property':
                     t.type = 'property'
                     flag = ''
+                    break
+                case 'brace':
+                    t.type = 'property'
+                    flag = ''
+                    break
                 }
                 break
             case 'String':
-                if (flag === 'element') {
+                console.debug(flag, t.type, t.str)
+                switch (flag) {
+                case 'brace':
+                case 'valuesource':
                     t.type = 'element'
                     flag = ''
-                } else if (flag === 'property') {
+                    break
+                case 'property':
                     t.type = 'property'
                     flag = ''
+                    break
                 }
-
+                console.debug(flag, t.type, t.str)
                 break
             default:
                 flag = ''
@@ -152,7 +174,7 @@ QmlParser.prototype = {
         var r = ''
         for (var i = 0; i < obj.length; i++) {
             var type = obj[i].type
-            var str = obj[i].str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/ /g, '&nbsp;')
+            var str = obj[i].str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')/*.replace(/ /g, '&nbsp;')*/
             switch (type) {
             case 'space':
                 r += str
