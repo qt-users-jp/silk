@@ -241,6 +241,19 @@ void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *
 
 void SilkServer::Private::incomingConnection(QWebSocket *socket)
 {
+    QString str = socket->url().toString();
+    foreach (const RewriteRule &rule, rewriteRules) {
+        QRegularExpressionMatch match = rule.first.match(str);
+        if (match.hasMatch()) {
+            QString url = rule.second;
+            for (int i = 0; i <= match.lastCapturedIndex(); i++) {
+                url = url.replace(QString("$%1").arg(i), match.captured(i));
+            }
+            socket->setUrl(QUrl(url));
+            break;
+        }
+    }
+
     QString documentRoot = documentRootForRequest(socket->url());
 
     if (documentRoot.indexOf("://") > 0) {
