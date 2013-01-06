@@ -25,6 +25,7 @@
  */
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 
 #include <silkconfig.h>
 #include <silkserver.h>
@@ -32,6 +33,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
 
     SilkConfig::initialize(argc, argv);
 
