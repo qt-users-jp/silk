@@ -54,6 +54,7 @@ Html {
                     cookie.value = input.value;
                 else
                     cookie = {value: input.value};
+                cookie.httponly = true
                 cookies[input.name] = cookie;
                 break
             }

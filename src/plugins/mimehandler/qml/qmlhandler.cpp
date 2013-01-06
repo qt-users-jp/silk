@@ -235,6 +235,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
             c.insert(QLatin1String("domain"), cookie.domain());
             c.insert(QLatin1String("path"), cookie.path());
             c.insert(QLatin1String("secure"), cookie.isSecure());
+            c.insert(QLatin1String("httponly"), cookie.isHttpOnly());
             c.insert(QLatin1String("session"), cookie.isSessionCookie());
             cookies.insert(QString::fromUtf8(cookie.name()), c);
         }
@@ -302,6 +303,7 @@ void QmlHandler::Private::close(SilkAbstractHttpObject *object)
             if (c.contains("expires")) cookie.setExpirationDate(c.value("expires").toDateTime());
             if (c.contains("domain")) cookie.setDomain(c.value("domain").toString());
             if (c.contains("path")) cookie.setPath(c.value("path").toString());
+            if (c.contains("httponly")) cookie.setHttpOnly(c.value("httponly").toBool());
             if (c.contains("secure")) cookie.setSecure(c.value("secure").toBool());
             cookies.append(cookie);
         }
@@ -441,6 +443,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QWebSocket *socket, con
             c.insert(QLatin1String("expires"), cookie.expirationDate());
             c.insert(QLatin1String("domain"), cookie.domain());
             c.insert(QLatin1String("path"), cookie.path());
+            c.insert(QLatin1String("httponly"), cookie.isHttpOnly());
             c.insert(QLatin1String("secure"), cookie.isSecure());
             c.insert(QLatin1String("session"), cookie.isSessionCookie());
             cookies.insert(QString::fromUtf8(cookie.name()), c);

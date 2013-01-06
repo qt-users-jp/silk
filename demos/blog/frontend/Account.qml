@@ -72,7 +72,7 @@ Twitter {
                 cache.add(session_id, session_data)
                 
                 var cookies = http.responseCookies
-                cookies.session_id = { 'value': session_id }
+                cookies.session_id = { 'value': session_id, 'httponly': true }
                 http.responseCookies = cookies
             }
             

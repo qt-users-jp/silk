@@ -48,6 +48,7 @@ Html {
                         expires.setTime(expires.getTime() + 7 * 86400000);
                         cookie.expires = expires;
                     }
+                    cookie.httponly = true
                     responseCookies['silk-session'] = cookie;
                 }
 
