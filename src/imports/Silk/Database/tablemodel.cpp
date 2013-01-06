@@ -46,7 +46,7 @@ public:
     ~Private();
     void init();
 
-    QString selectSql() const;
+    QSqlQuery buildQuery(const QString &condition, const QVariantList &params) const;
     QString toSql(const QVariant &value);
 
 private slots:
@@ -64,9 +64,6 @@ private:
     QStringList fieldNames;
 
 public:
-    Database *database;
-    QString tableName;
-    QString primaryKey;
     QList<QVariantList> data;
     QHash<int, QByteArray> roleNames;
     QHash<QByteArray, QVariant::Type> name2type;
@@ -75,7 +72,6 @@ public:
 TableModel::Private::Private(TableModel *parent)
     : QObject(parent)
     , q(parent)
-    , database(0)
 {
     ifNotExistsMap.insert("QSQLITE", " IF NOT EXISTS");
     ifNotExistsMap.insert("QMYSQL", " IF NOT EXISTS");
@@ -123,8 +119,8 @@ void TableModel::Private::init()
         }
     }
 
-    if (!database) {
-        q->setDatabase(qobject_cast<Database *>(q->QObject::parent()));
+    if (!q->m_database) {
+        q->database(qobject_cast<Database *>(q->QObject::parent()));
     }
 }
 
@@ -152,7 +148,7 @@ void TableModel::Private::openChanged(bool open)
 void TableModel::Private::create()
 {
     if (fieldNames.isEmpty()) return;
-    QSqlDatabase db = QSqlDatabase::database(database->connectionName());
+    QSqlDatabase db = QSqlDatabase::database(q->m_database->connectionName());
     if (db.tables().contains(q->tableName().toLower())) return;
 
     QString type = db.driverName();
@@ -167,7 +163,7 @@ void TableModel::Private::create()
             sql.append(QLatin1String(", "));
         sql.append(property.name());
 
-        bool isPrimaryKey = (primaryKey == QString(property.name()));
+        bool isPrimaryKey = (q->m_primaryKey == QString(property.name()));
 
         switch (property.type()) {
         case QVariant::Int:
@@ -221,18 +217,27 @@ void TableModel::Private::create()
 //    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
-QString TableModel::Private::selectSql() const
+QSqlQuery TableModel::Private::buildQuery(const QString &condition, const QVariantList &params) const
 {
-    QString ret = QString("SELECT %2 FROM %1").arg(q->tableName()).arg(fieldNames.isEmpty() ? "*" : fieldNames.join(", "));
-    if (!q->m_condition.isEmpty())
-        ret += QString(" WHERE %1").arg(q->m_condition);
+    QSqlQuery ret(QSqlDatabase::database(q->m_database->connectionName()));
+    QString sql = QString("SELECT %2 FROM %1").arg(q->tableName()).arg(fieldNames.isEmpty() ? "*" : fieldNames.join(", "));
+    if (!condition.isEmpty())
+        sql += QString(" WHERE %1").arg(condition);
     if (!q->m_order.isEmpty())
-        ret += QString(" ORDER BY %1").arg(q->m_order);
+        sql += QString(" ORDER BY %1").arg(q->m_order);
     if (q->m_limit > 0) {
-        ret += QString(" LIMIT %1").arg(q->m_limit);
+        sql += QString(" LIMIT %1").arg(q->m_limit);
         if (q->m_offset > 0) {
-            ret += QString(" OFFSET %1").arg(q->m_offset);
+            sql += QString(" OFFSET %1").arg(q->m_offset);
         }
+    }
+    ret.prepare(sql);
+    foreach (const QVariant &val, params) {
+        ret.addBindValue(val);
+    }
+
+    if (!ret.exec()) {
+        qDebug() << Q_FUNC_INFO << __LINE__ << ret.lastError();
     }
     return ret;
 }
@@ -240,13 +245,12 @@ QString TableModel::Private::selectSql() const
 void TableModel::Private::select()
 {
     if (!q->m_select) return;
-    if (!database || !database->open()) return;
+    if (!q->m_database || !q->m_database->open()) return;
 
-    QSqlDatabase db = QSqlDatabase::database(database->connectionName());
     q->beginRemoveRows(QModelIndex(), 0, data.count() - 1);
     data.clear();
     q->endRemoveRows();
-    QSqlQuery query(selectSql(), db);
+    QSqlQuery query = buildQuery(q->m_condition, q->m_params);
     if (roleNames.isEmpty()) {
         QSqlRecord record = query.record();
         for (int i = 0; i < record.count(); i++) {
@@ -301,9 +305,10 @@ QString TableModel::Private::toSql(const QVariant &value)
 TableModel::TableModel(QObject *parent)
     : QAbstractListModel(parent)
     , d(new Private(this))
-    , m_select(true)
+    , m_database(0)
     , m_limit(0)
     , m_offset(0)
+    , m_select(true)
 {
 }
 
@@ -315,42 +320,6 @@ void TableModel::classBegin()
 void TableModel::componentComplete()
 {
     d->init();
-}
-
-Database *TableModel::database() const
-{
-    return d->database;
-}
-
-void TableModel::setDatabase(Database *database)
-{
-    if (d->database == database) return;
-    d->database = database;
-    emit databaseChanged(database);
-}
-
-const QString &TableModel::tableName() const
-{
-    return d->tableName;
-}
-
-void TableModel::setTableName(const QString &tableName)
-{
-    if (d->tableName == tableName) return;
-    d->tableName = tableName;
-    emit tableNameChanged(tableName);
-}
-
-const QString &TableModel::primaryKey() const
-{
-    return d->primaryKey;
-}
-
-void TableModel::setPrimaryKey(const QString &primaryKey)
-{
-    if (d->primaryKey == primaryKey) return;
-    d->primaryKey = primaryKey;
-    emit primaryKeyChanged(primaryKey);
 }
 
 QHash<int, QByteArray> TableModel::roleNames() const
@@ -402,7 +371,7 @@ QVariant TableModel::insert(const QVariantMap &data)
         }
     }
 
-    QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
+    QSqlDatabase db = QSqlDatabase::database(m_database->connectionName());
     QSqlQuery query(db);
     if (!query.prepare(QString("INSERT INTO %1(%2) VALUES(%3)").arg(tableName()).arg(keys.join(", ")).arg(placeHolders.join(", ")))) {
         qWarning() << Q_FUNC_INFO << __LINE__ << query.lastQuery() << query.lastError().text();
@@ -413,24 +382,25 @@ QVariant TableModel::insert(const QVariantMap &data)
     }
 
     if (query.exec()) {
-        QString condition = m_condition;
+        QString condition;
+        QVariantList params;
         if (db.driverName() == QLatin1String("QPSQL")) {
-            m_condition = QString("%1=%2").arg("oid").arg(query.lastInsertId().toInt());
+            condition = QLatin1String("oid=?");
+            params.append(query.lastInsertId().toInt());
         } else {
-            m_condition = QString("%1=%2").arg(d->primaryKey).arg(d->toSql(query.lastInsertId()));
+            condition = QString("%1=").arg(m_primaryKey);
+            params.append(query.lastInsertId().toInt());
         }
-        QString sql = d->selectSql();
-        m_condition = condition;
 
 //        qDebug() << Q_FUNC_INFO << __LINE__ << sql << query.lastInsertId() << db.driver()->hasFeature(QSqlDriver::LastInsertId);
-        QSqlQuery query2(sql, db);
+        QSqlQuery query2 = d->buildQuery(condition, params);
         if (query2.first()) {
             int row = rowCount();
             beginInsertRows(QModelIndex(), row, row);
             QVariantList v;
             for (int i = 0; i < d->roleNames.keys().count(); i++) {
 //                qDebug() << Q_FUNC_INFO << __LINE__ << i << d->roleNames.value(Qt::UserRole + i) << d->primaryKey;
-                if (d->roleNames.value(Qt::UserRole + i) == d->primaryKey) {
+                if (d->roleNames.value(Qt::UserRole + i) == m_primaryKey) {
                     ret = query2.value(i);
                 }
                 v.append(query2.value(i));
@@ -460,7 +430,7 @@ void TableModel::update(const QVariantMap &data)
         QString field = QString::fromUtf8(d->roleNames.value(i));
         if (data.contains(field)) {
             QVariant value = data.value(field);
-            if (field == d->primaryKey) {
+            if (field == m_primaryKey) {
                 keyRole = i;
                 key = value;
                 where = QString(" WHERE %1=%2").arg(field).arg(d->toSql(value));
@@ -471,7 +441,7 @@ void TableModel::update(const QVariantMap &data)
         }
     }
 
-    QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
+    QSqlDatabase db = QSqlDatabase::database(m_database->connectionName());
     QSqlQuery query(db);
     if (!query.prepare(QString("UPDATE %1 SET %2%3").arg(tableName()).arg(sets.join(", ")).arg(where))) {
         qWarning() << Q_FUNC_INFO << __LINE__ << query.lastQuery() << query.lastError().text();
@@ -492,7 +462,7 @@ void TableModel::update(const QVariantMap &data)
                     QString field = QString::fromUtf8(d->roleNames.value(j));
                     if (data.contains(field)) {
                         QVariant value = data.value(field);
-                        if (field == d->primaryKey) {
+                        if (field == m_primaryKey) {
                         } else {
                             newData[j - Qt::UserRole] = value;
                             roles.append(j);
@@ -509,7 +479,7 @@ void TableModel::update(const QVariantMap &data)
 
 bool TableModel::remove(const QVariantMap &data)
 {
-    QSqlDatabase db = QSqlDatabase::database(d->database->connectionName());
+    QSqlDatabase db = QSqlDatabase::database(m_database->connectionName());
     QString sql = QString("DELETE FROM %1 WHERE %2=%3;").arg(tableName()).arg(primaryKey()).arg(d->toSql(data.value(primaryKey())));
     QSqlQuery query(sql, db);
     bool ret = query.exec();
@@ -517,7 +487,7 @@ bool TableModel::remove(const QVariantMap &data)
         int count = rowCount();
         int primaryKeyIndex = -1;
         foreach (int role, d->roleNames.keys()) {
-            if (d->roleNames.value(role) == d->primaryKey.toUtf8()) {
+            if (d->roleNames.value(role) == m_primaryKey.toUtf8()) {
                 primaryKeyIndex = role;
                 break;
             }

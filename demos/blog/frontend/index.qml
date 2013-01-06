@@ -120,17 +120,26 @@ Theme {
             // view
             if (input.action.length === 0) {
                 var conditions = []
-                if (!account.loggedIn)
+                var params = []
+                if (!account.loggedIn) {
                     conditions.push('published <> ""')
+                    conditions.push('published < ?')
+                    params.push(new Date())
+                }
                 if (input.page > 0)
                     articleModel.offset = articleModel.limit * Math.max(0, input.page - 1)
-                if (input.no > 0)
-                    conditions.push('id=%1'.arg(input.no))
-                if (input.slug.length > 0)
-                    conditions.push("slug='%1'".arg(input.slug))
+                if (input.no > 0) {
+                    conditions.push('id=?')
+                    params.push(input.no)
+                }
+                if (input.slug.length > 0) {
+                    conditions.push("slug=?")
+                    params.push(input.slug)
+                }
                 articleModel.condition = conditions.join(' AND ')
+                articleModel.params = params
                 articleModel.select = true
-                if (input.no > 0 && articleModel.count === 1)
+                if (viewer.detail && articleModel.count === 1)
                     root.__subtitle = articleModel.get(0).title
                 articleCount.select = true
             }
@@ -175,7 +184,8 @@ Theme {
 
         function load() {
             if (input.no > 0) {
-                articleModel.condition = 'id=%1'.arg(input.no)
+                articleModel.condition = 'id=?'
+                articleModel.params = [input.no]
                 articleModel.select = true
                 var article = articleModel.get(0)
                 input.title = article.title
@@ -307,7 +317,8 @@ Theme {
         id: articleCount
         database: db
         select: false
-        query: 'SELECT COUNT(id) AS article_count FROM Article%1'.arg(account.loggedIn ? '' : ' WHERE published <> ""')
+        query: account.loggedIn ? 'SELECT COUNT(id) AS article_count FROM Article' : 'SELECT COUNT(id) AS article_count FROM Article WHERE published < ? AND published <> ""'
+        params: account.loggedIn ? [] : [new Date()]
 
         property int article_count: 0
         onCountChanged: if (count > 0) article_count = get(0).article_count

@@ -48,15 +48,16 @@ class TableModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool select READ select WRITE select NOTIFY selectChanged)
-    Q_PROPERTY(int count READ count NOTIFY countChanged)
-    Q_PROPERTY(Database *database READ database WRITE setDatabase NOTIFY databaseChanged)
-    Q_PROPERTY(QString tableName READ tableName WRITE setTableName NOTIFY tableNameChanged)
-    Q_PROPERTY(QString primaryKey READ primaryKey WRITE setPrimaryKey NOTIFY primaryKeyChanged)
+    Q_PROPERTY(Database *database READ database WRITE database NOTIFY databaseChanged)
+    Q_PROPERTY(QString tableName READ tableName WRITE tableName NOTIFY tableNameChanged)
+    Q_PROPERTY(QString primaryKey READ primaryKey WRITE primaryKey NOTIFY primaryKeyChanged)
     Q_PROPERTY(QString condition READ condition WRITE condition NOTIFY conditionChanged)
     Q_PROPERTY(QString order READ order WRITE order NOTIFY orderChanged)
     Q_PROPERTY(int limit READ limit WRITE limit NOTIFY limitChanged)
     Q_PROPERTY(int offset READ offset WRITE offset NOTIFY offsetChanged)
+    Q_PROPERTY(QVariantList params READ params WRITE params NOTIFY paramsChanged)
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
+    Q_PROPERTY(bool select READ select WRITE select NOTIFY selectChanged)
 
     Q_INTERFACES(QQmlParserStatus)
 public:
@@ -69,10 +70,6 @@ public:
     Q_INVOKABLE bool remove(const QVariantMap &data);
 //    void clear();
 
-    Database *database() const;
-    const QString &tableName() const;
-    const QString &primaryKey() const;
-
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     virtual QHash<int, QByteArray> roleNames() const;
@@ -80,15 +77,7 @@ public:
     virtual void classBegin();
     virtual void componentComplete();
 
-public slots:
-    void setDatabase(Database *database);
-    void setTableName(const QString &tableName);
-    void setPrimaryKey(const QString &primaryKey);
-
-
 signals:
-    void selectChanged(bool select);
-    void countChanged(int count);
     void databaseChanged(Database *database);
     void tableNameChanged(const QString &tableName);
     void primaryKeyChanged(const QString &primaryKey);
@@ -96,16 +85,23 @@ signals:
     void orderChanged(const QString &order);
     void offsetChanged(int offset);
     void limitChanged(int limit);
+    void paramsChanged(const QVariantList &params);
+    void countChanged(int count);
+    void selectChanged(bool select);
 
 private:
     class Private;
     Private *d;
 
-    ADD_PROPERTY(bool, select, bool)
+    ADD_PROPERTY(Database *, database, Database *)
+    ADD_PROPERTY(const QString &, tableName, QString)
+    ADD_PROPERTY(const QString &, primaryKey, QString)
     ADD_PROPERTY(const QString &, condition, QString)
     ADD_PROPERTY(const QString &, order, QString)
     ADD_PROPERTY(int, limit, int)
     ADD_PROPERTY(int, offset, int)
+    ADD_PROPERTY(const QVariantList &, params, QVariantList)
+    ADD_PROPERTY(bool, select, bool)
 };
 
 #endif // TABLEMODEL_H

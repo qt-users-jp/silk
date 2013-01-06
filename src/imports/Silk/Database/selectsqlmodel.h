@@ -48,11 +48,11 @@ class SelectSqlModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool select READ select WRITE select NOTIFY selectChanged)
-    Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(Database *database READ database WRITE database NOTIFY databaseChanged)
     Q_PROPERTY(QString query READ query WRITE query NOTIFY queryChanged)
     Q_PROPERTY(QVariantList params READ params WRITE params NOTIFY paramsChanged)
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
+    Q_PROPERTY(bool select READ select WRITE select NOTIFY selectChanged)
 
     Q_INTERFACES(QQmlParserStatus)
 public:
@@ -69,20 +69,20 @@ public:
     virtual void componentComplete();
 
 signals:
-    void selectChanged(bool select);
-    void countChanged(int count);
     void databaseChanged(Database *database);
     void queryChanged(const QString &query);
     void paramsChanged(const QVariantList &params);
+    void countChanged(int count);
+    void selectChanged(bool select);
 
 private:
     class Private;
     Private *d;
 
-    ADD_PROPERTY(bool, select, bool)
     ADD_PROPERTY(Database *, database, Database *)
     ADD_PROPERTY(const QString &, query, QString)
     ADD_PROPERTY(const QVariantList &, params, QVariantList)
+    ADD_PROPERTY(bool, select, bool)
 };
 
 #endif // SELECTSQLMODEL_H
