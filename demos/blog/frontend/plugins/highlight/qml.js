@@ -114,14 +114,23 @@ QmlParser.prototype = {
                 flag = 'brace'
                 break
             case 'keyword':
-                switch (t.str) {
-                case 'on':
-                    flag = 'valuesource'
+                switch (flag) {
+                case 'property':
+                    t.type = 'property'
+                    flag = ''
                     break
                 default:
-                    flag = 'keyword'
+                    switch (t.str) {
+                    case 'on':
+                        flag = 'valuesource'
+                        break
+                    default:
+                        flag = 'keyword'
+                        break
+                    }
                     break
                 }
+
                 break
             case 'space':
                 break
