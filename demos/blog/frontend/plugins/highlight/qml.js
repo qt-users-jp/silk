@@ -147,7 +147,6 @@ QmlParser.prototype = {
                 }
                 break
             case 'String':
-                console.debug(flag, t.type, t.str)
                 switch (flag) {
                 case 'brace':
                 case 'valuesource':
@@ -159,7 +158,6 @@ QmlParser.prototype = {
                     flag = ''
                     break
                 }
-                console.debug(flag, t.type, t.str)
                 break
             default:
                 flag = ''
