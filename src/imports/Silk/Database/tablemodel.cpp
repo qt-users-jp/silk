@@ -219,6 +219,7 @@ void TableModel::Private::create()
 
 QSqlQuery TableModel::Private::buildQuery(const QString &condition, const QVariantList &params) const
 {
+//    qDebug() << Q_FUNC_INFO << __LINE__ << condition << params;
     QSqlQuery ret(QSqlDatabase::database(q->m_database->connectionName()));
     QString sql = QString("SELECT %2 FROM %1").arg(q->tableName()).arg(fieldNames.isEmpty() ? "*" : fieldNames.join(", "));
     if (!condition.isEmpty())
@@ -238,7 +239,10 @@ QSqlQuery TableModel::Private::buildQuery(const QString &condition, const QVaria
 
     if (!ret.exec()) {
         qDebug() << Q_FUNC_INFO << __LINE__ << ret.lastError();
+        qDebug() << Q_FUNC_INFO << __LINE__ << ret.lastQuery();
+        qDebug() << Q_FUNC_INFO << __LINE__ << ret.boundValues();
     }
+//    qDebug() << Q_FUNC_INFO << __LINE__;
     return ret;
 }
 
@@ -388,7 +392,7 @@ QVariant TableModel::insert(const QVariantMap &data)
             condition = QLatin1String("oid=?");
             params.append(query.lastInsertId().toInt());
         } else {
-            condition = QString("%1=").arg(m_primaryKey);
+            condition = QString("%1=?").arg(m_primaryKey);
             params.append(query.lastInsertId().toInt());
         }
 
