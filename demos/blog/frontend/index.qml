@@ -548,22 +548,22 @@ Theme {
     Nav {
         _class: 'footer-nav'
         A {
-            enabled: input.page > 1
+            enabled: input.page > 1 && !viewer.detail
             href: '%1?page=%2'.arg(http.path).arg(input.page - 1)
             text: qsTr('Previous')
         }
         Span {
-            enabled: input.page < 2
+            enabled: input.page < 2 && !viewer.detail
             text: qsTr('Previous')
         }
         A { href: '#top'; text: qsTr('Top') }
         A {
-            enabled: input.page < articleCount.pages
+            enabled: input.page < articleCount.pages && !viewer.detail
             href: '%1?page=%2'.arg(http.path).arg(input.page + 1)
             text: qsTr('Next')
         }
         Span {
-            enabled: input.page > articleCount.pages - 1
+            enabled: input.page > articleCount.pages - 1 && !viewer.detail
             text: qsTr('Next')
         }
     }
