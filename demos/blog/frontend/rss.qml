@@ -49,7 +49,8 @@ Rss {
         id: articleModel
         database: db
         select: true
-        condition: 'published <> ""'
+        condition: 'published <> "" AND published < ?'
+        params: [new Date()]
         limit: 20
     }
 
