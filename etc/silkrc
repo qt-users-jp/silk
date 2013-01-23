@@ -1,7 +1,7 @@
 {
     "listen": { "address": "*", "port": 8080 }
     , "contents": { "*": "../contents/root/" }
-	, "silk": { "tasks": [ "./contents/tasks/chatdaemon.qml" ] }
+    , "silk": { "tasks": [ "./contents/tasks/chatdaemon.qml" ] }
     , "tasks": { "*": [] }
     , "storage": { "path": "../" }
     , "import": { "path": [] }

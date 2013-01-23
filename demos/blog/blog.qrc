@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>blogrc</file>
-    </qresource>
-</RCC>
