@@ -63,9 +63,11 @@ private:
     void load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void loadFile(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply);
     void loadUrl(const QUrl &url, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
-    void error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void load(const QFileInfo &fileInfo, QWebSocket *socket, const QString &message = QString());
     void loadUrl(const QUrl &url, QWebSocket *socket, const QString &message = QString());
+
+private slots:
+    void error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message = QString());
     void error(int statusCode, QWebSocket *socket, const QString &message = QString());
 
 private:
@@ -101,6 +103,8 @@ SilkServer::Private::Private(SilkServer *parent)
                     SilkMimeHandlerInterface *plugin = qobject_cast<SilkMimeHandlerInterface *>(object);
                     if (plugin) {
                         SilkAbstractMimeHandler *handler = plugin->handler(this);
+                        connect(handler, SIGNAL(error(int,QHttpRequest*,QHttpReply*,QString)), this, SLOT(error(int,QHttpRequest*,QHttpReply*,QString)));
+                        connect(handler, SIGNAL(error(int,QWebSocket*,QString)), this, SLOT(error(int,QWebSocket*,QString)));
                         foreach (const QString &key, plugin->keys()) {
                             mimeHandlers.insert(key, handler);
                         }

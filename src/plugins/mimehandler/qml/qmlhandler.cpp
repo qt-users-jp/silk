@@ -160,7 +160,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
         case QQmlComponent::Null:
             break;
         case QQmlComponent::Error:
-            qDebug() << component->errorString();
+            qDebug() << Q_FUNC_INFO << __LINE__ << component->errorString();
             QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
             break;
         case QQmlComponent::Loading:
@@ -193,7 +193,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         // TODO: any check?
         break;
     case QQmlComponent::Error:
-        qDebug() << component->errorString();
+        qDebug() << Q_FUNC_INFO << __LINE__ << component->errorString();
         emit q->error(500, request, reply, component->errorString());
         break;
     case QQmlComponent::Loading:
@@ -401,7 +401,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QWebSocket *socket, con
         // TODO: any check?
         break;
     case QQmlComponent::Error:
-        qDebug() << component->errorString();
+        qDebug() << Q_FUNC_INFO << __LINE__ << component->errorString();
         emit q->error(500, socket, component->errorString());
         break;
     case QQmlComponent::Loading:
