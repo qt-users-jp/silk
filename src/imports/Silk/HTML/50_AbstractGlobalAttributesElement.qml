@@ -29,6 +29,7 @@ AbstractElement {
     /* Core attributes */
     property string accesskey
     property string _class
+    property string style
     property string contenteditable
     property string contextmenu
     property string dir

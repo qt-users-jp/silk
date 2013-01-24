@@ -5,5 +5,5 @@
     , "tasks": { "*": [] }
     , "storage": { "path": "../" }
     , "import": { "path": [] }
-    , "cache": { "qml": true }
+    , "cache": { "qml": false }
 }

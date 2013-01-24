@@ -86,23 +86,23 @@ QByteArray XmlTag::out()
 
     bool hasChildObjects = false;
 
-    if (text.isEmpty()) {
-        foreach (QObject *child, contentsList()) {
-            SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
-            if (object && object->enabled()) {
-                if (!hasChildObjects) {
-                    if (!tagName().isEmpty())
-                        ret.append(">");
-                    hasChildObjects = true;
-                }
-                ret.append(object->out());
-            }
-        }
-    } else {
+    if (!text.isEmpty()) {
         hasChildObjects = true;
         if (!tagName().isEmpty())
             ret.append(">");
         ret.append(text);
+    }
+
+    foreach (QObject *child, contentsList()) {
+        SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
+        if (object && object->enabled()) {
+            if (!hasChildObjects) {
+                if (!tagName().isEmpty())
+                    ret.append(">");
+                hasChildObjects = true;
+            }
+            ret.append(object->out());
+        }
     }
 
     if (!tagName().isEmpty()) {

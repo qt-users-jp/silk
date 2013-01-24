@@ -180,7 +180,9 @@ SilkServer::Private::Private(SilkServer *parent)
 
 
 
-    if (!q->listen(address, port)) {
+    if (q->listen(address, port)) {
+        qDebug() << tr("silk is running on %1").arg(port);
+    } else {
         qWarning() << q->errorString();
         QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
     }

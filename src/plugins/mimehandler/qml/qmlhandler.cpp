@@ -470,17 +470,22 @@ bool QmlHandler::load(const QUrl &url, QHttpRequest *request, QHttpReply *reply,
     QFileInfo fileInfo;
     if (url.scheme() == "qrc") {
         fileInfo = QFileInfo(url.toString().mid(3));
-    } else {
-        fileInfo = QFileInfo(url.toLocalFile());
-    }
-
-    if (fileInfo.fileName().at(0).isUpper()) {
-        return false;
-    } else {
-        if (!fileInfo.isReadable()){
-            emit error(403, request, reply, request->url().toString());
+        if (fileInfo.fileName().at(0).isUpper()) {
+            return false;
         } else {
             d->load(url, request, reply, message);
+        }
+    } else {
+        fileInfo = QFileInfo(url.toLocalFile());
+        QFile::Permissions permissions = fileInfo.permissions();
+        if (permissions & QFile::ReadOther) {
+            if (permissions & QFile::ExeOther) {
+                d->load(url, request, reply, message);
+            } else {
+                return false;
+            }
+        } else {
+            emit error(403, request, reply, request->url().toString());
         }
     }
     return true;
@@ -491,17 +496,22 @@ bool QmlHandler::load(const QUrl &url, QWebSocket *socket, const QString &messag
     QFileInfo fileInfo;
     if (url.scheme() == "qrc") {
         fileInfo = QFileInfo(url.toString().mid(3));
-    } else {
-        fileInfo = QFileInfo(url.toLocalFile());
-    }
-
-    if (fileInfo.fileName().at(0).isUpper()) {
-        return false;
-    } else {
-        if (!fileInfo.isReadable()){
-            emit error(403, socket, socket->url().toString());
+        if (fileInfo.fileName().at(0).isUpper()) {
+            return false;
         } else {
             d->load(url, socket, message);
+        }
+    } else {
+        fileInfo = QFileInfo(url.toLocalFile());
+        QFile::Permissions permissions = fileInfo.permissions();
+        if (permissions & QFile::ReadOther) {
+            if (permissions & QFile::ExeOther) {
+                d->load(url, socket, message);
+            } else {
+                return false;
+            }
+        } else {
+            emit error(403, socket, socket->url().toString());
         }
     }
     return true;

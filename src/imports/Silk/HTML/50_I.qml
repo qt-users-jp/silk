@@ -26,4 +26,5 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'i'
+    text: ''
 }
