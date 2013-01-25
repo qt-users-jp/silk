@@ -14,11 +14,12 @@ phony_src.name = CREATE phony.c
 phony_src.CONFIG += combine
 QMAKE_EXTRA_COMPILERS += phony_src
 
+include(../silk.pri)
 root.source = root
-root.target = .
+root.target = $${SILK_DATA_PATH}
 
 tasks.source = tasks
-tasks.target = .
+tasks.target = $${SILK_DATA_PATH}
 
 DEPLOYMENTFOLDERS = root tasks
 

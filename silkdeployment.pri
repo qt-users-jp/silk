@@ -88,7 +88,7 @@ android {
             macx {
                 target = $$OUT_PWD/$${TARGET}.app/Contents/Resources/$$eval($${deploymentfolder}.target)
             } else {
-                target = $$OUT_PWD/$$eval($${deploymentfolder}.target)
+                target = $$SILK_BUILD_TREE/$$eval($${deploymentfolder}.target)
             }
             target = $$replace(target, \\\\, /)
             sourcePathSegments = $$split(source, /)
@@ -109,7 +109,7 @@ android {
             QMAKE_EXTRA_TARGETS += first copydeploymentfolders
         }
     }
-    installPrefix = $${SILK_DATA_PATH}
+    installPrefix = $${PREFIX}
     for(deploymentfolder, DEPLOYMENTFOLDERS) {
         item = item$${deploymentfolder}
         itemfiles = $${item}.files
@@ -128,10 +128,6 @@ android {
         export(desktopfile.path)
         INSTALLS += icon desktopfile
     }
-
-    target.path = $${installPrefix}/bin
-    export(target.path)
-    INSTALLS += target
 }
 
 export (ICON)
