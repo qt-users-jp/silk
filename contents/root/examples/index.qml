@@ -142,12 +142,17 @@ SilkPageTemplate {
         }
 
         Section {
-            H3 { text: "Basic Database" }
+            H3 { text: "Database" }
             Ul {
                 Li {
                     A { href: "%1.qml".arg(text); text: "database" }
                     Text { text: " / " }
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "database.qml" }
+                }
+                Li {
+                    A { href: "%1.qml".arg(text); text: "mongodb" }
+                    Text { text: " / " }
+                    A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "mongodb.qml" }
                 }
             }
         }
