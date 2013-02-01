@@ -1,6 +1,3 @@
 [submodule "qthttpserver"]
 	path = qthttpserver
 	url = ../qthttpserver.git
-[submodule "src/imports/Silk/MongoDB/3rdparty/mongo-c-driver"]
-	path = src/imports/Silk/MongoDB/3rdparty/mongo-c-driver
-	url = git://github.com/mongodb/mongo-c-driver.git
