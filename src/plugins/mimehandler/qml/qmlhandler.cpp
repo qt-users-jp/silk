@@ -91,7 +91,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
     , q(parent)
 {
     QQmlContext *context = engine.rootContext();
-    context->setContextProperty(QLatin1String("Silk"), new Silk(this));
+    context->setContextProperty(QLatin1String("Silk"), new Silk(&engine));
 
     connect(q, SIGNAL(error(int,QHttpRequest*,QHttpReply*, QString)), this, SLOT(onError()));
     connect(q, SIGNAL(error(int,QWebSocket*, QString)), this, SLOT(onError()));

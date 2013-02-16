@@ -31,6 +31,10 @@
 #include <QtCore/QFile>
 #include <QtCore/QUuid>
 
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlComponent>
+#include <QtQml/QQmlContext>
+
 Silk::Silk(QObject *parent)
     : QObject(parent)
 {
@@ -61,5 +65,20 @@ QVariantList Silk::readDir(const QString &path) const
     foreach (const QString &file, dir.entryList(QDir::Files)) {
         ret.append(file);
     }
+    return ret;
+}
+
+bool Silk::isAvailable(const QString &uri, int major, int minor, const QString &element) const
+{
+    bool ret = false;
+    QQmlEngine *engine = qobject_cast<QQmlEngine*>(parent());
+    QQmlContext *context = new QQmlContext(engine->rootContext());
+    QQmlComponent component(engine);
+    QByteArray data = QString("import %1 %2.%3\n%4 {}").arg(uri).arg(major).arg(minor).arg(element).toUtf8();
+    component.setData(data, QUrl());
+    QObject *object = component.create(context);
+    object->deleteLater();
+    ret = !component.isError();
+
     return ret;
 }

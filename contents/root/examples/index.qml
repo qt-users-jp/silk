@@ -145,9 +145,17 @@ SilkPageTemplate {
             H3 { text: "Database" }
             Ul {
                 Li {
+                    id: database
+                    enabled: Silk.isAvailable("me.qtquick.Database", 0, 1, 'Database')
                     A { href: "%1.qml".arg(text); text: "database" }
                     Text { text: " / " }
                     A { href: "http://git.qtquick.me/?p=silk.git;a=blob;f=contents/root/examples/%1".arg(text); text: "database.qml" }
+                }
+                Li {
+                    enabled: !database.enabled
+                    Text { text: 'Install ' }
+                    A { text: "Relational database plugin for QML"; href: 'http://qt5.jp/relational-database-plugin-for-qml.html' }
+                    Text { text: " to use database in silk." }
                 }
             }
         }

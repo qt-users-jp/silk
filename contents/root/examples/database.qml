@@ -27,7 +27,7 @@
 import QtQml 2.0
 import Silk.HTML 5.0
 import Silk.Utils 1.0
-import Silk.Database 1.0
+import me.qtquick.Database 0.1
 import "./components"
 
 Html {
@@ -79,7 +79,7 @@ Html {
             property string value
         }
 
-        SelectSqlModel {
+        SqlModel {
             id: select
             select: false
             query: "SELECT COUNT(key) as keys FROM Chat WHERE value LIKE ?"

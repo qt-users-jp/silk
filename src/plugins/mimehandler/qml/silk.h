@@ -39,6 +39,7 @@ public:
     Q_INVOKABLE QString uuid();
     Q_INVOKABLE QString readFile(const QString &filePath) const;
     Q_INVOKABLE QVariantList readDir(const QString &path) const;
+    Q_INVOKABLE bool isAvailable(const QString &uri, int major, int minor, const QString &element) const;
 };
 
 #endif // SILK_H
