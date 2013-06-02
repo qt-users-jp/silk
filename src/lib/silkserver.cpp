@@ -295,6 +295,9 @@ void SilkServer::Private::load(const QFileInfo &fileInfo, QHttpRequest *request,
     QString mime = mimeType.name();
     reply->setStatus(200);
     reply->setRawHeader("Content-Type", mime.toUtf8());
+    if (!mimeHandlers.contains(mime)) {
+        mime = mime.section(QLatin1Char('/'), 0, 0) + QLatin1String("/*");
+    }
     if (mimeHandlers.contains(mime)) {
         QUrl url;
         if (fileInfo.filePath().startsWith(":/")) {
@@ -324,7 +327,9 @@ void SilkServer::Private::loadFile(const QFileInfo &fileInfo, QHttpRequest *requ
                 lastModified.setTime_t(0);
             }
             reply->setRawHeader("Last-Modified", lastModified.toUTC().toString("ddd, d, MMM yyyy hh:mm:ss UTC").toUtf8());
-            reply->write(file.readAll());
+            while (!file.atEnd()) {
+                reply->write(file.read(1024 * 1024));
+            }
             file.close();
             reply->close();
         } else {
