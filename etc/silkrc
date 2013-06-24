@@ -6,4 +6,5 @@
     , "storage": { "path": "../" }
     , "import": { "path": [] }
     , "cache": { "qml": false }
+    , "deflate": { "excludes": ["video/*", "image/*"] }
 }
