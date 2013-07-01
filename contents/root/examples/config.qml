@@ -40,7 +40,7 @@ Html {
     Body {
         H1 { text: title.text }
         P {
-            text: 'SilkConfig element in Silk.Utils 1.0 allows you to get <a href="/config.qml">config values</a> in QML'
+            text: 'SilkConfig element in Silk.Utils 1.0 allows you to get <a href="/getting-started.qml#configuration">config values</a> in QML'
         }
 
         Dl {

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Silk Project.
+/* Copyright (c) 2012 - 2013 Silk Project.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,86 +25,133 @@
  */
 
 import Silk.HTML 5.0
-import "./components/"
+import Silk.Bootstrap 2.3 as Bootstrap
+import 'components'
 
 SilkPageTemplate {
-    subtitle: "a simple web framework"
+    Head {
+        Title { text: 'silk - simple and flexible web framework' }
+        Link { href: '/css/archtecture.qml'; rel: 'stylesheet'; media: 'screen' }
+    }
 
-    Article {
-        Section {
-            H2 { text: "How many languages are you <em>writing</em> to develop a web service?" }
-            Table {
-                property string style: "width: 100%; border-collapse: separate; border-spacing: 5px; table-layout: fixed;"
-                Tr {
-                    ArchitectureBlock { text: "HTML"; rowspan: "2"; __class: "arch_html arch_op50" }
-                    ArchitectureBlock { text: "HTML"; colspan: "2"; __class: "arch_html arch_op50" }
-                    ArchitectureBlock { text: "XML / JSON"; colspan: "2"; __class: "arch_js arch_op50" }
-                    ArchitectureBlock { text: "CSS"; rowspan: "2"; __class: "arch_css" }
-                    ArchitectureBlock { text: "Java<br />Script"; rowspan: "2"; __class: "arch_js" }
+    Bootstrap.HeroUnit {
+        heading: 'Simple and flexible web framework'
+        tagline: 'Write everything in QML and JavaScript'
+        Table {
+            property string style: "width: 100%; border-collapse: separate; border-spacing: 5px; table-layout: fixed;"
+            Tr {
+                ArchitectureBlock {
+                    rowspan: "2"; __class: "arch_html arch_op50"
+                    Text { text: "HTML" }
                 }
-                Tr {
-                    ArchitectureBlock {
-                        text: "Ruby / PHP / Java / ..."
-                        colspan: "4"
-                        __class: "arch_plangs"
-                    }
+                ArchitectureBlock {
+                    colspan: "2"; __class: "arch_html arch_op50"
+                    Text { text: "HTML" }
                 }
-                Tr {
-                    ArchitectureBlock {
-                        text: "Apache / IIS / nginx / ..."
-                        colspan: "7"
-                        __class: "arch_server arch_op50"
-                    }
+                ArchitectureBlock {
+                    colspan: "2"; __class: "arch_js arch_op50"
+                    Text { text: "XML / JSON" }
+                }
+                ArchitectureBlock { text: "CSS"; __class: "arch_css arch_op50" }
+                ArchitectureBlock { text: "Java<br />Script"; rowspan: "2"; __class: "arch_js" }
+            }
+            Tr {
+                ArchitectureBlock {
+                    text: "QML with JavaScript"
+                    colspan: "5"
+                    __class: "arch_qml"
                 }
             }
-            Strong { text: "You may have to write them in:" }
-            Ol {
-                Li { text: "Ruby / PHP / Java / ..." }
-                Li { text: "JavaScript" }
-                Li { text: "(S)CSS" }
-                Li { text: "(HTML)" }
-                Li { text: "..." }
+            Tr {
+                ArchitectureBlock {
+                    text: "silk web server"
+                    colspan: "7"
+                    __class: "arch_qt arch_op50"
+                }
             }
-            Strong { text: "Seems like something should be improved. and..." }
         }
+    }
 
-        Section {
-            H2 { text: "We did it!" }
-            Table {
-                property string style: "width: 100%; border-collapse: separate; border-spacing: 5px; table-layout: fixed;"
-                Tr {
-                    ArchitectureBlock { text: "HTML"; rowspan: "2"; __class: "arch_html arch_op50" }
-                    ArchitectureBlock { text: "HTML"; colspan: "2"; __class: "arch_html arch_op50" }
-                    ArchitectureBlock { text: "JSON"; colspan: "2"; __class: "arch_js arch_op50" }
-                    ArchitectureBlock { text: "CSS"; __class: "arch_css arch_op50" }
-                    ArchitectureBlock { text: "Java<br />Script"; rowspan: "2"; __class: "arch_js" }
-                }
-                Tr {
-                    ArchitectureBlock {
-                        text: "QML with JavaScript"
-                        colspan: "5"
-                        __class: "arch_qml"
-                    }
-                }
-                Tr {
-                    ArchitectureBlock {
-                        text: "Silk"
-                        colspan: "7"
-                        __class: "arch_qt arch_op50"
-                    }
-                }
-            }
-            Strong { text: "You are able to write everything in:" }
-            Ol {
-                Li { text: "QML and JavaScript" }
-                Li { text: "(HTML)" }
+    Bootstrap.RowFluid {
+        Bootstrap.Span4 {
+            H2 { A { href: '/scaffolding.qml#html'; text: 'HTML' } }
+            Pre {
+                text: "import Silk.HTML 5.0
+
+Html {
+    DocType {}
+    Head { ... }
+    Body {
+        H1 { text: 'title' }
+        P { text: '...' }
+    }
+}"
             }
         }
 
-        Footer {
-            Nav {
-                Text { text: "Next &gt;&gt; " }
-                A { href: "/hellosilk.qml"; text: "Hello silk world" }
+        Bootstrap.Span4 {
+            H2 { A { href: '/scaffolding.qml#xml'; text: 'XML' } }
+            Pre {
+                text: "import Silk.XML 1.0
+
+Tag {
+    tagName: 'tag'
+    text: 'text'
+}"
+            }
+        }
+
+        Bootstrap.Span4 {
+            H2 { A { href: '/scaffolding.qml#json'; text: 'JSON' } }
+            Pre {
+                text: "import Silk.JSON 1.0
+
+Json {
+    object: {
+        'key': 'width'
+        , 'value': 100
+    }
+}"
+            }
+        }
+    }
+
+    Bootstrap.RowFluid {
+        Bootstrap.Span4 {
+            H2 { A { href: '/scaffolding.qml#css'; text: 'CSS' } }
+            Pre {
+                text: "import Silk.CSS 3.0
+
+Css {
+    Rule {
+        selector: 'body'
+        background_color: '0'
+    }
+    ...
+}"
+            }
+        }
+
+        Bootstrap.Span4 {
+            H2 { A { href: '/scaffolding.qml#text'; text: 'Text' } }
+            Pre {
+                text: "import Silk.Text 1.0
+
+Text {
+    text: 'Hello World!'
+}"
+            }
+        }
+
+        Bootstrap.Span4 {
+            H2 { A { href: '/examples.qml#communication'; text: 'WebSocket' } }
+            Pre {
+                text: "import Silk.WebSocket 1.0
+
+WebSocket {
+    onReady: accept()
+    onMessage: send(message.data);
+}"
             }
         }
     }

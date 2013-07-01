@@ -26,6 +26,4 @@
 
 import Silk.XML 1.0
 
-Tag {
-    property string text
-}
+Tag {}

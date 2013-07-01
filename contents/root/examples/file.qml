@@ -38,13 +38,11 @@ Html {
     }
 
     Component.onCompleted: {
-        http.loading = true;
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             switch (request.readyState) {
             case 4: // Done
                 pre.text = request.responseText;
-                http.loading = false;
                 break
             }
         }

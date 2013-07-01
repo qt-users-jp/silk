@@ -47,20 +47,24 @@ QByteArray Repeater::out()
         int count = m_model.toInt();
         for (int i = 0; i < count; i++) {
             QVariantMap model;
+            model.insert("index", i);
             model.insert("modelData", i);
             list.append(model);
         }
         break; }
     case QVariant::List: {
         QVariantList l = m_model.toList();
+        int i = 0;
         foreach (const QVariant &v, l) {
             QVariantMap model;
             switch (v.type()) {
             case QVariant::Map:
-                list.append(v);
+                model = v.toMap();
+                model.insert("index", i++);
                 break;
             case QVariant::String:
             case QVariant::Int:
+                model.insert("index", i++);
                 model.insert("modelData", v);
                 break;
             default:
@@ -73,8 +77,10 @@ QByteArray Repeater::out()
         break; }
     case QVariant::Map: {
         QVariantMap m = m_model.toMap();
+        int i = 0;
         foreach (const QString &key, m.keys()) {
             QVariantMap model;
+            model.insert("index", i++);
             model.insert("key", key);
             model.insert("value", m.value(key));
             list.append(model);
@@ -86,6 +92,7 @@ QByteArray Repeater::out()
             QHash<int, QByteArray> roleNames = m->roleNames();
             for (int i = 0; i < m->rowCount(); i++) {
                 QVariantMap model;
+                model.insert("index", i);
                 foreach (int role, roleNames.keys()) {
                     QVariant data = m->data(m->index(i), role);
                     model.insert(roleNames.value(role), data);

@@ -13,11 +13,13 @@ isEmpty(SILKPLUGIN_PRI) { SILKPLUGIN_PRI = 1
 
     DESTDIR = $$SILK_BUILD_TREE/$$SILK_TARGET_PATH/$$SILK_PLUGIN_PATH/$$SILK_PLUGIN_TYPE/
 
-    isEmpty(target.path) {
-        target.path = $$PREFIX/$$SILK_TARGET_PATH/$$SILK_PLUGIN_PATH/$$SILK_PLUGIN_TYPE/
-    }
-    INSTALLS += target
+    CONFIG(shared, static|shared) {
+        isEmpty(target.path) {
+            target.path = $$PREFIX/$$SILK_TARGET_PATH/$$SILK_PLUGIN_PATH/$$SILK_PLUGIN_TYPE/
+        }
+        INSTALLS += target
 
-    QMAKE_RPATHDIR += \$\$ORIGIN/../../../../$$SILK_LIBRARY_PATH
-    include(./silkrpath.pri)
+        QMAKE_RPATHDIR += \$\$ORIGIN/../../../../$$SILK_LIBRARY_PATH
+        include(./silkrpath.pri)
+    }
 }

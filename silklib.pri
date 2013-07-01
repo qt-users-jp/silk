@@ -20,8 +20,10 @@ isEmpty(SILKLIBRARY_PRI) { SILKLIBRARY_PRI = 1
 #    QMAKE_RPATHDIR += \$\$ORIGIN/../$$SILK_LIBRARY_PATH
 #    include(./silkrpath.pri)
 
-    silk_platform_mac | silk_platform_linux {
-        target.path = $$PREFIX/$$SILK_TARGET_PATH/$$SILK_LIBRARY_PATH
-        INSTALLS += target
+    CONFIG(shared, static|shared) {
+        silk_platform_mac | silk_platform_linux {
+            target.path = $$PREFIX/$$SILK_TARGET_PATH/$$SILK_LIBRARY_PATH
+            INSTALLS += target
+        }
     }
 }

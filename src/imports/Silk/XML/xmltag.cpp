@@ -32,7 +32,8 @@
 
 XmlTag::XmlTag(QObject *parent)
     : SilkAbstractHttpObject(parent)
-    , m_index(metaObject()->propertyCount())
+    , m_contentType("application/xml; charset=utf-8;")
+    , m_prolog("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>")
 {
 }
 
@@ -44,9 +45,10 @@ QByteArray XmlTag::out()
     QStringList attributes;
 
     int count = metaObject()->propertyCount();
-    for (int i = m_index; i < count; i++) {
+    for (int i = 0; i < count; i++) {
         QMetaProperty p = metaObject()->property(i);
         QString key(p.name());
+        if (key == QStringLiteral("prolog")) continue;
         if (key != key.toLower()) continue;
         if (key.startsWith("__")) continue;
         if (key.startsWith("_"))
@@ -57,7 +59,6 @@ QByteArray XmlTag::out()
         switch (p.type()) {
         case QVariant::String: {
             QString value = p.read(this).toString();
-
             if (key == QLatin1String("text")) {
                 text = value;
             } else if (!value.isNull()){
@@ -86,7 +87,7 @@ QByteArray XmlTag::out()
 
     bool hasChildObjects = false;
 
-    if (!text.isEmpty()) {
+    if (!text.isNull()) {
         hasChildObjects = true;
         if (!tagName().isEmpty())
             ret.append(">");
@@ -124,4 +125,15 @@ QByteArray XmlTag::out()
         ret = str.toUtf8();
     }
     return ret;
+}
+
+const QString & XmlTag::text() const
+{
+    return m_text;
+}
+
+void XmlTag::text(const QString & text) {
+    if (m_text == text && m_text.isEmpty() == text.isEmpty() && m_text.isNull() == text.isNull()) return;
+    m_text = text;
+    emit textChanged(text);
 }

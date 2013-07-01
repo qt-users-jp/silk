@@ -1,4 +1,4 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS = lib silk plugins imports
+SUBDIRS = lib plugins imports silk
 

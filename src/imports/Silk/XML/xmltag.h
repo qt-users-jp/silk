@@ -33,23 +33,32 @@ class XmlTag : public SilkAbstractHttpObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString tagName READ tagName WRITE tagName NOTIFY tagNameChanged)
+    Q_PROPERTY(QString contentType READ contentType WRITE contentType NOTIFY contentTypeChanged)
     Q_PROPERTY(QString prolog READ prolog WRITE prolog NOTIFY prologChanged)
+    Q_PROPERTY(QString tagName READ tagName WRITE tagName NOTIFY tagNameChanged)
+    Q_PROPERTY(QString text READ text WRITE text NOTIFY textChanged)
 public:
     explicit XmlTag(QObject *parent = 0);
     
     virtual QByteArray out();
 
 signals:
-    void tagNameChanged(const QString &tagName);
     void prologChanged(const QString &prolog);
+    void contentTypeChanged(const QString &contentType);
+    void tagNameChanged(const QString &tagName);
+    void textChanged(const QString &text);
 
 private:
     Q_DISABLE_COPY(XmlTag)
-    SILK_ADD_PROPERTY(const QString &, tagName, QString)
+    SILK_ADD_PROPERTY(const QString &, contentType, QString)
     SILK_ADD_PROPERTY(const QString &, prolog, QString)
-
-    int m_index;
+    SILK_ADD_PROPERTY(const QString &, tagName, QString)
+//    SILK_ADD_PROPERTY(const QString &, text, QString)
+public:
+    const QString & text() const;
+    void text(const QString & text);
+private:
+    QString m_text;
 };
 
 #endif // XMLTAG_H

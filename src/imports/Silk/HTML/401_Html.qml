@@ -26,7 +26,6 @@
 
 AbstractI18nElement {
     tagName: 'html'
-    property string contentType: "text/html; charset=utf-8;"
-    property string docType: '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'
-    property bool escapeHTML: false
+    contentType: "text/html; charset=utf-8;"
+    prolog: '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'
 }

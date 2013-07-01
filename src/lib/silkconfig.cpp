@@ -7,6 +7,7 @@
 #include <QtCore/QJsonDocument>
 
 QVariantMap SilkConfig::m_config;
+QString SilkConfig::m_file;
 
 const QVariantMap &SilkConfig::config()
 {
@@ -71,6 +72,7 @@ void SilkConfig::initialize(int argc, char **argv)
 
 QVariantMap SilkConfig::readConfigFile(const QString &fileName)
 {
+    m_file = fileName;
     QVariantMap ret;
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
@@ -86,4 +88,9 @@ QVariantMap SilkConfig::readConfigFile(const QString &fileName)
         qWarning() << file.error() << file.errorString();
     }
     return ret;
+}
+
+const QString &SilkConfig::file()
+{
+    return m_file;
 }

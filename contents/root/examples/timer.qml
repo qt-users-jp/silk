@@ -36,7 +36,7 @@ Html {
         H1 { text: title.text }
         Dl {
             Dt { text: "Start" }
-            Dd { id: start }
+            Dd { id: start; text: 'start' }
             Dt { text: "Finish" }
             Dd { id: finish }
         }
@@ -53,6 +53,7 @@ Html {
         repeat: false
         onTriggered: {
             finish.text = Qt.formatTime(new Date(), 'hh:mm:ss')
+            console.debug(finish.text)
             http.loading = false
         }
     }

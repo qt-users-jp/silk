@@ -37,6 +37,7 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
+#include <QtQml/QQmlExtensionPlugin>
 
 #include <qhttprequest.h>
 #include <qhttpreply.h>
@@ -101,6 +102,29 @@ QmlHandler::Private::Private(QmlHandler *parent)
     qmlRegisterType<WebSocketObject>("Silk.WebSocket", 1, 0, "WebSocket");
 
     QDir appDir = QCoreApplication::applicationDirPath();
+    QMap<QString, QObject*> plugins;
+#ifdef QT_STATIC
+    engine.setImportPathList(QStringList());
+    QHash<QString, QString> name2uri;
+    name2uri.insert(QStringLiteral("QtQmlModelsPlugin"), QStringLiteral("QtQml.Models"));
+    foreach (QObject *object, QPluginLoader::staticInstances()) {
+        {
+            SilkImportsInterface *plugin = qobject_cast<SilkImportsInterface *>(object);
+            if (plugin) {
+                plugins.insert(plugin->name(), object);
+            }
+        }
+        {
+            QQmlExtensionPlugin *plugin = qobject_cast<QQmlExtensionPlugin *>(object);
+            if (plugin) {
+                if (name2uri.contains(object->metaObject()->className())) {
+//                    qDebug() << Q_FUNC_INFO << __LINE__ << name2uri.value(object->metaObject()->className());
+                    plugin->registerTypes(name2uri.value(object->metaObject()->className()).toUtf8().constData());
+                }
+            }
+        }
+    }
+#else // QT_STATIC
     QDir importsDir = appDir;
     QString appPath(SILK_APP_PATH);
     // up to system root path
@@ -109,7 +133,6 @@ QmlHandler::Private::Private(QmlHandler *parent)
     }
     importsDir.cd(SILK_IMPORTS_PATH);
 
-    QMap<QString, QObject*> plugins;
     foreach (const QString &lib, importsDir.entryList(QDir::Files)) {
         QPluginLoader pluginLoader(importsDir.absoluteFilePath(lib));
         if (pluginLoader.load()) {
@@ -128,7 +151,9 @@ QmlHandler::Private::Private(QmlHandler *parent)
             qWarning() << pluginLoader.errorString() << importsDir.absoluteFilePath(lib);
         }
     }
+#endif // QT_STATIC
 
+    registerObject("Silk.Text", 1, 0);
     foreach (QObject *plugin, plugins.values()) {
         connect(plugin, SIGNAL(registerObject(const char*,int,int)), this, SLOT(registerObject(const char*,int,int)));
         foreach (const QString &parent, qobject_cast<SilkImportsInterface *>(plugin)->parents()) {
@@ -175,7 +200,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
 
 void QmlHandler::Private::registerObject(const char *uri, int major, int minor)
 {
-    // @uri Silk.HTML
+    // @uri Silk.Text
     qmlRegisterType<Text>(uri, major, minor, "Text");
 }
 

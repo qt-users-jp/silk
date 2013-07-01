@@ -30,8 +30,34 @@
 #include <silkconfig.h>
 #include <silkserver.h>
 
+#ifdef QT_STATIC
+#include <QtCore/QtPlugin>
+    Q_IMPORT_PLUGIN(DeflatePlugin)
+    Q_IMPORT_PLUGIN(QmlPlugin)
+        Q_IMPORT_PLUGIN(QtQmlModelsPlugin)
+        Q_IMPORT_PLUGIN(BootstrapPlugin)
+        Q_IMPORT_PLUGIN(CssPlugin)
+        Q_IMPORT_PLUGIN(CachePlugin)
+        Q_IMPORT_PLUGIN(HtmlPlugin)
+        Q_IMPORT_PLUGIN(JsonPlugin)
+        Q_IMPORT_PLUGIN(OAuthPlugin)
+        Q_IMPORT_PLUGIN(ProcessPlugin)
+        Q_IMPORT_PLUGIN(RssPlugin)
+        Q_IMPORT_PLUGIN(UtilsPlugin)
+        Q_IMPORT_PLUGIN(XmlPlugin)
+
+    Q_IMPORT_PLUGIN(HttpPlugin)
+
+#endif
+
 int main(int argc, char *argv[])
 {
+#ifdef QT_STATIC
+    Q_INIT_RESOURCE(Bootstrap);
+    Q_INIT_RESOURCE(CSS);
+    Q_INIT_RESOURCE(HTML);
+    Q_INIT_RESOURCE(RSS);
+#endif
     QCoreApplication app(argc, argv);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 

@@ -2,9 +2,8 @@
     "listen": { "address": "*", "port": 8080 }
     , "contents": { "*": "../share/silk/root/" }
     , "silk": { "tasks": [ "../share/silk/tasks/chatdaemon.qml" ] }
-    , "tasks": { "*": [] }
     , "storage": { "path": "../" }
     , "import": { "path": [] }
-    , "cache": { "qml": false }
+    , "cache": { "qml": true }
     , "deflate": { "excludes": ["video/*", "image/*"] }
 }

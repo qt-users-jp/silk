@@ -84,8 +84,33 @@ SilkServer::Private::Private(SilkServer *parent)
     : QObject(parent)
     , q(parent)
 {
-
     QDir appDir = QCoreApplication::applicationDirPath();
+#ifdef QT_STATIC
+    {
+        foreach (QObject *object, QPluginLoader::staticInstances()) {
+            {
+                SilkMimeHandlerInterface *plugin = qobject_cast<SilkMimeHandlerInterface *>(object);
+                if (plugin) {
+                    SilkAbstractMimeHandler *handler = plugin->handler(this);
+                    connect(handler, SIGNAL(error(int,QHttpRequest*,QHttpReply*,QString)), this, SLOT(error(int,QHttpRequest*,QHttpReply*,QString)));
+                    connect(handler, SIGNAL(error(int,QWebSocket*,QString)), this, SLOT(error(int,QWebSocket*,QString)));
+                    foreach (const QString &key, plugin->keys()) {
+                        mimeHandlers.insert(key, handler);
+                    }
+                }
+            }
+            {
+                SilkProtocolHandlerInterface *plugin = qobject_cast<SilkProtocolHandlerInterface *>(object);
+                if (plugin) {
+                    SilkAbstractProtocolHandler *handler = plugin->handler(this);
+                    foreach (const QString &key, plugin->keys()) {
+                        protocolHandlers.insert(key, handler);
+                    }
+                }
+            }
+        }
+    }
+#else // QT_STATIC
     {
         QDir pluginsDir = appDir;
         QString appPath(SILK_APP_PATH);
@@ -143,6 +168,7 @@ SilkServer::Private::Private(SilkServer *parent)
             }
         }
     }
+#endif // QT_STATIC
 
     connect(q, SIGNAL(incomingConnection(QHttpRequest *, QHttpReply *)), this, SLOT(incomingConnection(QHttpRequest *, QHttpReply *)));
     connect(q, SIGNAL(incomingConnection(QWebSocket *)), this, SLOT(incomingConnection(QWebSocket *)));
@@ -167,10 +193,20 @@ SilkServer::Private::Private(SilkServer *parent)
         if (value.contains(":/")) {
             documentRoots.insert(key, value);
         } else {
-            documentRoots.insert(key, appDir.absoluteFilePath(value));
+            QFileInfo fileInfo(value);
+            if (fileInfo.isRelative()) {
+                if (SilkConfig::file().startsWith(QStringLiteral(":/"))) {
+                    documentRoots.insert(key, appDir.absoluteFilePath(value));
+                } else {
+                    QDir dir(SilkConfig::file());
+                    dir.cdUp();
+                    documentRoots.insert(key, dir.absoluteFilePath(value));
+                }
+            } else {
+                documentRoots.insert(key, value);
+            }
         }
     }
-
     foreach (const QVariant &val, SilkConfig::value("rewrite").toList()) {
         QVariantMap map = val.toMap();
         foreach (const QString &key, map.keys()) {
@@ -351,6 +387,7 @@ void SilkServer::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpR
 
 void SilkServer::Private::error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
+    qDebug() << Q_FUNC_INFO << __LINE__ << statusCode << request->url() << message;
     QString documentRoot = documentRootForRequest(request->url());
     if (QFile::exists(QString::fromUtf8("%1/errors/%2.qml").arg(documentRoot).arg(statusCode))) {
         load(QFileInfo(QString::fromUtf8("%1/errors/%2.qml").arg(documentRoot).arg(statusCode)), request, reply, message);

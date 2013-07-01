@@ -26,6 +26,7 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'iframe'
+    text: ''
 
     property string src
     property string srcdoc

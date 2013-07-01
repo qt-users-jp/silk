@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Silk Project.
+/* Copyright (c) 2012 - 2013 Silk Project.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,122 +25,139 @@
  */
 
 import Silk.HTML 5.0
+import Silk.CSS 3.0
+import Silk.Utils 1.0
+import Silk.Bootstrap 2.3 as Bootstrap
+import QtQml 2.1
+import QtQml.Models 2.1
 
 Html {
     id: root
 
-    property string subtitle
     default property alias contents: main.contents
 
-    DocType {}
+    property var data_spy: ''
+    property var data_target: ''
+    property var data_offset: ''
 
-//    Comment { text: '[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]' } Text { text: "\n" }
-//    Comment { text: '[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]' } Text { text: "\n" }
-//    Comment { text: '[if IE 8]><html class="no-js lt-ie9"> <![endif]' } Text { text: "\n" }
-//    Comment { text: '[if gt IE 8]><!' } Text { text: '<html class="no-js">' } Comment { text: '<![endif]' } Text { text: "\n" }
+//    DocType {}
+
     Head {
+        id: head
         Meta { charset: "utf-8" }
-        Meta { http_equiv: "X-UA-Compatible"; content: "IE=edge,chrome=1" }
-        Title { text: 'silk - %1'.arg(root.subtitle) }
-        Meta { name: "description"; content: "" }
-        Meta { name: "viewport"; content: "width=device-width" }
-        Link { rel: "stylesheet"; href: "/3rdparty/css/normalize.min.css" }
-        Link { rel: "stylesheet"; href: "/css/" }
-        Script { type: 'text/javascript'; src: "/3rdparty/js/modernizr-2.6.1-respond-1.1.0.min.js" }
-        Script { type: 'text/javascript'; src: "/js/gin.js" }
-        Script { type: 'text/javascript'; src: "/js/highlighter.js" }
+//        Meta { name: "description"; content: "" }
+        Meta { name: "viewport"; content: "width=device-width, initial-scale=1.0" }
+//        Link { href: 'http://twitter.github.io/bootstrap/assets/css/bootstrap.css'; rel: 'stylesheet'; media: 'screen' }
+//        Link { href: 'http://twitter.github.io/bootstrap/assets/css/bootstrap-responsive.css'; rel: 'stylesheet'; media: 'screen' }
+        Link { href: '/3rdparty/css/bootstrap.css'; rel: 'stylesheet'; media: 'screen' }
+        Link { href: '/3rdparty/css/bootstrap-responsive.css'; rel: 'stylesheet'; media: 'screen' }
+        Link { href: '/3rdparty/css/docs.css'; rel: 'stylesheet'; media: 'screen' }
+        Link { href: '/css/'; rel: 'stylesheet'; media: 'screen' }
+//        Script { type: 'text/javascript'; src: "/js/gin.js" }
+//        Script { type: 'text/javascript'; src: "/js/highlighter.js" }
     }
 
     Body {
-        onload: "highlight()"
-        Comment { text: '[if lt IE 7]' +
-            '<p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>' +
-        '<![endif]' }
+        id: body
+        property string data_spy: root.data_spy
+        property string data_target: root.data_target
+        property string data_offset: root.data_offset
+//        onload: "highlight()"
 
-        Div {
-            _class: "header-container"
-            Header {
-                _class: "wrapper clearfix"
-                H1 {
-                    _class: "title"
-                    A {
-                        href: '/'
-                        text: 'silk'
-                    }
+        Bootstrap.Navbar {
+            _class: 'navbar-fixed-top'
+            Bootstrap.Container {
+                Button {
+                    type: 'button'
+                    _class: 'btn btn-navbar'
+                    property string data_toggle: 'collapse'
+                    property string data_target: '.nav-collapse'
 
-                    Text {
-                        enabled: root.subtitle.length > 0
-                        text: ' - %1'.arg(root.subtitle)
-                    }
+                    Span { _class: 'icon-bar'; text: '' }
+                    Span { _class: 'icon-bar'; text: '' }
+                    Span { _class: 'icon-bar'; text: '' }
                 }
 
-                Nav {
-                    Ul {
-                        Li { A { href: "/try.qml"; text: "1. Try now!" } }
-                        Li { A { href: "/tutorials.qml"; text: "2. Tutorials" } }
-                        Li { A { href: "/examples/"; text: "3. Examples" } }
-                    }
+                A {
+                    _class: 'brand'
+                    href: '/'
+                    text: 'Silk'
                 }
-            }
-        }
-
-        Div {
-            _class: "main-container"
-            Div {
-                _class: "main wrapper clearfix"
 
                 Div {
-                    id: main
-                    property string style: "width: 100%"
-                }
-
-                Aside {
-
-                    H3 { text: "Contents" }
-                    Ul {
-                        Li {
-                            A { href: '/'; text: "Introduction" }
-                            Ul {
-                                Li { A { href: '/hellosilk.qml'; text: "Hello silk world" } }
-                                Li { A { href: '/features.qml'; text: "Features" } }
+                    _class: 'nav-collapse collapse'
+                    Bootstrap.Nav {
+                        Repeater {
+                            model: ListModel {
+                                ListElement {
+                                    path: '/'
+                                    title: 'Home'
+                                }
+                                ListElement {
+                                    path: '/getting-started.qml'
+                                    title: 'Getting Started'
+                                }
+                                ListElement {
+                                    path: '/scaffolding.qml'
+                                    title: 'Scaffolding'
+                                }
+//                                ListElement {
+//                                    path: '/modules.qml'
+//                                    title: 'Modules'
+//                                }
+                                ListElement {
+                                    path: '/examples.qml'
+                                    title: 'Examples'
+                                }
+                            }
+                            Component {
+                                Bootstrap.NavItem {
+                                    _class: http.path === model.path ? 'active' : ''
+                                    a.href: model.path
+                                    a.text: model.title
+                                }
                             }
                         }
-                        Li {
-                            A { href: '/try.qml'; text: "Installation" }
-                            Ul {
-                                Li { A { href: '/config.qml'; text: "Configration" } }
-                            }
-                        }
-                        Li {
-                            A { href: '/tutorials.qml'; text: "Tutorials" }
-                            Ul {
-                                Li { text: "Contents" }
-                                Li { text: "Service" }
-                            }
-                        }
-                        Li { A { href: '/examples/'; text: "Examples" } }
                     }
                 }
             }
         }
 
-        Div {
-            _class: "footer-container"
-            Footer {
-                _class: "wrapper"
-                H3 {
-                    A {
-                        href: 'http://silk.qtquick.me/'
-                        text: "Copyright (c) 2012 - %1 Silk Project. All rights reserved.".arg(Qt.formatDate(new Date(), 'yyyy'))
+        Bootstrap.Container {
+            id: main
+            Component.onCompleted: {
+                for (var i = 0; i < main.contents.length; i++) {
+                    var child = main.contents[i]
+                    if (child.tagName === 'head') {
+                        child.tagName = ''
+                        main.takeAt(i--)
+                        head.insert(head.contents.length, child)
+                    } else if (child.tagName === 'body') {
+                        child.tagName = ''
+                        main.takeAt(i--)
+                        body.insert(body.contents.length, child)
                     }
                 }
             }
         }
-
+        Bootstrap.Navbar {
+            _class: 'navbar-fixed-bottom'
+//            _class: 'navbar-inverse'
+            Bootstrap.Container {
+                A {
+                    _class: 'brand'
+                    href: 'http://silk.qtquick.me/'
+                    text: "Copyright (c) 2012 - %1 Silk Project. All rights reserved.".arg(Qt.formatDate(new Date(), 'yyyy'))
+                }
+            }
+        }
+        Script { src: '/3rdparty/js/jquery.js' }
+        Script { src: '/3rdparty/js/bootstrap.js' }
+    //    Script { src: 'http://twitter.github.io/bootstrap/assets/js/jquery.js' }
+    //    Script { src: 'http://twitter.github.io/bootstrap/assets/js/bootstrap.js' }
         GoogleAnalytics {
             enabled: http.host === "silk.qtquick.me"
             __trackingCode: 'UA-33461556-1'
         }
     }
-//    Text { text: "\n</html>" }
 }

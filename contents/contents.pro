@@ -25,3 +25,9 @@ DEPLOYMENTFOLDERS = root tasks
 
 include(../silkdeployment.pri)
 qtcAddDeployment()
+
+OTHER_FILES += \
+    root/modules.qml \
+    root/getting-started.qml \
+    root/scaffolding/HtmlExample.qml \
+    root/scaffolding/html.qml

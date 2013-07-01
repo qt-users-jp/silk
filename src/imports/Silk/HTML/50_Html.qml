@@ -26,8 +26,7 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'html'
-    property string contentType: "text/html; charset=utf-8;"
-    property string docType: "<!DOCTYPE html>"
-    property bool escapeHTML: false
+    contentType: "text/html; charset=utf-8;"
+    prolog: '<!DOCTYPE html>'
     property string manifest
 }

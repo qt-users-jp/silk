@@ -30,8 +30,7 @@ Tag {
     id: root
     tagName: 'rss'
 
-    property string contentType: "application/rss+xml; charset=utf-8;"
-    prolog: '<?xml version="1.0" encoding="UTF-8"?>'
+    contentType: "application/rss+xml; charset=utf-8;"
 
     property string version: '2.0'
     property string xmlns__dc: 'http://purl.org/dc/elements/1.1/'

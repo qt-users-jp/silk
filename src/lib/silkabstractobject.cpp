@@ -59,3 +59,12 @@ void SilkAbstractObject::insert(int index, QObject *item)
     m_contents.insert(index, item);
     item->setParent(this);
 }
+
+QObject *SilkAbstractObject::takeAt(int index)
+{
+    QObject *ret = 0;
+    if (qBound(0, index, m_contents.size()) == index) {
+        ret = m_contents.takeAt(index);
+    }
+    return ret;
+}
