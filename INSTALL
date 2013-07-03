@@ -1,0 +1,7 @@
+$ git clone git://git.qtquick.me/silk.git
+$ cd silk
+$ git submodule update --init
+$ qt5/bin/qmake
+$ make
+$ ./bin/silk
+silk is running on 8080

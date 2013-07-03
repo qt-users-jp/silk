@@ -1,4 +1,5 @@
 isEmpty(SILK_PRI) { SILK_PRI = 1
+    SILK_VERSION = 0.0.1
 
     include(./silkplatform.pri)
 
