@@ -53,6 +53,7 @@
 int main(int argc, char *argv[])
 {
 #ifdef QT_STATIC
+    Q_INIT_RESOURCE(mimetypes);
     Q_INIT_RESOURCE(Bootstrap);
     Q_INIT_RESOURCE(CSS);
     Q_INIT_RESOURCE(HTML);
