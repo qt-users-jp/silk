@@ -82,3 +82,15 @@ bool Silk::isAvailable(const QString &uri, int major, int minor, const QString &
 
     return ret;
 }
+
+QString Silk::escapeHTML(const QString &source) const
+{
+    QString ret = source;
+    return ret
+            .replace(QLatin1Char('&'), QStringLiteral("&amp;"))
+            .replace(QLatin1Char('<'), QStringLiteral("&lt;"))
+            .replace(QLatin1Char('>'), QStringLiteral("&gt;"))
+            .replace(QLatin1Char('"'), QStringLiteral("&quot;"))
+            .replace(QLatin1Char('\''), QStringLiteral("&#39;"))
+            ;
+}

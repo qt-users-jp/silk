@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Silk Project.
+/* Copyright (c) 2012 - 2013 Silk Project.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,6 @@ Html {
                 }
             }
         }
-        BlockQuote { text: "root.query=%1".arg(http.query.replace('+', ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) }
+        BlockQuote { text: "root.query=%1".arg(Silk.escapeHTML(http.query.replace('+', ' '))) }
     }
 }

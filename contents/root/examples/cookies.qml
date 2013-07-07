@@ -74,15 +74,15 @@ Html {
             Repeater {
                 model: input.cookies
                 Component {
-                    Dt { id: name; text: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                    Dt { id: name; text: Silk.escapeHTML(model.key) }
                 }
                 Component {
                     Dd {
                         Form {
                             method: "POST"
                             Input { type: "hidden"; name: "action"; value: "remove" }
-                            Input { type: "hidden"; name: "name"; value: model.key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
-                            Text { text: model.value.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+                            Input { type: "hidden"; name: "name"; value: Silk.escapeHTML(model.key) }
+                            Text { text: Silk.escapeHTML(model.value.value) }
                             Br {}
                             Input { type: "submit"; value: "Remove" }
                         }

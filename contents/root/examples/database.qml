@@ -52,7 +52,7 @@ Html {
                 break;
             case 'insert':
                 if (db.transaction()) {
-                    chat.insert({'value': input.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')});
+                    chat.insert({'value': Silk.escapeHTML(input.value)});
                     if (!db.commit()) db.rollback();
                 }
                 break;

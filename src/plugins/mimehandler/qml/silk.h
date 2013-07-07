@@ -40,6 +40,8 @@ public:
     Q_INVOKABLE QString readFile(const QString &filePath) const;
     Q_INVOKABLE QVariantList readDir(const QString &path) const;
     Q_INVOKABLE bool isAvailable(const QString &uri, int major, int minor, const QString &element) const;
+
+    Q_INVOKABLE QString escapeHTML(const QString &source) const;
 };
 
 #endif // SILK_H
