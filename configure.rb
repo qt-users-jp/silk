@@ -2,7 +2,7 @@
 
 require 'optparse'
 
-Version = "0.2.0"
+Version = "0.0.1"
 
 class Configure
     def initialize()
@@ -19,7 +19,7 @@ class Configure
         opt = OptionParser.new
         opt.on("--prefix=#{@install_root}", "install root" ) { |val| @install_root = val }
         opt.on("--qmake=#{@qmake}", 'path to qmake to use') { |val| @qmake = val }
-        opt.on("--sdk", "build and install qimsys sdk") { @config.push( 'sdk' ) }
+        opt.on("--sdk", "build and install silk sdk") { @config.push( 'sdk' ) }
 #        opt.on("--examples", "build and install examples") { @config.push( 'examples' ) }
 #        opt.on("--tests", "build tests") { @config.push( 'tests' ) }
         opt.parse!(ARGV.dup)
