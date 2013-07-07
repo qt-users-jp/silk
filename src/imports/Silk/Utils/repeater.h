@@ -41,7 +41,7 @@ class Repeater : public SilkAbstractHttpObject
 public:
     explicit Repeater(QObject *parent = 0);
     
-    virtual QByteArray out();
+    virtual QString out();
 
     QQmlListProperty<QQmlComponent> contents();
 

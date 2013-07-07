@@ -36,18 +36,18 @@ CssRule::CssRule(QObject *parent)
 {
 }
 
-QByteArray CssRule::out()
+QString CssRule::out()
 {
-    QByteArray ret;
-    QList<QByteArray> list;
+    QString ret;
+    QStringList list;
     generate(list);
-    foreach (const QByteArray &l, list) {
+    foreach (const QString &l, list) {
         ret.append(l);
     }
     return ret;
 }
 
-void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) const
+void CssRule::generate(QStringList& list, const QStringList &selectors) const
 {
     QStringList attributes = parseAttributes(this);
 
@@ -61,7 +61,7 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
     QStringList newSelectors;
     if (selectors.isEmpty()) {
         if (m_selector.startsWith("@media ")) {
-            QList<QByteArray> list2;
+            QStringList list2;
             foreach (const QObject *child, contentsList()) {
                 const CssRule *css = qobject_cast<const CssRule *>(child);
                 if (css && css->enabled() && !css->selector().isEmpty()) {
@@ -69,14 +69,14 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
                 }
             }
             QString ret;
-            foreach (const QByteArray &l, list2) {
-                ret.append(QString::fromUtf8(l));
+            foreach (const QString &l, list2) {
+                ret.append(l);
             }
             ret.replace("\r\n", "\r\n    ");
-            list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(m_selector).arg(ret).toUtf8());
+            list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(m_selector).arg(ret));
         } else {
             if (!attributes.isEmpty()) {
-                list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(m_selector).arg(attributes.join("\r\n    ")).toUtf8());
+                list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(m_selector).arg(attributes.join("\r\n    ")));
             }
             if (!m_selector.isEmpty())
                 newSelectors.append(m_selector);
@@ -101,7 +101,7 @@ void CssRule::generate(QList<QByteArray>& list, const QStringList &selectors) co
                     newSelector = s2;
                 }
                 if (!attributes.isEmpty()) {
-                    list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(newSelector).arg(attributes.join("\r\n    ")).toUtf8());
+                    list.append(QString("%1 {\r\n    %2\r\n}\r\n").arg(newSelector).arg(attributes.join("\r\n    ")));
                 }
             }
             newSelectors.append(newSelector);
@@ -133,15 +133,15 @@ QStringList CssRule::parseAttributes(const CssRule *css) const
         case QVariant::String: {
             QString value = p.read(css).toString();
 
-            if (key == QLatin1String("selector")) {
-            } else if (key == QLatin1String("objectName")) {
+            if (key == QStringLiteral("selector")) {
+            } else if (key == QStringLiteral("objectName")) {
             } else if (!value.isEmpty()){
                 ret.append(QString("%1: %2;").arg(key).arg(value));
             }
             break; }
         case QVariant::Bool: {
 //            bool value = p.read(this).toBool();
-            if (key == QLatin1String("enabled")) {
+            if (key == QStringLiteral("enabled")) {
 
             } else {
                 // TODO support key="key" style

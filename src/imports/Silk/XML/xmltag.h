@@ -40,7 +40,7 @@ class XmlTag : public SilkAbstractHttpObject
 public:
     explicit XmlTag(QObject *parent = 0);
     
-    virtual QByteArray out();
+    virtual QString out();
 
 signals:
     void prologChanged(const QString &prolog);

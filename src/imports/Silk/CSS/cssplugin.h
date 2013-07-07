@@ -39,7 +39,7 @@ class CssPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("css"); }
+    virtual QString name() const { return QStringLiteral("css"); }
 
     virtual void silkRegisterObject() {
         silkRegisterObject("Silk.CSS", 2, 1);

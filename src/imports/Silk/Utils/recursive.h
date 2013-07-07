@@ -41,7 +41,7 @@ class Recursive : public SilkAbstractHttpObject
 public:
     explicit Recursive(QObject *parent = 0);
 
-    virtual QByteArray out();
+    virtual QString out();
 
 signals:
     void targetChanged(QQmlComponent *target);

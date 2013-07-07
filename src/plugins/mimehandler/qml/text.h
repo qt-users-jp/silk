@@ -39,7 +39,7 @@ class Text : public SilkAbstractHttpObject
 public:
     explicit Text(QObject *parent = 0);
     
-    virtual QByteArray out() { return text().toUtf8(); }
+    virtual QString out() { return text(); }
 
 signals:
     void contentTypeChanged(const QString &contentType);

@@ -38,8 +38,8 @@ class RssPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("rss"); }
-    virtual QStringList parents() const { return QStringList() << QLatin1String("xml"); }
+    virtual QString name() const { return QStringLiteral("rss"); }
+    virtual QStringList parents() const { return QStringList() << QStringLiteral("xml"); }
     virtual void silkRegisterObject() {
         silkRegisterObject("Silk.RSS", 2, 0);
     }

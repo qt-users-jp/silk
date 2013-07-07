@@ -35,8 +35,8 @@ JsonObject::JsonObject(QObject *parent)
 {
 }
 
-QByteArray JsonObject::out()
+QString JsonObject::out()
 {
     QJsonDocument doc = QJsonDocument::fromVariant(m_object);
-    return doc.toJson();
+    return QString(doc.toJson());
 }

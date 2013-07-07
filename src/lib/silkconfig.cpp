@@ -39,7 +39,7 @@ void SilkConfig::initialize(int argc, char **argv)
     QString fileName = QDir::home().absoluteFilePath(QString(".%1rc").arg(QCoreApplication::instance()->applicationName()));
     bool userConfig = false;
     for (int i = 1; i < argc; i++) {
-        if (QString::fromUtf8(argv[i]) == QLatin1String("--config")) {
+        if (QString::fromUtf8(argv[i]) == QStringLiteral("--config")) {
             if (argc - i > 1) {
                 fileName = argv[++i];
                 userConfig = true;

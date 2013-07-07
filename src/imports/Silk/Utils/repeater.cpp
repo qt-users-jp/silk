@@ -37,9 +37,9 @@ Repeater::Repeater(QObject *parent)
 {
 }
 
-QByteArray Repeater::out()
+QString Repeater::out()
 {
-    QByteArray ret;
+    QString ret;
     QVariantList list;
 
     switch (static_cast<int>(m_model.type())) {

@@ -39,7 +39,7 @@ class JsonPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("json"); }
+    virtual QString name() const { return QStringLiteral("json"); }
     virtual void silkRegisterObject() {
         silkRegisterObject("Silk.JSON", 1, 0);
     }

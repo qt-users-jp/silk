@@ -44,7 +44,7 @@ class UtilsPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("utils"); }
+    virtual QString name() const { return QStringLiteral("utils"); }
     virtual void silkRegisterObject() {
         silkRegisterObject("Silk.Utils", 1, 0);
     }

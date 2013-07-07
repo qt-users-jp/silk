@@ -40,7 +40,7 @@ class SmtpPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("smtp"); }
+    virtual QString name() const { return QStringLiteral("smtp"); }
     virtual void silkRegisterObject() {
         silkRegisterObject("Silk.SMTP", 1, 0);
     }

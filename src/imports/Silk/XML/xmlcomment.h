@@ -38,7 +38,7 @@ class XmlComment : public SilkAbstractHttpObject
 public:
     explicit XmlComment(QObject *parent = 0);
     
-    virtual QByteArray out();
+    virtual QString out();
 
 signals:
     void textChanged(const QString &text);

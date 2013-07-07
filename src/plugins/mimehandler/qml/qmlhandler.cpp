@@ -92,13 +92,13 @@ QmlHandler::Private::Private(QmlHandler *parent)
     , q(parent)
 {
     QQmlContext *context = engine.rootContext();
-    context->setContextProperty(QLatin1String("Silk"), new Silk(&engine));
+    context->setContextProperty(QStringLiteral("Silk"), new Silk(&engine));
 
     connect(q, SIGNAL(error(int,QHttpRequest*,QHttpReply*, QString)), this, SLOT(onError()));
     connect(q, SIGNAL(error(int,QWebSocket*, QString)), this, SLOT(onError()));
 
     qmlRegisterType<SilkAbstractHttpObject>();
-    qmlRegisterUncreatableType<HttpFileData>("Silk.HTTP", 1, 1, "HttpFileData", QLatin1String("readonly"));
+    qmlRegisterUncreatableType<HttpFileData>("Silk.HTTP", 1, 1, "HttpFileData", QStringLiteral("readonly"));
     qmlRegisterType<WebSocketObject>("Silk.WebSocket", 1, 0, "WebSocket");
 
     QDir appDir = QCoreApplication::applicationDirPath();
@@ -176,7 +176,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
     foreach (const QVariant &task, tasks) {
         QUrl url;
         if (task.toString().startsWith(":")) {
-            url = QUrl(QLatin1String("qrc") + task.toString());
+            url = QUrl(QStringLiteral("qrc") + task.toString());
         } else {
             url = QUrl::fromLocalFile(task.toString());
         }
@@ -255,13 +255,13 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         QVariantMap cookies;
         foreach (const QNetworkCookie &cookie, request->cookies()) {
             QVariantMap c;
-            c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
-            c.insert(QLatin1String("expires"), cookie.expirationDate());
-            c.insert(QLatin1String("domain"), cookie.domain());
-            c.insert(QLatin1String("path"), cookie.path());
-            c.insert(QLatin1String("secure"), cookie.isSecure());
-            c.insert(QLatin1String("httponly"), cookie.isHttpOnly());
-            c.insert(QLatin1String("session"), cookie.isSessionCookie());
+            c.insert(QStringLiteral("value"), QString::fromUtf8(cookie.value()));
+            c.insert(QStringLiteral("expires"), cookie.expirationDate());
+            c.insert(QStringLiteral("domain"), cookie.domain());
+            c.insert(QStringLiteral("path"), cookie.path());
+            c.insert(QStringLiteral("secure"), cookie.isSecure());
+            c.insert(QStringLiteral("httponly"), cookie.isHttpOnly());
+            c.insert(QStringLiteral("session"), cookie.isSessionCookie());
             cookies.insert(QString::fromUtf8(cookie.name()), c);
         }
         http->requestCookies(cookies);
@@ -269,7 +269,7 @@ void QmlHandler::Private::exec(QQmlComponent *component, QHttpRequest *request, 
         if (!message.isEmpty()) http->message(message);
 
         QQmlContext *context = new QQmlContext(&engine, this);
-        context->setContextProperty(QLatin1String("http"), http);
+        context->setContextProperty(QStringLiteral("http"), http);
 
         QObject *o = component->create(context);
         o->setParent(http);
@@ -309,7 +309,7 @@ void QmlHandler::Private::close(SilkAbstractHttpObject *object)
         QQmlContext *context = object2context.take(object);
         HttpObject *http = object2http.take(object);
 
-        QByteArray out = object->out();
+        QString out = object->out();
 
 
         reply->setStatus(http->status());
@@ -344,7 +344,7 @@ void QmlHandler::Private::close(SilkAbstractHttpObject *object)
 
 //        qDebug() << out;
         if (request->method() == "GET" || request->method() == "POST") {
-            reply->write(out);
+            reply->write(out.toUtf8());
         }
         reply->close();
         context->deleteLater();
@@ -464,13 +464,13 @@ void QmlHandler::Private::exec(QQmlComponent *component, QWebSocket *socket, con
         QVariantMap cookies;
         foreach (const QNetworkCookie &cookie, socket->cookies()) {
             QVariantMap c;
-            c.insert(QLatin1String("value"), QString::fromUtf8(cookie.value()));
-            c.insert(QLatin1String("expires"), cookie.expirationDate());
-            c.insert(QLatin1String("domain"), cookie.domain());
-            c.insert(QLatin1String("path"), cookie.path());
-            c.insert(QLatin1String("httponly"), cookie.isHttpOnly());
-            c.insert(QLatin1String("secure"), cookie.isSecure());
-            c.insert(QLatin1String("session"), cookie.isSessionCookie());
+            c.insert(QStringLiteral("value"), QString::fromUtf8(cookie.value()));
+            c.insert(QStringLiteral("expires"), cookie.expirationDate());
+            c.insert(QStringLiteral("domain"), cookie.domain());
+            c.insert(QStringLiteral("path"), cookie.path());
+            c.insert(QStringLiteral("httponly"), cookie.isHttpOnly());
+            c.insert(QStringLiteral("secure"), cookie.isSecure());
+            c.insert(QStringLiteral("session"), cookie.isSessionCookie());
             cookies.insert(QString::fromUtf8(cookie.name()), c);
         }
         object->requestCookies(cookies);

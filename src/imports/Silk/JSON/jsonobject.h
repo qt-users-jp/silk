@@ -40,7 +40,7 @@ class JsonObject : public SilkAbstractHttpObject
 public:
     explicit JsonObject(QObject *parent = 0);
     
-    virtual QByteArray out();
+    virtual QString out();
 
 signals:
     void contentTypeChanged(const QString &contentType);

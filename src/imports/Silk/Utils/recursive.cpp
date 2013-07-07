@@ -36,9 +36,9 @@ Recursive::Recursive(QObject *parent)
 {
 }
 
-QByteArray Recursive::out()
+QString Recursive::out()
 {
-    QByteArray ret;
+    QString ret;
 
 //    qDebug() << Q_FUNC_INFO << __LINE__ << m_target << m_child;
     if (m_target && m_child.type() == QVariant::List) {

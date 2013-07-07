@@ -175,9 +175,9 @@ SilkServer::Private::Private(SilkServer *parent)
 
     QString listenAddress = SilkConfig::value("listen.address").toString();
     QHostAddress address;
-    if (listenAddress == QLatin1String("*")) {
+    if (listenAddress == QStringLiteral("*")) {
         address = QHostAddress::Any;
-    } else if (listenAddress == QLatin1String("localhost")) {
+    } else if (listenAddress == QStringLiteral("localhost")) {
         address = QHostAddress::LocalHost;
     } else if (!address.setAddress(listenAddress)) {
         qWarning() << "The address" << listenAddress << "is not available.";
@@ -264,7 +264,7 @@ void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *
         QFileInfo fileInfo(fileName);
         if (fileInfo.isDir()) {
             if (request->url().path().endsWith("/")) {
-                fileName = fileName + QLatin1String("/index.qml");
+                fileName = fileName + QStringLiteral("/index.qml");
                 fileInfo = QFileInfo(fileName);
             } else {
                 QUrl url(request->url());
@@ -308,7 +308,7 @@ void SilkServer::Private::incomingConnection(QWebSocket *socket)
         QFileInfo fileInfo(fileName);
         if (fileInfo.isDir()) {
             if (socket->url().path().endsWith("/")) {
-                fileName = fileName + QLatin1String("/index.qml");
+                fileName = fileName + QStringLiteral("/index.qml");
                 fileInfo = QFileInfo(fileName);
             } else {
                 QUrl url(socket->url());
@@ -333,7 +333,7 @@ void SilkServer::Private::load(const QFileInfo &fileInfo, QHttpRequest *request,
     reply->setStatus(200);
     reply->setRawHeader("Content-Type", mime.toUtf8());
     if (!mimeHandlers.contains(mime)) {
-        mime = mime.section(QLatin1Char('/'), 0, 0) + QLatin1String("/*");
+        mime = mime.section(QLatin1Char('/'), 0, 0) + QStringLiteral("/*");
     }
     if (mimeHandlers.contains(mime)) {
         QUrl url;

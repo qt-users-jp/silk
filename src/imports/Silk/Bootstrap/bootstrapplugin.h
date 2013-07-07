@@ -38,8 +38,8 @@ class BootstrapPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("bootstrap"); }
-    virtual QStringList parents() const { return QStringList() << QLatin1String("html"); }
+    virtual QString name() const { return QStringLiteral("bootstrap"); }
+    virtual QStringList parents() const { return QStringList() << QStringLiteral("html"); }
     virtual void silkRegisterObject() {
         silkRegisterObject("Silk.Bootstrap", 2, 3);
     }

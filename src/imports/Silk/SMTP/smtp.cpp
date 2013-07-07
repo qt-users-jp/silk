@@ -190,7 +190,7 @@ void Smtp::Private::sendEhlo(QSslSocket *socket)
         if (!addresses.isEmpty())
             hostInfo = QString("[%1]").arg(addresses.first().toString());
         else
-            hostInfo = QLatin1String("localhost.localdomain");
+            hostInfo = QStringLiteral("localhost.localdomain");
     }
     qDebug() << Q_FUNC_INFO << __LINE__ << hostInfo;
     send(socket, QString("EHLO %1\r\n").arg(hostInfo));
@@ -213,7 +213,7 @@ void Smtp::Private::ehloReceived(QSslSocket *socket)
         }
         capabilities.insert(socket, capability);
         qDebug() << capability;
-        if (capability.contains("STARTTLS") && q->m_encrypt == QLatin1String("TLS")) {
+        if (capability.contains("STARTTLS") && q->m_encrypt == QStringLiteral("TLS")) {
             sendStartTls(socket);
         } else {
             sendAuth(socket);

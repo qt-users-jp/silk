@@ -28,69 +28,70 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QMetaProperty>
-#include <QtCore/QStringList>
 
 XmlTag::XmlTag(QObject *parent)
     : SilkAbstractHttpObject(parent)
-    , m_contentType("application/xml; charset=utf-8;")
-    , m_prolog("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>")
+    , m_contentType(QStringLiteral("application/xml; charset=utf-8;"))
+    , m_prolog(QStringLiteral("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"))
 {
 }
 
-QByteArray XmlTag::out()
+QString XmlTag::out()
 {
-    QByteArray ret;
+    QString ret;
 
+    bool tagNameIsEmpty = tagName().isEmpty();
     QString text;
-    QStringList attributes;
+    QString attributes;
 
     int count = metaObject()->propertyCount();
     for (int i = 0; i < count; i++) {
-        QMetaProperty p = metaObject()->property(i);
+        const QMetaProperty &p = metaObject()->property(i);
         QString key(p.name());
         if (key == QStringLiteral("prolog")) continue;
-        if (key != key.toLower()) continue;
-        if (key.startsWith("__")) continue;
-        if (key.startsWith("_"))
+        for (int i = 0; i < key.length(); i++) {
+            if (key.at(i).isUpper()) continue;
+        }
+        if (key.startsWith(QStringLiteral("__"))) continue;
+        if (key.startsWith(QLatin1Char('_')))
             key = key.mid(1);
-        key.replace("__", ":");
-        key.replace('_', "-");
+        key.replace(QStringLiteral("__"), QStringLiteral(":"));
+        key.replace(QLatin1Char('_'), QLatin1Char('-'));
 
         switch (p.type()) {
         case QVariant::String: {
             QString value = p.read(this).toString();
-            if (key == QLatin1String("text")) {
+            if (key == QStringLiteral("text")) {
                 text = value;
             } else if (!value.isNull()){
-                if (value.isEmpty()) {
-//                    attributes.append(QString(" %1").arg(key));
-                } else {
+                if (!value.isEmpty()) {
                     attributes.append(QString(" %1=\"%2\"").arg(key).arg(value));
                 }
             }
             break; }
         case QVariant::Bool: {
 //            bool value = p.read(this).toBool();
-            if (key == QLatin1String("enabled")) {
+//            if (key == QStringLiteral("enabled")) {
 
-            } else {
-                // TODO support key="key" style
-            }
+//            } else {
+//                // TODO support key="key" style
+//            }
             break; }
         default:
             break;
         }
     }
 
-    if (!tagName().isEmpty())
-        ret.append(QString("<%1%2").arg(tagName()).arg(attributes.join("")));
+    if (!tagNameIsEmpty) {
+        ret.append(QString("<%1%2").arg(tagName()).arg(attributes));
+    }
 
     bool hasChildObjects = false;
 
     if (!text.isNull()) {
         hasChildObjects = true;
-        if (!tagName().isEmpty())
-            ret.append(">");
+        if (!tagNameIsEmpty)
+            ret.append(QLatin1Char('>'));
         ret.append(text);
     }
 
@@ -98,31 +99,29 @@ QByteArray XmlTag::out()
         SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
         if (object && object->enabled()) {
             if (!hasChildObjects) {
-                if (!tagName().isEmpty())
-                    ret.append(">");
+                if (!tagNameIsEmpty)
+                    ret.append(QLatin1Char('>'));
                 hasChildObjects = true;
             }
             ret.append(object->out());
         }
     }
 
-    if (!tagName().isEmpty()) {
+    if (!tagNameIsEmpty) {
         if (hasChildObjects) {
             ret.append(QString("</%1>").arg(tagName()));
         } else if (!text.isNull()){
             ret.append(QString("></%1>").arg(tagName()));
         } else {
-            ret.append(QLatin1String(" />"));
+            ret.append(QStringLiteral(" />"));
         }
     }
 
     QVariant escapeHTML = property("escapeHTML");
     if (escapeHTML.isValid() && escapeHTML.toBool()) {
-        QString str = QString::fromUtf8(ret);
-        str.replace("&", "&amp;");
-        str.replace("<", "&lt;");
-        str.replace(">", "&gt;");
-        ret = str.toUtf8();
+        ret.replace(QStringLiteral("&"), QStringLiteral("&amp;"));
+        ret.replace(QStringLiteral("<"), QStringLiteral("&lt;"));
+        ret.replace(QStringLiteral(">"), QStringLiteral("&gt;"));
     }
     return ret;
 }

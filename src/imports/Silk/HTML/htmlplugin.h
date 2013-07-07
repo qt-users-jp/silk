@@ -38,8 +38,8 @@ class HtmlPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("html"); }
-    virtual QStringList parents() const { return QStringList() << QLatin1String("xml"); }
+    virtual QString name() const { return QStringLiteral("html"); }
+    virtual QStringList parents() const { return QStringList() << QStringLiteral("xml"); }
     virtual void silkRegisterObject() {
         silkRegisterObject("Silk.HTML", 4, 01);
         silkRegisterObject("Silk.HTML", 5, 0);

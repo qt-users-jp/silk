@@ -1,6 +1,6 @@
 /* Copyright (c) 2012 Silk Project.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
  *     * Neither the name of the Silk nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,32 +24,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CSSRULE_H
-#define CSSRULE_H
+import Silk.HTML 5.0
+import QtQml 2.1
 
-#include <silkabstracthttpobject.h>
-
-#include <QtCore/QStringList>
-
-class CssRule : public SilkAbstractHttpObject
-{
-    Q_OBJECT
-    Q_PROPERTY(QString selector READ selector WRITE selector NOTIFY selectorChanged )
-    SILK_ADD_PROPERTY(const QString &, selector, QString)
-
-public:
-    explicit CssRule(QObject *parent = 0);
-    
-    virtual QString out();
-
-protected:
-    void generate(QStringList& list, const QStringList &selectors = QStringList()) const;
-
-private:
-    QStringList parseAttributes(const CssRule *rule) const;
-
-signals:
-    void selectorChanged(const QString &selector);
-};
-
-#endif // CSSRULE_H
+Html {
+    Body {
+        Script { text: "alert('XSS')" }
+        P { text: http.query }
+        Component.onCompleted: console.debug(http.query)
+    }
+}

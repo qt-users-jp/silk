@@ -31,9 +31,9 @@ XmlComment::XmlComment(QObject *parent)
 {
 }
 
-QByteArray XmlComment::out()
+QString XmlComment::out()
 {
-    QByteArray ret("<!--");
+    QString ret(QStringLiteral("<!--"));
     if (m_text.isNull()) {
         foreach (QObject *child, contentsList()) {
             SilkAbstractHttpObject *object = qobject_cast<SilkAbstractHttpObject *>(child);
@@ -42,8 +42,8 @@ QByteArray XmlComment::out()
             }
         }
     } else {
-        ret.append(m_text.toUtf8());
+        ret.append(m_text);
     }
-    ret.append("-->");
+    ret.append(QStringLiteral("-->"));
     return ret;
 }

@@ -40,7 +40,7 @@ class XmlPlugin : public QObject, SilkImportsInterface
     Q_PLUGIN_METADATA(IID "me.qtquick.silk.imports")
     Q_INTERFACES(SilkImportsInterface)
 public:
-    virtual QString name() const { return QLatin1String("xml"); }
+    virtual QString name() const { return QStringLiteral("xml"); }
     virtual void silkRegisterObject()
     {
         silkRegisterObject("Silk.XML", 1, 0);

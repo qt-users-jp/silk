@@ -89,7 +89,7 @@ void OAuth::Private::requestToken()
     QMultiMap<QString, QByteArray> params;
 
     q->setAuthorizeBy(AuthorizeByHeader);
-    QNetworkReply *reply = request(QLatin1String("POST"), q->m_requestTokenUrl, params, false);
+    QNetworkReply *reply = request(QStringLiteral("POST"), q->m_requestTokenUrl, params, false);
     connect(reply, SIGNAL(finished()), this, SLOT(requestTokenFinished()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
 }
@@ -106,10 +106,10 @@ void OAuth::Private::requestTokenFinished()
 void OAuth::Private::accessToken(const QString &verifier)
 {
     QMultiMap<QString, QByteArray> params;
-    params.insert(QLatin1String("oauth_verifier"), verifier.toUtf8());
+    params.insert(QStringLiteral("oauth_verifier"), verifier.toUtf8());
 
     q->setAuthorizeBy(AuthorizeByHeader);
-    QNetworkReply *reply = request(QLatin1String("POST"), q->m_accessTokenUrl, params, false);
+    QNetworkReply *reply = request(QStringLiteral("POST"), q->m_accessTokenUrl, params, false);
     connect(reply, SIGNAL(finished()), this, SLOT(accessTokenFinished()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
 }
