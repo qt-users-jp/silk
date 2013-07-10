@@ -313,7 +313,7 @@ SilkPageTemplate {
                                 example: 'oauth'
                                 files: [
                                     ListElement { source: 'oauth.qml' }
-                                    , ListElement { source: 'component/Twitter.qml' }
+                                    , ListElement { source: 'components/Twitter.qml' }
                                 ]
                             }
                         }
