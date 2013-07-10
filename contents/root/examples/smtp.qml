@@ -39,8 +39,13 @@ Html {
         onSubmit: {
             switch(input.action) {
             case 'send':
-                http.loading = true;
-                smtp.send({'to': [input.email], 'subject': 'smtp test mail', 'body': 'sent in http://silk.qtquick.me/examples/smtp.qml'});
+                if (smtp.validateAddress(input.email)) {
+                    http.loading = true;
+                    smtp.send({'to': [input.email], 'subject': 'smtp test mail', 'body': 'sent in http://silk.qtquick.me/examples/smtp.qml'});
+                } else {
+                    msg.text = '%1 is not a valid e-mail address'.arg(Silk.escapeHTML(input.email))
+                }
+
                 break;
             default:
                 break;
@@ -68,7 +73,6 @@ Html {
         }
         onError: {
             msg.text = message;
-            form.enabled = false;
             http.loading = false;
         }
     }
@@ -105,7 +109,7 @@ Html {
             enabled: smtp.host.length > 0
             method: 'POST'
             Text { text: "e-mail address: " }
-            Input { type: 'text'; name: 'email' }
+            Input { type: 'text'; name: 'email'; value: Silk.escapeHTML(input.email) }
             Input { type: 'submit'; value: 'Send' }
             Input { type: 'hidden'; name: 'action'; value: 'send' }
         }

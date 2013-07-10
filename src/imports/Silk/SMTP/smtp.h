@@ -55,6 +55,7 @@ class Smtp : public QObject
 public:
     explicit Smtp(QObject *parent = 0);
 
+    Q_INVOKABLE bool validateAddress(const QString &address) const;
 public slots:
     void send(const QVariantMap &email);
 

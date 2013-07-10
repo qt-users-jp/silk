@@ -102,6 +102,26 @@ void Smtp::Private::send(QSslSocket *socket, const QString &command)
 
 void Smtp::Private::send(const QVariantMap &email)
 {
+    QVariant to = email.value("to");
+    switch (to.type()) {
+    case QVariant::String:
+        if (!q->validateAddress(to.toString())) {
+            emit q->error(email, tr("%1 is not valid.").arg(to.toString()));
+            return;
+        }
+        break;
+    case QVariant::StringList:
+        foreach (const QString &t, to.toStringList()) {
+            if (!q->validateAddress(t)) {
+                emit q->error(email, tr("%1 is not valid.").arg(t));
+                return;
+            }
+        }
+        break;
+    default:
+        break;
+    }
+
     QSslSocket *socket = new QSslSocket(this);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
@@ -528,6 +548,12 @@ void Smtp::send(const QVariantMap &email)
 {
     Private *d = new Private(this);
     d->send(email);
+}
+
+bool Smtp::validateAddress(const QString &address) const
+{
+    static QRegExp reg("^(?:(?:(?:(?:[a-zA-Z0-9_!#\\$\\%&'*+/=?\\^`{}~|\\-]+)(?:\\.(?:[a-zA-Z0-9_!#\\$\\%&'*+/=?\\^`{}~|\\-]+))*)|(?:\"(?:\\\\[^\\r\\n]|[^\\\\\"])*\")))\\@(?:(?:(?:(?:[a-zA-Z0-9_!#\\$\\%&'*+/=?\\^`{}~|\\-]+)(?:\\.(?:[a-zA-Z0-9_!#\\$\\%&'*+/=?\\^`{}~|\\-]+))*)|(?:\\[(?:\\\\\\S|[\\x21-\\x5a\\x5e-\\x7e])*\\])))$");
+    return reg.exactMatch(address);
 }
 
 #include "smtp.moc"
