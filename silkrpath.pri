@@ -1,8 +1,6 @@
 isEmpty(SILKRPATH_PRI) { SILKRPATH_PRI = 1
-
     silk_platform_mac {
-        QMAKE_LFLAGS_SONAME = -Wl,-install_name,@rpath/PlugIns/
-        QMAKE_LFLAGS += -Wl,-rpath,@loader_path/../
+        QMAKE_LFLAGS += -Wl,-rpath,@loader_path/../,-rpath,@executable_path/../
     }
 
     silk_platform_linux {

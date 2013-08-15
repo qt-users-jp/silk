@@ -16,9 +16,9 @@ isEmpty(SILKLIBRARY_PRI) { SILKLIBRARY_PRI = 1
     silk_platform_windows {
         DLLDESTDIR = $$SILK_BUILD_TREE/$$SILK_TARGET_PATH/$$SILK_LIBRARY_PATH
     }
-
-#    QMAKE_RPATHDIR += \$\$ORIGIN/../$$SILK_LIBRARY_PATH
-#    include(./silkrpath.pri)
+    silk_platform_mac {
+        QMAKE_LFLAGS_SONAME = -Wl,-install_name,@rpath/PlugIns/
+    }
 
     CONFIG(shared, static|shared) {
         silk_platform_mac | silk_platform_linux {

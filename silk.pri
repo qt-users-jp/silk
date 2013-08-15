@@ -3,6 +3,35 @@ isEmpty(SILK_PRI) { SILK_PRI = 1
 
     include(./silkplatform.pri)
 
+    isEqual(QT_MAJOR_VERSION, 5) {
+
+        defineReplace(cleanPath) {
+            return($$clean_path($$1))
+        }
+
+        defineReplace(targetPath) {
+            return($$shell_path($$1))
+        }
+
+    } else { # not qt5
+        defineReplace(cleanPath) {
+            silk_platform_windows: 1 ~= s|\\\\|/|g
+            contains(1, ^/.*): pfx = /
+            else: pfx =
+            segs = $$split(1, /)
+            out =
+            for(seg, segs) {
+                equals(seg, ..): out = $$member(out, 0, -2)
+                else:!equals(seg, .): out += $$seg
+            }
+            return($$join(out, /, $$pfx))
+        }
+
+        defineReplace(targetPath) {
+            return($$replace(1, /, $$QMAKE_DIR_SEP))
+        }
+    }
+
     defineReplace(qtLibraryName) {
         unset(LIBRARY_NAME)
         LIBRARY_NAME = $$1
@@ -16,21 +45,7 @@ isEmpty(SILK_PRI) { SILK_PRI = 1
         return($$RET)
     }
 
-    defineReplace(cleanPath) {
-        silk_platform_windows: 1 ~= s|\\\\|/|g
-        contains(1, ^/.*): pfx = /
-        else: pfx =
-        segs = $$split(1, /)
-        out =
-        for(seg, segs) {
-            equals(seg, ..): out = $$member(out, 0, -2)
-            else:!equals(seg, .): out += $$seg
-        }
-        return($$join(out, /, $$pfx))
-    }
-
     SILK_SOURCE_TREE = $$PWD
-    INCLUDEPATH += $$SILK_SOURCE_TREE/src
 
     isEmpty(SILK_BUILD_TREE) {
         sub_dir = $$_PRO_FILE_PWD_
@@ -48,8 +63,6 @@ isEmpty(SILK_PRI) { SILK_PRI = 1
         SILK_IMPORTS_PATH = $$SILK_LIBRARY_PATH/Imports
         SILK_DATA_PATH = Resources
         SILK_TRANSLATIONS_PATH = $$SILK_DATA_PATH/translations
-        QMAKE_CXXFLAGS *= -mmacosx-version-min=10.5
-        QMAKE_LFLAGS *= -mmacosx-version-min=10.5
         copydata = 1
     }
 

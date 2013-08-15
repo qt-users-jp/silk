@@ -6,7 +6,12 @@ isEmpty(SILKAPP_PRI) { SILKAPP_PRI = 1
 
     include(./silk.pri)
 
-    DESTDIR = $$SILK_BUILD_TREE/$$SILK_TARGET_PATH/$$SILK_APP_PATH
+    silk_platform_mac {
+        TARGET = Silk
+        DESTDIR = $$SILK_BUILD_TREE
+    } else {
+        DESTDIR = $$SILK_BUILD_TREE/$$SILK_TARGET_PATH/$$SILK_APP_PATH
+    }
 
     CONFIG(static, static|shared) {
         QT += qml
