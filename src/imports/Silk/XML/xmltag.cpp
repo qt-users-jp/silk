@@ -49,9 +49,16 @@ QString XmlTag::out()
         const QMetaProperty &p = metaObject()->property(i);
         QString key(p.name());
         if (key == QStringLiteral("prolog")) continue;
+
+        bool skip = false;
         for (int i = 0; i < key.length(); i++) {
-            if (key.at(i).isUpper()) continue;
+            if (key.at(i).isUpper()) {
+                skip = true;
+                break;
+            }
         }
+        if (skip) continue;
+
         if (key.startsWith(QStringLiteral("__"))) continue;
         if (key.startsWith(QLatin1Char('_')))
             key = key.mid(1);
