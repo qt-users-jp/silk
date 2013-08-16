@@ -85,6 +85,12 @@ SilkServer::Private::Private(SilkServer *parent)
     , q(parent)
 {
     QDir appDir = QCoreApplication::applicationDirPath();
+    QDir rootDir = appDir;
+    QString appPath(SILK_APP_PATH);
+    // up to system root path
+    for (int i = 0; i < appPath.count(QLatin1Char('/')) + 1; i++) {
+        rootDir.cdUp();
+    }
 #ifdef QT_STATIC
     {
         foreach (QObject *object, QPluginLoader::staticInstances()) {
@@ -112,12 +118,7 @@ SilkServer::Private::Private(SilkServer *parent)
     }
 #else // QT_STATIC
     {
-        QDir pluginsDir = appDir;
-        QString appPath(SILK_APP_PATH);
-        // up to system root path
-        for (int i = 0; i < appPath.count(QLatin1Char('/')) + 1; i++) {
-            pluginsDir.cdUp();
-        }
+        QDir pluginsDir = rootDir;
         pluginsDir.cd(SILK_PLUGIN_PATH);
         pluginsDir.cd("mimehandler");
         foreach (const QString &lib, pluginsDir.entryList(QDir::Files)) {
@@ -196,7 +197,7 @@ SilkServer::Private::Private(SilkServer *parent)
             QFileInfo fileInfo(value);
             if (fileInfo.isRelative()) {
                 if (SilkConfig::file().startsWith(QStringLiteral(":/"))) {
-                    documentRoots.insert(key, appDir.absoluteFilePath(value));
+                    documentRoots.insert(key, rootDir.absoluteFilePath(value));
                 } else {
                     QDir dir(SilkConfig::file());
                     dir.cdUp();

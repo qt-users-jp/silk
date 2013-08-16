@@ -18,7 +18,23 @@ for(deploymentfolder, DEPLOYMENTFOLDERS) {
 
 MAINPROFILEPWD = $$PWD
 
-android {
+android-no-sdk {
+    for(deploymentfolder, DEPLOYMENTFOLDERS) {
+        item = item$${deploymentfolder}
+        itemfiles = $${item}.files
+        $$itemfiles = $$eval($${deploymentfolder}.source)
+        itempath = $${item}.path
+        $$itempath = /data/user/qt/$$eval($${deploymentfolder}.target)
+        export($$itemfiles)
+        export($$itempath)
+        INSTALLS += $$item
+    }
+
+    target.path = /data/user/qt
+
+    export(target.path)
+    INSTALLS += target
+} else:android {
     for(deploymentfolder, DEPLOYMENTFOLDERS) {
         item = item$${deploymentfolder}
         itemfiles = $${item}.files
@@ -86,7 +102,7 @@ android {
             source = $$MAINPROFILEPWD/$$eval($${deploymentfolder}.source)
             source = $$replace(source, \\\\, /)
             macx {
-                target = $$OUT_PWD/$${TARGET}.app/Contents/Resources/$$eval($${deploymentfolder}.target)
+                target = $$SILK_BUILD_TREE/$${SILK_APP_TARGET}.app/Contents/$$eval($${deploymentfolder}.target)
             } else {
                 target = $$SILK_BUILD_TREE/$$eval($${deploymentfolder}.target)
             }
@@ -109,7 +125,11 @@ android {
             QMAKE_EXTRA_TARGETS += first copydeploymentfolders
         }
     }
-    installPrefix = $${PREFIX}
+    !isEmpty(target.path) {
+        installPrefix = $${target.path}
+    } else {
+        installPrefix = /opt/$${TARGET}
+    }
     for(deploymentfolder, DEPLOYMENTFOLDERS) {
         item = item$${deploymentfolder}
         itemfiles = $${item}.files
@@ -128,13 +148,17 @@ android {
         export(desktopfile.path)
         INSTALLS += icon desktopfile
     }
+
+    isEmpty(target.path) {
+        target.path = $${installPrefix}/bin
+        export(target.path)
+    }
+    INSTALLS += target
 }
 
 export (ICON)
 export (INSTALLS)
 export (DEPLOYMENT)
-export (TARGET.EPOCHEAPSIZE)
-export (TARGET.CAPABILITY)
 export (LIBS)
 export (QMAKE_EXTRA_TARGETS)
 }

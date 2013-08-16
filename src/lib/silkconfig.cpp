@@ -35,7 +35,7 @@ QVariant SilkConfig::value(const QString &key)
 
 void SilkConfig::initialize(int argc, char **argv)
 {
-    m_config = readConfigFile(QString(":/%1rc").arg(QCoreApplication::instance()->applicationName()));
+    m_config = readConfigFile(QString(":/%1rc").arg(QCoreApplication::instance()->applicationName().toLower()));
     QString fileName = QDir::home().absoluteFilePath(QString(".%1rc").arg(QCoreApplication::instance()->applicationName()));
     bool userConfig = false;
     for (int i = 1; i < argc; i++) {
@@ -77,8 +77,12 @@ QVariantMap SilkConfig::readConfigFile(const QString &fileName)
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
         QJsonParseError error;
-        QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
+        QByteArray data = file.readAll();
         file.close();
+
+        data = data.replace(QStringLiteral("$${SILK_DATA_PATH}"), SILK_DATA_PATH);
+
+        QJsonDocument doc = QJsonDocument::fromJson(data, &error);
         if (error.error == QJsonParseError::NoError) {
             ret = doc.toVariant().toMap();
         } else {

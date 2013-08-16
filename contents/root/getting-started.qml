@@ -112,15 +112,15 @@ SilkPageTemplate {
         "port": 8080
     },
     "contents": {
-        "*": "../share/silk/root/"
+        "*": "$${SILK_DATA_PATH}/root/"
     },
     "silk": {
         "tasks": [
-            "../share/silk/tasks/chatdaemon.qml"
+            "$${SILK_DATA_PATH}/tasks/chatdaemon.qml"
         ]
     },
     "storage": {
-        "path": "../"
+        "path": "$${SILK_DATA_PATH}/"
     },
     "import": {
         "path": []
@@ -132,6 +132,9 @@ SilkPageTemplate {
         "excludes": ["video/*", "image/*"]
     }
 }'
+                        }
+                        Bootstrap.AlertInfo {
+                            text: '$${SILK_DATA_PATH} will be replaced with <em>../share/silk</em> on Linux or <em>../Resources</em> on Mac that is relative path to the <em>silk</em> binary.'
                         }
                     }
                     Bootstrap.Span3 {

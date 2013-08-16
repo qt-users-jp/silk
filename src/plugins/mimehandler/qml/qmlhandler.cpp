@@ -102,6 +102,12 @@ QmlHandler::Private::Private(QmlHandler *parent)
     qmlRegisterType<WebSocketObject>("Silk.WebSocket", 1, 0, "WebSocket");
 
     QDir appDir = QCoreApplication::applicationDirPath();
+    QDir rootDir = appDir;
+    QString appPath(SILK_APP_PATH);
+    // up to system root path
+    for (int i = 0; i < appPath.count(QLatin1Char('/')) + 1; i++) {
+        rootDir.cdUp();
+    }
     QMap<QString, QObject*> plugins;
 #ifdef QT_STATIC
     engine.setImportPathList(QStringList());
@@ -125,12 +131,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
         }
     }
 #else // QT_STATIC
-    QDir importsDir = appDir;
-    QString appPath(SILK_APP_PATH);
-    // up to system root path
-    for (int i = 0; i < appPath.count(QLatin1Char('/')) + 1; i++) {
-        importsDir.cdUp();
-    }
+    QDir importsDir = rootDir;
     importsDir.cd(SILK_IMPORTS_PATH);
 
     foreach (const QString &lib, importsDir.entryList(QDir::Files)) {
@@ -166,10 +167,10 @@ QmlHandler::Private::Private(QmlHandler *parent)
         qobject_cast<SilkImportsInterface *>(plugin)->silkRegisterObject();
     }
 
-    engine.setOfflineStoragePath(appDir.absoluteFilePath(SilkConfig::value("storage.path").toString()));
+    engine.setOfflineStoragePath(rootDir.absoluteFilePath(SilkConfig::value("storage.path").toString()));
     engine.addImportPath(":/imports");
     foreach (const QString &importPath, SilkConfig::value("import.path").toStringList()) {
-        engine.addImportPath(appDir.absoluteFilePath(importPath));
+        engine.addImportPath(rootDir.absoluteFilePath(importPath));
     }
 
     QVariantList tasks = SilkConfig::value("silk.tasks").toList();
@@ -178,7 +179,7 @@ QmlHandler::Private::Private(QmlHandler *parent)
         if (task.toString().startsWith(":")) {
             url = QUrl(QStringLiteral("qrc") + task.toString());
         } else {
-            url = QUrl::fromLocalFile(task.toString());
+            url = QUrl::fromLocalFile(rootDir.absoluteFilePath(task.toString()));
         }
         QQmlComponent *component = new QQmlComponent(&engine, url, this);
         switch (component->status()) {
