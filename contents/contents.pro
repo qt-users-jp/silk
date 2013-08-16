@@ -23,8 +23,13 @@ tasks.target = $${SILK_DATA_PATH}
 
 DEPLOYMENTFOLDERS = root tasks
 
+silk_platform_linux {
+    target.path = $$PREFIX/
+}
+
 include(../silkdeployment.pri)
 qtcAddDeployment()
+INSTALLS -= target
 
 OTHER_FILES += \
     root/modules.qml \
