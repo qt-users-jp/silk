@@ -55,10 +55,10 @@ private:
     QMap<QObject *, QHttpRequest*> requestMap;
     QMap<QObject *, QHttpReply*> replyMap;
     QMap<QObject *, QNetworkReply*> replyMap2;
-    static QNetworkAccessManager networkAccessManager;
+    static QNetworkAccessManager *networkAccessManager;
 };
 
-QNetworkAccessManager HttpHandler::Private::networkAccessManager;
+QNetworkAccessManager *HttpHandler::Private::networkAccessManager = 0;
 
 HttpHandler::Private::Private(HttpHandler *parent)
     : QObject(parent)
@@ -76,17 +76,20 @@ void HttpHandler::Private::load(const QUrl &url, QHttpRequest *request, QHttpRep
         req.setRawHeader(headerName, request->rawHeader(headerName));
     }
 
+    if (!networkAccessManager) {
+        networkAccessManager = new QNetworkAccessManager;
+    }
     QNetworkReply *rep;
     if (request->method() == "POST") {
-        rep = networkAccessManager.post(req, request);
+        rep = networkAccessManager->post(req, request);
     } else if (request->method() == "PUT") {
-        rep = networkAccessManager.put(req, request);
+        rep = networkAccessManager->put(req, request);
     } else if (request->method() == "GET") {
-        rep = networkAccessManager.get(req);
+        rep = networkAccessManager->get(req);
     } else if (request->method() == "HEAD") {
-        rep = networkAccessManager.head(req);
+        rep = networkAccessManager->head(req);
     } else {
-        rep = networkAccessManager.sendCustomRequest(req, request->method(), request);
+        rep = networkAccessManager->sendCustomRequest(req, request->method(), request);
     }
     requestMap.insert(rep, request);
     replyMap.insert(rep, reply);
