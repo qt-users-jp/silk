@@ -45,7 +45,7 @@ Template {
             HTML.P {
                 Bootstrap.ABtnPrimary {
                     _class: 'btn-large'
-                    href: 'http://twitter.github.io/bootstrap/assets/bootstrap.zip'
+                    href: 'http://getbootstrap.com/2.3.2/assets/bootstrap.zip'
                     text: 'Download Bootstrap'
                 }
             }
@@ -149,21 +149,21 @@ Template {
             }
             Bootstrap.RowFluid {
                 Bootstrap.Span4 {
-                    HTML.Img { _class: 'marketing-img'; src: 'http://twitter.github.io/bootstrap/assets/img/bs-docs-twitter-github.png' }
+                    HTML.Img { _class: 'marketing-img'; src: 'http://getbootstrap.com/2.3.2/assets/img/bs-docs-twitter-github.png' }
                     HTML.H2 { text: 'By nerds, for nerds.' }
                     HTML.P {
                         text: 'Built at Twitter by <a href="http://twitter.com/mdo">@mdo</a> and <a href="http://twitter.com/fat">@fat</a>, Bootstrap utilizes <a href="http://lesscss.org">LESS CSS</a>, is compiled via <a href="http://nodejs.org">Node</a>, and is managed through <a href="http://github.com">GitHub</a> to help nerds do awesome stuff on the web.'
                     }
                 }
                 Bootstrap.Span4 {
-                    HTML.Img { _class: 'marketing-img'; src: 'http://twitter.github.io/bootstrap/assets/img/bs-docs-responsive-illustrations.png' }
+                    HTML.Img { _class: 'marketing-img'; src: 'http://getbootstrap.com/2.3.2/assets/img/bs-docs-responsive-illustrations.png' }
                     HTML.H2 { text: 'Made for everyone.' }
                     HTML.P {
                         text: 'Bootstrap was made to not only look and behave great in the latest desktop browsers (as well as IE7!), but in tablet and smartphone browsers via <a href="./scaffolding.html#responsive">responsive CSS</a> as well.'
                     }
                 }
                 Bootstrap.Span4 {
-                    HTML.Img { _class: 'marketing-img'; src: 'http://twitter.github.io/bootstrap/assets/img/bs-docs-bootstrap-features.png' }
+                    HTML.Img { _class: 'marketing-img'; src: 'http://getbootstrap.com/2.3.2/assets/img/bs-docs-bootstrap-features.png' }
                     HTML.H2 { text: 'Packed with features.' }
                     HTML.P {
                         text: 'A 12-column responsive <a href="./scaffolding.html#gridSystem">grid</a>, dozens of components, <a href="./javascript.html">JavaScript plugins</a>, typography, form controls, and even a <a href="./customize.html">web-based Customizer</a> to make Bootstrap your own.'
@@ -184,22 +184,22 @@ Template {
                         model: Models.ListModel {
                             Models.ListElement {
                                 href: 'http://soundready.fm/'
-                                src: 'http://twitter.github.io/bootstrap/assets/img/example-sites/soundready.png'
+                                src: 'http://getbootstrap.com/2.3.2/assets/img/example-sites/soundready.png'
                                 alt: 'SourndReady.fm'
                             }
                             Models.ListElement {
                                 href: 'http://kippt.com/'
-                                src: 'http://twitter.github.io/bootstrap/assets/img/example-sites/kippt.png'
+                                src: 'http://getbootstrap.com/2.3.2/assets/img/example-sites/kippt.png'
                                 alt: 'Kippt'
                             }
                             Models.ListElement {
                                 href: 'http://www.gathercontent.com/'
-                                src: 'http://twitter.github.io/bootstrap/assets/img/example-sites/gathercontent.png'
+                                src: 'http://getbootstrap.com/2.3.2/assets/img/example-sites/gathercontent.png'
                                 alt: 'Gather Content'
                             }
                             Models.ListElement {
                                 href: 'http://www.jshint.com/'
-                                src: 'http://twitter.github.io/bootstrap/assets/img/example-sites/jshint.png'
+                                src: 'http://getbootstrap.com/2.3.2/assets/img/example-sites/jshint.png'
                                 alt: 'JS Hint'
                             }
                         }

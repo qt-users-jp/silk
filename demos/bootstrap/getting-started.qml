@@ -103,7 +103,7 @@ Template {
                             HTML.P {
                                 Bootstrap.ABtnPrimary {
                                     _class: 'btn-large'
-                                    href: 'http://twitter.github.io/bootstrap/assets/bootstrap.zip'
+                                    href: 'http://getbootstrap.com/2.3.2/assets/bootstrap.zip'
                                     text: 'Download Bootstrap'
                                 }
                             }
@@ -257,49 +257,49 @@ Template {
                             model: Models.ListModel {
                                 Models.ListElement {
                                     href: '/examples/starter-template.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-starter.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-starter.png'
                                     title: 'Starter template'
                                     description: 'A barebones HTML document with all the Bootstrap CSS and JavaScript included.'
                                 }
                                 Models.ListElement {
                                     href: '/examples/hero.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-marketing.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-marketing.png'
                                     title: 'Basic marketing site'
                                     description: 'Featuring a hero unit for a primary message and three supporting elements.'
                                 }
                                 Models.ListElement {
                                     href: '/examples/fluid.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-fluid.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-fluid.png'
                                     title: 'Fluid layout'
                                     description: 'Uses our new responsive, fluid grid system to create a seamless liquid layout.'
                                 }
                                 Models.ListElement {
                                     href: '/examples/marketing-narrow.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-marketing-narrow.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-marketing-narrow.png'
                                     title: 'Narrow marketing'
                                     description: 'Slim, lightweight marketing template for small projects or teams.'
                                 }
                                 Models.ListElement {
                                     href: '/examples/justified-nav.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-justified-nav.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-justified-nav.png'
                                     title: 'Justified nav'
                                     description: 'Marketing page with equal-width navigation links in a modified navbar.'
                                 }
                                 Models.ListElement {
                                     href: '/examples/signin.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-signin.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-signin.png'
                                     title: 'Sign in'
                                     description: 'Barebones sign in form with custom, larger form controls and a flexible layout.'
                                 }
                                 Models.ListElement {
                                     href: '/examples/sticky-footer.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-sticky-footer.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-sticky-footer.png'
                                     title: 'Sticky footer'
                                     description: 'Pin a fixed-height footer to the bottom of the user\'s viewport.'
                                 }
                                 Models.ListElement {
                                     href: '/examples/carousel.qml'
-                                    src: 'http://twitter.github.io/bootstrap/assets/img/examples/bootstrap-example-carousel.png'
+                                    src: 'http://getbootstrap.com/2.3.2/assets/img/examples/bootstrap-example-carousel.png'
                                     title: 'Carousel jumbotron'
                                     description: 'A more interactive riff on the basic marketing site featuring a prominent carousel.'
                                 }
