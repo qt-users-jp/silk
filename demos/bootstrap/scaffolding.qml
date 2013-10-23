@@ -443,7 +443,7 @@ Template {
 
                     HTML.H2 { text: 'About responsive Bootstrap' }
                     HTML.Img {
-                        src: 'http://twitter.github.io/bootstrap/assets/img/responsive-illustrations.png'
+                        src: 'http://getbootstrap.com/2.3.2/assets/img/responsive-illustrations.png'
                         alt: 'Responsive devices'
                         style: 'float: right; margin: 0 0 20px 20px;'
                     }
