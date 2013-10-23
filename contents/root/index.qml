@@ -79,7 +79,6 @@ SilkPageTemplate {
                 text: "import Silk.HTML 5.0
 
 Html {
-    DocType {}
     Head { ... }
     Body {
         H1 { text: 'title' }
