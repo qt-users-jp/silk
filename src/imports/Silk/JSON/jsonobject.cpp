@@ -31,7 +31,7 @@
 
 JsonObject::JsonObject(QObject *parent)
     : SilkAbstractHttpObject(parent)
-    , m_contentType("text/json; charset=utf-8;")
+    , m_contentType("application/json; charset=utf-8;")
 {
 }
 
