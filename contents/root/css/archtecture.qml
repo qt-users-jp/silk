@@ -28,6 +28,8 @@ import Silk.CSS 3.0
 
 Css {
     id: css
+    property bool firefox: http.requestHeader['user-agent'].indexOf('Firefox') > -1
+    property bool msie: http.requestHeader['user-agent'].indexOf('Trident') > -1
 
     Rule {
         id: root
@@ -63,18 +65,18 @@ Css {
 
         Rule {
             selector: '.arch_qml'
-            background: css.firefox ? '-moz-linear-gradient(left, #80C342, #029A9C)' : '-webkit-gradient(linear, center center, right center, from(#80C342), to(#029A9C) )'
+            background: css.firefox ? '-moz-linear-gradient(left, #80C342, #029A9C)' : css.msie ? 'linear-gradient(to right, #80C342, #029A9C)' : '-webkit-gradient(linear, center center, right center, from(#80C342), to(#029A9C) )'
             color: 'white'
         }
 
         Rule {
             selector: '.arch_plangs'
-            background: css.firefox ? '-moz-linear-gradient(left, #B60800, #F30100)' : '-webkit-gradient(linear, left top, right bottom, from(#B60800), to(#F30100) )'
+            background: css.firefox ? '-moz-linear-gradient(left, #B60800, #F30100)' : css.msie ? 'linear-gradient(to right, #B60800, #F30100)' : '-webkit-gradient(linear, left top, right bottom, from(#B60800), to(#F30100) )'
             color: 'white'
         }
         Rule {
             selector: '.arch_server'
-            background: css.firefox ? '-moz-linear-gradient(left, #FD00CB, #1A3F98)' : '-webkit-gradient(linear, left top, right bottom, from(#FD00CB), to(#1A3F98) )'
+            background: css.firefox ? '-moz-linear-gradient(left, #FD00CB, #1A3F98)' : css.msie ? 'linear-gradient(to right, #FD00CB, #1A3F98)' : '-webkit-gradient(linear, left top, right bottom, from(#FD00CB), to(#1A3F98) )'
             color: 'white'
         }
         Rule {
