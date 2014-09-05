@@ -42,9 +42,6 @@ public:
     virtual void componentComplete();
 
     Q_INVOKABLE void update();
-
-private:
-    int propertyCount;
 };
 
 #endif // CONFIG_H

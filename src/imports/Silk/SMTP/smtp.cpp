@@ -541,6 +541,7 @@ void Smtp::Private::sslErrors(QList<QSslError> errors)
 
 Smtp::Smtp(QObject *parent)
     : QObject(parent)
+    , m_port(25)
 {
 }
 

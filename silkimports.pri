@@ -1,7 +1,7 @@
 isEmpty(SILKIMPORTS_PRI) { SILKIMPORTS_PRI = 1
 
     TEMPLATE = lib
-    CONFIG += plugin
+    CONFIG += plugin c++11
     QT -= gui
     QT += qml
 

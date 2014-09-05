@@ -33,6 +33,7 @@
 
 Recursive::Recursive(QObject *parent)
     : SilkAbstractHttpObject(parent)
+    , m_target(nullptr)
 {
 }
 

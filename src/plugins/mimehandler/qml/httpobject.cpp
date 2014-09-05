@@ -54,6 +54,7 @@ bool HttpFileData::save(const QString &fileName)
 
 HttpObject::HttpObject(QObject *parent)
     : QObject(parent)
+    , m_port(-1)
     , m_loading(false)
     , m_status(200)
     , m_escapeHTML(false)

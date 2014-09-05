@@ -28,6 +28,7 @@
 
 WebSocketObject::WebSocketObject(QObject *parent)
     : SilkAbstractObject(parent)
+    , m_port(80)
     , m_socket(0)
 {
 }
