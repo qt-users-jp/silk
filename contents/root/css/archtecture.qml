@@ -28,8 +28,9 @@ import Silk.CSS 3.0
 
 Css {
     id: css
-    property bool firefox: http.requestHeader['user-agent'].indexOf('Firefox') > -1
-    property bool msie: http.requestHeader['user-agent'].indexOf('Trident') > -1
+    property bool requestHeaderAvailable: typeof(http.requestHeader['user-agent']) === 'string'
+    property bool firefox: requestHeaderAvailable && http.requestHeader['user-agent'].indexOf('Firefox') > -1
+    property bool msie: requestHeaderAvailable && http.requestHeader['user-agent'].indexOf('Trident') > -1
 
     Rule {
         id: root
