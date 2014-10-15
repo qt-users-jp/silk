@@ -26,7 +26,7 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'iframe'
-    text: ''
+    nonVoid: true
 
     property string src
     property string srcdoc

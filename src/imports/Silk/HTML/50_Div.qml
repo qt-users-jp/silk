@@ -26,5 +26,5 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'div'
-    text: ''
+    nonVoid: true
 }

@@ -37,6 +37,7 @@ class XmlTag : public SilkAbstractHttpObject
     Q_PROPERTY(QString prolog READ prolog WRITE prolog NOTIFY prologChanged)
     Q_PROPERTY(QString tagName READ tagName WRITE tagName NOTIFY tagNameChanged)
     Q_PROPERTY(QString text READ text WRITE text NOTIFY textChanged)
+    Q_PROPERTY(bool nonVoid READ nonVoid WRITE nonVoid NOTIFY nonVoidChanged)
 public:
     explicit XmlTag(QObject *parent = 0);
     
@@ -47,18 +48,15 @@ signals:
     void contentTypeChanged(const QString &contentType);
     void tagNameChanged(const QString &tagName);
     void textChanged(const QString &text);
+    void nonVoidChanged(bool nonVoid);
 
 private:
     Q_DISABLE_COPY(XmlTag)
     SILK_ADD_PROPERTY(const QString &, contentType, QString)
     SILK_ADD_PROPERTY(const QString &, prolog, QString)
     SILK_ADD_PROPERTY(const QString &, tagName, QString)
-//    SILK_ADD_PROPERTY(const QString &, text, QString)
-public:
-    const QString & text() const;
-    void text(const QString & text);
-private:
-    QString m_text;
+    SILK_ADD_PROPERTY(const QString &, text, QString)
+    SILK_ADD_PROPERTY(bool, nonVoid, bool)
 };
 
 #endif // XMLTAG_H

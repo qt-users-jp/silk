@@ -26,5 +26,5 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'span'
-    text: ''
+    nonVoid: true
 }

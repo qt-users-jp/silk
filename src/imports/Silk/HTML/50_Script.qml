@@ -26,8 +26,8 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'script'
+    nonVoid: true
 
-    text: ''
     property string type
     property string language
     property string src

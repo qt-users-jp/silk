@@ -26,7 +26,7 @@
 
 AbstractElement {
     tagName: 'script'
-    text: ''
+    nonVoid: true
     property string charset
     property string type
     property string src

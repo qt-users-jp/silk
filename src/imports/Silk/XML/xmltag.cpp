@@ -33,6 +33,7 @@ XmlTag::XmlTag(QObject *parent)
     : SilkAbstractHttpObject(parent)
     , m_contentType(QStringLiteral("application/xml; charset=utf-8;"))
     , m_prolog(QStringLiteral("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"))
+    , m_nonVoid(false)
 {
 }
 
@@ -95,7 +96,7 @@ QString XmlTag::out()
 
     bool hasChildObjects = false;
 
-    if (!text.isNull()) {
+    if (!text.isEmpty() || m_nonVoid) {
         hasChildObjects = true;
         if (!tagNameIsEmpty)
             ret.append(QLatin1Char('>'));
@@ -117,7 +118,7 @@ QString XmlTag::out()
     if (!tagNameIsEmpty) {
         if (hasChildObjects) {
             ret.append(QString("</%1>").arg(tagName()));
-        } else if (!text.isNull()){
+        } else if (!text.isEmpty() || m_nonVoid){
             ret.append(QString("></%1>").arg(tagName()));
         } else {
             ret.append(QStringLiteral(" />"));
@@ -133,13 +134,3 @@ QString XmlTag::out()
     return ret;
 }
 
-const QString & XmlTag::text() const
-{
-    return m_text;
-}
-
-void XmlTag::text(const QString & text) {
-    if (m_text == text && m_text.isEmpty() == text.isEmpty() && m_text.isNull() == text.isNull()) return;
-    m_text = text;
-    emit textChanged(text);
-}

@@ -26,5 +26,5 @@
 
 AbstractI18nCoreattrsEventsElement {
     tagName: 'span'
-    text: ''
+    nonVoid: true
 }
