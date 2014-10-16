@@ -45,7 +45,7 @@ Html {
         Form {
             action: "./javascript.qml"
             method: "POST"
-            Input { id: source; _id: "source"; type: "text"; name: "source"; value: input.source.length > 0 ? input.source : "QML" }
+            Input { id: source; _id: "source"; type: "text"; name: "source"; value: input.source.length > 0 ? Silk.escapeHTML(input.source) : "QML" }
             Input { type: "submit"; value: "Exec on server side" }
             Button { text: "Exec on client side"; onclick: "document.getElementById('result').innerHTML = reverse(document.getElementById('source').value); return false;" }
             P { id: result; _id: "result"; text: Script.reverse(input.source) }

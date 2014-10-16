@@ -25,8 +25,8 @@
  */
 
 function reverse(str) {
-    var ret = '';
+    var ret = ''
     for (var i = 0; i < str.length; i++)
-        ret += str[str.length - i - 1];
-    return ret;
+        ret += str[str.length - i - 1]
+    return ret.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
