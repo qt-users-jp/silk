@@ -31,6 +31,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QJSValue>
 
 Repeater::Repeater(QObject *parent)
     : SilkAbstractHttpObject(parent)
@@ -42,9 +43,16 @@ QString Repeater::out()
     QString ret;
     QVariantList list;
 
-    switch (static_cast<int>(m_model.type())) {
+    QVariant model = m_model;
+
+    static int qjsType = qRegisterMetaType<QJSValue>();
+    if (model.type() == qjsType) {
+        model = model.value<QJSValue>().toVariant();
+    }
+
+    switch (static_cast<int>(model.type())) {
     case QVariant::Int: {
-        int count = m_model.toInt();
+        int count = model.toInt();
         for (int i = 0; i < count; i++) {
             QVariantMap model;
             model.insert("index", i);
@@ -53,7 +61,7 @@ QString Repeater::out()
         }
         break; }
     case QVariant::List: {
-        QVariantList l = m_model.toList();
+        QVariantList l = model.toList();
         int i = 0;
         foreach (const QVariant &v, l) {
             QVariantMap model;
@@ -76,7 +84,7 @@ QString Repeater::out()
         }
         break; }
     case QVariant::Map: {
-        QVariantMap m = m_model.toMap();
+        QVariantMap m = model.toMap();
         int i = 0;
         foreach (const QString &key, m.keys()) {
             QVariantMap model;
@@ -87,7 +95,7 @@ QString Repeater::out()
         }
         break; }
     case QMetaType::QObjectStar: {
-        QAbstractListModel *m = qobject_cast<QAbstractListModel*>(qvariant_cast<QObject*>(m_model));
+        QAbstractListModel *m = qobject_cast<QAbstractListModel*>(qvariant_cast<QObject*>(model));
         if (m) {
             QHash<int, QByteArray> roleNames = m->roleNames();
             for (int i = 0; i < m->rowCount(); i++) {
@@ -102,11 +110,7 @@ QString Repeater::out()
         }
         break; }
     default: {
-        qDebug() << Q_FUNC_INFO << __LINE__ << m_model.type() << m_model;
-//        QObject *object = qvariant_cast<QObject*>(model);
-//        if (object) {
-//            qDebug() << object;
-//        }
+        qDebug() << Q_FUNC_INFO << __LINE__ << model.type() << (int)model.type() << model;
         break; }
     }
 

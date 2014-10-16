@@ -30,6 +30,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QJSValue>
 
 Recursive::Recursive(QObject *parent)
     : SilkAbstractHttpObject(parent)
@@ -42,14 +43,23 @@ QString Recursive::out()
     QString ret;
 
 //    qDebug() << Q_FUNC_INFO << __LINE__ << m_target << m_child;
-    if (m_target && m_child.type() == QVariant::List) {
+    QVariant child = m_child;
+    static int qjsType = qRegisterMetaType<QJSValue>();
+    if (child.type() == qjsType) {
+        child = child.value<QJSValue>().toVariant();
+    }
+
+
+    if (m_target && child.type() == QVariant::List) {
         QObject *object = m_target->create(m_target->creationContext());
         SilkAbstractHttpObject *http = qobject_cast<SilkAbstractHttpObject *>(object);
         if (http) {
-            http->setProperty("model", m_child);
+            http->setProperty("model", child);
             ret.append(http->out());
         }
         object->deleteLater();
+    } else {
+        qDebug() << Q_FUNC_INFO << __LINE__ << child.type() << (int)child.type() << child;
     }
 
 //    qDebug() << Q_FUNC_INFO << __LINE__ << ret;
