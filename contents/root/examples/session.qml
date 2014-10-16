@@ -83,11 +83,11 @@ Html {
                 Dd { text: "test/test" }
                 Dt { text: "User:" }
                 Dd {
-                    Input { type: "text"; name: "username"; value: input.username }
+                    Input { type: "text"; name: "username"; value: Silk.escapeHTML(input.username) }
                 }
                 Dt { text: "Password:" }
                 Dd {
-                    Input { type: "password"; name: "password"; value: input.password }
+                    Input { type: "password"; name: "password"; value: Silk.escapeHTML(input.password) }
                 }
                 Dt { text: "Keep me logged in for a week:" }
                 Dd {
