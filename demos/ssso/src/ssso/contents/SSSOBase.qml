@@ -32,7 +32,7 @@ import Silk.Utils 1.0
 Http {
     id: http
     status: 200
-    responseHeader: {"Content-Type": "text/html; charset=utf-8;"}
+    responseHeader: {"Content-Type": "text/html; charset=utf-8"}
 
     property var account: {'username': ''}
 

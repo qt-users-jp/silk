@@ -27,7 +27,7 @@
 import Silk.CSS 2.1
 
 CSSRule {
-    property string contentType: "text/css; charset=utf-8;"
+    property string contentType: "text/css; charset=utf-8"
 
     property string margin
     property string margin_top

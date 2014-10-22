@@ -28,6 +28,6 @@
 
 Text::Text(QObject *parent)
     : SilkAbstractHttpObject(parent)
-    , m_contentType("text/plain; charset=utf-8;")
+    , m_contentType("text/plain; charset=utf-8")
 {
 }

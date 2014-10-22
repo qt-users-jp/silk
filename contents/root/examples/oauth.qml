@@ -100,7 +100,7 @@ Html {
         onAuthorize: {
             cache.add(twitter.token, twitter.tokenSecret);
             http.status = 301;
-            http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': url};
+            http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8', 'Location': url};
             http.loading = false;
         }
         onAuthorizedChanged: {
@@ -118,7 +118,7 @@ Html {
                 http.responseCookies = cookies;
 
                 http.status = 301
-                http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8;', 'Location': '/examples/oauth.qml'}
+                http.responseHeader = {'Content-Type': 'text/plain; charset=utf-8', 'Location': '/examples/oauth.qml'}
             }
             http.loading = false
         }

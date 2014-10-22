@@ -26,7 +26,7 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'html'
-    contentType: "text/html; charset=utf-8;"
+    contentType: "text/html; charset=utf-8"
     prolog: '<!DOCTYPE html>'
     property string manifest
 }

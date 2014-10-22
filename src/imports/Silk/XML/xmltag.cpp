@@ -31,7 +31,7 @@
 
 XmlTag::XmlTag(QObject *parent)
     : SilkAbstractHttpObject(parent)
-    , m_contentType(QStringLiteral("application/xml; charset=utf-8;"))
+    , m_contentType(QStringLiteral("application/xml; charset=utf-8"))
     , m_prolog(QStringLiteral("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"))
     , m_nonVoid(false)
 {
