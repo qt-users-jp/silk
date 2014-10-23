@@ -39,10 +39,10 @@ Html {
             Repeater {
                 model: http.requestHeader
                 Component {
-                    Dt { text: model.key }
+                    Dt { text: Silk.escapeHTML(model.key) }
                 }
                 Component {
-                    Dd { text: model.value }
+                    Dd { text: Silk.escapeHTML(model.value) }
                 }
             }
         }
