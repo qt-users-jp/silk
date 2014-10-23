@@ -329,10 +329,26 @@ void SilkServer::Private::incomingConnection(QWebSocket *socket)
 
 void SilkServer::Private::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
+    QStringList mimeTypeListNeedCharset;
+    mimeTypeListNeedCharset << QStringLiteral("text/x-qml")
+                            << QStringLiteral("text/css")
+                            << QStringLiteral("text/html")
+                            << QStringLiteral("text/plain")
+                            << QStringLiteral("image/svg+xml")
+                            << QStringLiteral("application/javascript")
+                            << QStringLiteral("application/x-javascript")
+                            << QStringLiteral("application/xml")
+                            << QStringLiteral("application/atom")
+                            << QStringLiteral("application/rss+xml")
+                            << QStringLiteral("application/x-shockwave-flash");
     QMimeType mimeType = mimeDatabase.mimeTypeForFile(fileInfo.fileName(), QMimeDatabase::MatchExtension);
     QString mime = mimeType.name();
+    QString contentType = mime;
+    if (mimeTypeListNeedCharset.contains(mime)) {
+        contentType.append(QStringLiteral("; charset=utf-8"));
+    }
     reply->setStatus(200);
-    reply->setRawHeader("Content-Type", mime.toUtf8());
+    reply->setRawHeader("Content-Type", contentType.toUtf8());
     if (!mimeHandlers.contains(mime)) {
         mime = mime.section(QLatin1Char('/'), 0, 0) + QStringLiteral("/*");
     }
