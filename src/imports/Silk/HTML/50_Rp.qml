@@ -25,5 +25,5 @@
  */
 
 AbstractGlobalAttributesElement {
-    tagName: 'rq'
+    tagName: 'rp'
 }
