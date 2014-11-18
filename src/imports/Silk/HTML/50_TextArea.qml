@@ -39,4 +39,5 @@ AbstractGlobalAttributesElement {
     property string rows
     property string wrap
     property string cols
+    nonVoid: true
 }
