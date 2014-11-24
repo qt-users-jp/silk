@@ -42,6 +42,12 @@ public:
     Q_INVOKABLE bool isAvailable(const QString &uri, int major, int minor, const QString &element) const;
 
     Q_INVOKABLE QString escapeHTML(const QString &source) const;
+
+    Q_INVOKABLE QString lighter(const QString &str, qreal factor = 1.5) const;
+    Q_INVOKABLE QString darker(const QString &str, qreal factor = 1.5) const;
+
+private:
+    class Color;
 };
 
 #endif // SILK_H
