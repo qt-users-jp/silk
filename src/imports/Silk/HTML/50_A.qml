@@ -33,4 +33,5 @@ AbstractGlobalAttributesElement {
     property string hreflang
     property string media
     property string type
+    nonVoid: true
 }
