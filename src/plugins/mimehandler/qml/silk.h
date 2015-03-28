@@ -45,6 +45,7 @@ public:
 
     Q_INVOKABLE QString lighter(const QString &str, qreal factor = 1.5) const;
     Q_INVOKABLE QString darker(const QString &str, qreal factor = 1.5) const;
+    Q_INVOKABLE QString formatDateTime(const QDateTime &dateTime, const QString &format, const QString &localeName = QString()) const;
 
 private:
     class Color;

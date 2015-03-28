@@ -27,10 +27,12 @@
 #include "silk.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QDateTime>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QUuid>
 #include <QtCore/QRegularExpression>
+#include <QtCore/QLocale>
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
@@ -434,4 +436,10 @@ QString Silk::darker(const QString &str, qreal factor) const
         return color.darker(factor).toString();
     }
     return QString();
+}
+
+QString Silk::formatDateTime(const QDateTime &dateTime, const QString &format, const QString &localeName) const
+{
+    QLocale locale(localeName);
+    return locale.toString(dateTime, format);
 }
