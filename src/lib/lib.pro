@@ -18,7 +18,8 @@ HEADERS += \
     silkprotocolhandlerinterface.h \
     silkabstractprotocolhandler.h \
     silkabstractobject.h \
-    silkserver.h
+    silkserver.h \
+    silkserver_logging.h
 
 SOURCES += \
     silkconfig.cpp \
@@ -26,4 +27,5 @@ SOURCES += \
     silkabstractmimehandler.cpp \
     silkabstractprotocolhandler.cpp \
     silkabstractobject.cpp \
-    silkserver.cpp
+    silkserver.cpp \
+    silkserver_logging.cpp

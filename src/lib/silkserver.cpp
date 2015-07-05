@@ -26,6 +26,7 @@
 
 #include "silkserver.h"
 #include "silkconfig.h"
+#include "silkserver_logging.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
@@ -218,9 +219,9 @@ SilkServer::Private::Private(SilkServer *parent)
 
 
     if (q->listen(address, port)) {
-        qDebug() << tr("silk is running on %1").arg(port);
+        ssInfo() << "silk is running on" << port;
     } else {
-        qWarning() << q->errorString();
+        ssWarning() << q->errorString();
         QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
     }
 }
@@ -238,7 +239,7 @@ QString SilkServer::Private::documentRootForRequest(const QUrl &url) const
 
 void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
 {
-//    qDebug() << Q_FUNC_INFO << __LINE__ << request->url();
+    ssRequest() << request;
 
     reply->setRawHeader("Server", "Silk");
     QString str = request->url().toString();
@@ -279,12 +280,16 @@ void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *
             load(fileInfo, request, reply);
         } else {
             error(404, request, reply, request->url().toString());
+            return;
         }
     }
+    ssOk() << request << reply->size();
 }
 
 void SilkServer::Private::incomingConnection(QWebSocket *socket)
 {
+    ssRequest() << socket;
+
     QString str = socket->url().toString();
     foreach (const RewriteRule &rule, rewriteRules) {
         QRegularExpressionMatch match = rule.first.match(str);
@@ -323,8 +328,10 @@ void SilkServer::Private::incomingConnection(QWebSocket *socket)
             load(fileInfo, socket);
         } else {
             error(404, socket, socket->url().toString());
+            return;
         }
     }
+    ssOk() << socket;
 }
 
 void SilkServer::Private::load(const QFileInfo &fileInfo, QHttpRequest *request, QHttpReply *reply, const QString &message)
@@ -405,7 +412,7 @@ void SilkServer::Private::loadUrl(const QUrl &url, QHttpRequest *request, QHttpR
 
 void SilkServer::Private::error(int statusCode, QHttpRequest *request, QHttpReply *reply, const QString &message)
 {
-    qDebug() << Q_FUNC_INFO << __LINE__ << statusCode << request->url() << message;
+    ssError() << request << statusCode << message;
     QString documentRoot = documentRootForRequest(request->url());
     if (QFile::exists(QString::fromUtf8("%1/errors/%2.qml").arg(documentRoot).arg(statusCode))) {
         load(QFileInfo(QString::fromUtf8("%1/errors/%2.qml").arg(documentRoot).arg(statusCode)), request, reply, message);
@@ -436,7 +443,6 @@ void SilkServer::Private::load(const QFileInfo &fileInfo, QWebSocket *socket, co
 
 void SilkServer::Private::loadUrl(const QUrl &url, QWebSocket *socket, const QString &message)
 {
-    qDebug() << Q_FUNC_INFO << __LINE__ << url;
     bool ret = false;
     if (protocolHandlers.contains(url.scheme())) {
         ret = protocolHandlers[url.scheme()]->load(url, socket, message);
@@ -444,16 +450,15 @@ void SilkServer::Private::loadUrl(const QUrl &url, QWebSocket *socket, const QSt
     if (!ret) {
         error(403, socket, socket->url().toString());
     }
-    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
 void SilkServer::Private::error(int statusCode, QWebSocket *socket, const QString &message)
 {
+    ssError() << socket << statusCode << message;
+
     // TODO: error handling
-    qDebug() << Q_FUNC_INFO << __LINE__ << statusCode << message;
 //    socket->close();
     socket->deleteLater();
-    qDebug() << Q_FUNC_INFO << __LINE__;
 }
 
 SilkServer::SilkServer(QObject *parent)
