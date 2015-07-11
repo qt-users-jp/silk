@@ -1,18 +1,4 @@
-TEMPLATE = app
-TARGET = phony_target
-CONFIG -= qt
-QT =
-LIBS =
-
-CONFIG += console
-PHONY_DEPS = .
-phony_src.input = PHONY_DEPS
-phony_src.output = phony.c
-phony_src.variable_out = GENERATED_SOURCES
-phony_src.commands = echo int main\\(\\) { return 0\\; } > phony.c
-phony_src.name = CREATE phony.c
-phony_src.CONFIG += combine
-QMAKE_EXTRA_COMPILERS += phony_src
+TEMPLATE = aux
 
 include(../silk.pri)
 root.source = root
@@ -29,10 +15,3 @@ silk_platform_linux {
 
 include(../silkdeployment.pri)
 qtcAddDeployment()
-INSTALLS -= target
-
-OTHER_FILES += \
-    root/modules.qml \
-    root/getting-started.qml \
-    root/scaffolding/HtmlExample.qml \
-    root/scaffolding/html.qml
