@@ -37,6 +37,6 @@ JsonObject::JsonObject(QObject *parent)
 
 QString JsonObject::out()
 {
-    QJsonDocument doc = QJsonDocument::fromVariant(m_object);
-    return QString(doc.toJson());
+    QJsonDocument doc = QJsonDocument(m_object);
+    return QString::fromUtf8(doc.toJson());
 }

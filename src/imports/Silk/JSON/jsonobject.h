@@ -28,6 +28,7 @@
 #define JSONOBJECT_H
 
 #include <silkabstracthttpobject.h>
+#include <QtCore/QJsonObject>
 
 class JsonObject : public SilkAbstractHttpObject
 {
@@ -35,8 +36,8 @@ class JsonObject : public SilkAbstractHttpObject
 
     Q_PROPERTY(QString contentType READ contentType NOTIFY contentTypeChanged)
     SILK_ADD_PROPERTY(const QString &, contentType, QString)
-    Q_PROPERTY(QVariantMap object READ object WRITE object NOTIFY objectChanged)
-    SILK_ADD_PROPERTY(const QVariantMap &, object, QVariantMap)
+    Q_PROPERTY(QJsonObject object READ object WRITE object NOTIFY objectChanged)
+    SILK_ADD_PROPERTY(const QJsonObject &, object, QJsonObject)
 public:
     explicit JsonObject(QObject *parent = 0);
     
@@ -44,7 +45,7 @@ public:
 
 signals:
     void contentTypeChanged(const QString &contentType);
-    void objectChanged(const QVariantMap &object);
+    void objectChanged(const QJsonObject &object);
 };
 
 #endif // JSONOBJECT_H
