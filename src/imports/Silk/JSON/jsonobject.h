@@ -35,8 +35,8 @@ class JsonObject : public SilkAbstractHttpObject
 
     Q_PROPERTY(QString contentType READ contentType NOTIFY contentTypeChanged)
     SILK_ADD_PROPERTY(const QString &, contentType, QString)
-    Q_PROPERTY(QVariant object READ object WRITE object NOTIFY objectChanged)
-    SILK_ADD_PROPERTY(const QVariant &, object, QVariant)
+    Q_PROPERTY(QVariantMap object READ object WRITE object NOTIFY objectChanged)
+    SILK_ADD_PROPERTY(const QVariantMap &, object, QVariantMap)
 public:
     explicit JsonObject(QObject *parent = 0);
     
@@ -44,7 +44,7 @@ public:
 
 signals:
     void contentTypeChanged(const QString &contentType);
-    void objectChanged(const QVariant &object);
+    void objectChanged(const QVariantMap &object);
 };
 
 #endif // JSONOBJECT_H
