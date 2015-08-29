@@ -241,7 +241,15 @@ void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *
 {
     ssRequest() << request;
 
-    reply->setRawHeader("Server", "Silk");
+    QVariant serverName = SilkConfig::value("server.name");
+    if (serverName.isNull()) {
+        reply->setRawHeader("Server", "Silk");
+    } else {
+        QString str = serverName.toString();
+        if (!str.isEmpty()) {
+            reply->setRawHeader("Server", str.toUtf8());
+        }
+    }
     QString str = request->url().toString();
     foreach (const RewriteRule &rule, rewriteRules) {
         QRegularExpressionMatch match = rule.first.match(str);
