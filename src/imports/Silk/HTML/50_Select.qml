@@ -26,6 +26,7 @@
 
 AbstractGlobalAttributesElement {
     tagName: 'select'
+    nonVoid: true
 
     property string name
     property string disabled

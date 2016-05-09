@@ -26,6 +26,8 @@
 
 AbstractI18nCoreattrsEventsElement {
     tagName: 'select'
+    nonVoid: true
+
     property string name
     property string size
     property string multiple
