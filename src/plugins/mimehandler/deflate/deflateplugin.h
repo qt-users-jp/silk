@@ -42,8 +42,11 @@ class DeflatePlugin : public QObject, SilkMimeHandlerInterface
 public:
     virtual QStringList keys() const {
         QStringList ret;
-        foreach (const QVariant &value, SilkConfig::value("deflate.excludes").toList()) {
-            ret.append(value.toString());
+        QVariantHash hash = SilkConfig::value("deflate").toHash();
+        foreach (const QString &key, hash.keys()) {
+            if (!hash.value(key).toBool()) {
+                ret.append(key);
+            }
         }
         return ret;
     }

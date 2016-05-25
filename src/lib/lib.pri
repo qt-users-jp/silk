@@ -1,3 +1,5 @@
+QT += qml
+
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 

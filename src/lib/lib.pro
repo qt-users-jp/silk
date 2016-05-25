@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET = silk
 
-QT -= gui
+QT = qml
 
 include(../../silklib.pri)
 include(../../qthttpserver/qthttpserver.pri)

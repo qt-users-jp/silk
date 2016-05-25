@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>silkrc</file>
+        <file>silkconfig.qml</file>
     </qresource>
 </RCC>

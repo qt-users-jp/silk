@@ -26,6 +26,7 @@
 
 #include "config.h"
 
+#include <QtCore/QJsonObject>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
 
@@ -43,7 +44,7 @@ void Config::componentComplete()
 
 void Config::update()
 {
-    QVariantMap config = SilkConfig::config();
+    QVariantHash config = SilkConfig::config();
     const QMetaObject *mo = metaObject();
     for (int i = 0; i < mo->propertyCount(); i++) {
         QMetaProperty p = mo->property(i);

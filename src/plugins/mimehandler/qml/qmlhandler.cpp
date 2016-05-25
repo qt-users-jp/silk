@@ -167,19 +167,19 @@ QmlHandler::Private::Private(QmlHandler *parent)
         qobject_cast<SilkImportsInterface *>(plugin)->silkRegisterObject();
     }
 
-    engine.setOfflineStoragePath(rootDir.absoluteFilePath(SilkConfig::value("storage.path").toString()));
+    engine.setOfflineStoragePath(rootDir.absoluteFilePath(SilkConfig::value("offlineStoragePath").toString()));
     engine.addImportPath(":/imports");
-    foreach (const QString &importPath, SilkConfig::value("import.path").toStringList()) {
+    foreach (const QString &importPath, SilkConfig::value("imports").toStringList()) {
         engine.addImportPath(rootDir.absoluteFilePath(importPath));
     }
 
-    QVariantList tasks = SilkConfig::value("silk.tasks").toList();
-    foreach (const QVariant &task, tasks) {
+    QVariantList daemons = SilkConfig::value("daemons").toList();
+    foreach (const QVariant &daemon, daemons) {
         QUrl url;
-        if (task.toString().startsWith(":")) {
-            url = QUrl(QStringLiteral("qrc") + task.toString());
+        if (daemon.toString().startsWith(":")) {
+            url = QUrl(QStringLiteral("qrc") + daemon.toString());
         } else {
-            url = QUrl::fromLocalFile(rootDir.absoluteFilePath(task.toString()));
+            url = QUrl::fromLocalFile(rootDir.absoluteFilePath(daemon.toString()));
         }
         QQmlComponent *component = new QQmlComponent(&engine, url, this);
         switch (component->status()) {

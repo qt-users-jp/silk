@@ -37,13 +37,13 @@ class SILK_EXPORT SilkServer : public QHttpServer
 public:
     explicit SilkServer(QObject *parent = 0);
 
-    const QMap<QString, QString> &documentRoots() const;
+    QHash<QString, QString> documentRoots() const;
 
 public slots:
-    void setDocumentRoots(const QMap<QString, QString> &documentRoots);
+    void setDocumentRoots(const QHash<QString, QString> &documentRoots);
 
 signals:
-    void documentRootsChanged(const QMap<QString, QString> &documentRoots);
+    void documentRootsChanged(const QHash<QString, QString> &documentRoots);
 
 private:
     class Private;

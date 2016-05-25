@@ -49,6 +49,7 @@
 
 typedef QPair<QRegularExpression, QString> RewriteRule;
 
+
 class SilkServer::Private : public QObject
 {
     Q_OBJECT
@@ -78,7 +79,7 @@ private:
     QMap<QString, SilkAbstractProtocolHandler*> protocolHandlers;
     QList<RewriteRule> rewriteRules;
 public:
-    QMap<QString, QString> documentRoots;
+    QHash<QString, QString> documentRoots;
 };
 
 SilkServer::Private::Private(SilkServer *parent)
@@ -197,10 +198,10 @@ SilkServer::Private::Private(SilkServer *parent)
         } else {
             QFileInfo fileInfo(value);
             if (fileInfo.isRelative()) {
-                if (SilkConfig::file().startsWith(QStringLiteral(":/"))) {
+                if (SilkConfig::url().scheme() == QStringLiteral("qrc")) {
                     documentRoots.insert(key, rootDir.absoluteFilePath(value));
                 } else {
-                    QDir dir(SilkConfig::file());
+                    QDir dir(SilkConfig::url().toLocalFile());
                     dir.cdUp();
                     documentRoots.insert(key, dir.absoluteFilePath(value));
                 }
@@ -216,8 +217,6 @@ SilkServer::Private::Private(SilkServer *parent)
         }
     }
 
-
-
     if (q->listen(address, port)) {
         ssInfo() << "silk is running on" << port;
     } else {
@@ -228,13 +227,14 @@ SilkServer::Private::Private(SilkServer *parent)
 
 QString SilkServer::Private::documentRootForRequest(const QUrl &url) const
 {
-    QString ret(":/contents");
-    if (documentRoots.contains(url.host())) {
-        ret = documentRoots.value(url.host());
-    } else if (documentRoots.contains("*")) {
-        ret = documentRoots.value("*");
+    QString matched;
+    foreach (const QString &key, documentRoots.keys()) {
+        if (url.path().startsWith(key) && matched.length() < key.length()) {
+            matched = key;
+        }
     }
-    return ret;
+
+    return documentRoots.value(matched);
 }
 
 void SilkServer::Private::incomingConnection(QHttpRequest *request, QHttpReply *reply)
@@ -475,12 +475,12 @@ SilkServer::SilkServer(QObject *parent)
 {
 }
 
-const QMap<QString, QString> &SilkServer::documentRoots() const
+QHash<QString, QString> SilkServer::documentRoots() const
 {
     return d->documentRoots;
 }
 
-void SilkServer::setDocumentRoots(const QMap<QString, QString> &documentRoots)
+void SilkServer::setDocumentRoots(const QHash<QString, QString> &documentRoots)
 {
     if (d->documentRoots == documentRoots) return;
     d->documentRoots = documentRoots;

@@ -63,8 +63,8 @@ SilkPageTemplate {
                     H1 { text: '1. Download Qt' }
                 }
                 Bootstrap.Lead {
-                    Text { text: 'download and install Qt 5.1 or later from ' }
-                    A { href: 'http://qt-project.org/downloads'; target: '_blank'; text: 'qt-project.org' }
+                    Text { text: 'download and install Qt 5.6 or later from ' }
+                    A { href: 'http://www.qt.io/download-open-source/'; target: '_blank'; text: 'qt.io' }
                 }
             }
             Section {
@@ -82,7 +82,7 @@ SilkPageTemplate {
                     Bootstrap.Span6 {
                         H2 { text: 'Build from source' }
                         Pre {
-                            Kbd { text: '$ git clone <a href="http://git.qtquick.me/?p=silk.git;a=tree" target="_blank">git://git.qtquick.me/silk.git</a>\n' }
+                            Kbd { text: '$ git clone <a href="http://git.qt-users.jp/git/?p=codereview/silk.git;a=tree" target="_blank">git://git.qt-users.jp/codereview/silk.git</a>\n' }
                             Kbd { text: "$ cd silk\n" }
                             Kbd { text: "$ git submodule update --init\n" }
                             Kbd { text: "$ qt5/bin/qmake\n" }
@@ -106,35 +106,38 @@ SilkPageTemplate {
                     Bootstrap.Span6 {
                         H2 { text: 'Default configuration' }
                         Pre {
-                            text: '{
-    "listen": {
-        "address": "*",
-        "port": 8080
-    },
-    "contents": {
-        "*": "$${SILK_DATA_PATH}/root/"
-    },
-    "silk": {
-        "tasks": [
-            "$${SILK_DATA_PATH}/tasks/chatdaemon.qml"
-        ]
-    },
-    "storage": {
-        "path": "$${SILK_DATA_PATH}/"
-    },
-    "import": {
-        "path": []
-    },
-    "cache": {
-        "qml": true
-    },
-    "deflate": {
-        "excludes": ["video/*", "image/*"]
+                            text: "import Silk.Config 0.1
+
+Config {
+    listen: Listen {
+        address: 'localhost'
+        port: 8080
     }
-}'
+
+    contents: {
+        '/': SILK_DATA_PATH + '/root/'
+    }
+
+    daemons: [
+        SILK_DATA_PATH + '/daemons/chatdaemon.qml'
+    ]
+
+    offlineStoragePath: SILK_DATA_PATH
+
+    imports: []
+
+    cache: {
+        'qml': true
+    }
+
+    deflate: {
+        'video/*': false
+        , 'image/*': false
+    }
+}"
                         }
                         Bootstrap.AlertInfo {
-                            text: '$${SILK_DATA_PATH} will be replaced with <em>../share/silk</em> on Linux or <em>../Resources</em> on Mac that is relative path to the <em>silk</em> binary.'
+                            text: '<code>SILK_DATA_PATH</code> will be replaced with <em>../share/silk</em> on Linux or <em>../Resources</em> on Mac that is relative path to the <em>silk</em> binary.'
                         }
                     }
                     Bootstrap.Span3 {
@@ -156,21 +159,21 @@ SilkPageTemplate {
                         H3 { text: 'contents' }
                         P {
                             _class: 'well'
-                            Text { text: 'virtual host name/root path pairs' }
+                            Text { text: 'path -> document root pair' }
                         }
-                        H3 { text: 'silk.tasks' }
+                        H3 { text: 'daemons' }
                         P {
                             _class: 'well'
                             Text { text: 'background services' }
                         }
                     }
                     Bootstrap.Span3 {
-                        H3 { text: 'storage' }
+                        H3 { text: 'offlineStoragePath' }
                         P {
                             _class: 'well'
                             Text { text: 'root path for offline storage' }
                         }
-                        H3 { text: 'import' }
+                        H3 { text: 'imports' }
                         P {
                             _class: 'well'
                             Text { text: 'additional import path for QML' }
@@ -180,10 +183,10 @@ SilkPageTemplate {
                             _class: 'well'
                             Text { text: 'if false, silk generates html from qml everytime' }
                         }
-                        H3 { text: 'deflate.excludes' }
+                        H3 { text: 'deflate' }
                         P {
                             _class: 'well'
-                            Text { text: 'mime types not compressed' }
+                            Text { text: 'mime types not to be compressed' }
                         }
                     }
                 }
@@ -191,21 +194,14 @@ SilkPageTemplate {
                     Bootstrap.Span6 {
                         H2 { text: 'Write your config file' }
                         Pre {
-                            text: '{
-    "listen": {
-        "address": "localhost",
-        "port": 8081
-    },
-    "contents": {
-        "*": "/home/silk/contents"
-    },
-    "silk": {
-        "tasks": []
-    },
-    "storage": {
-        "path": "/home/silk/contents"
+                            text: "import Silk.Config 0.1
+
+Config {
+    contents: {
+        '/home/silk/contents'
     }
-}'
+    offlineStoragePath: '/home/silk/contents'
+}"
                         }
                         Bootstrap.AlertInfo {
                             text: 'will override default configuration values'
@@ -214,10 +210,10 @@ SilkPageTemplate {
                     Bootstrap.Span6 {
                         H2 { text: 'Run with the config file' }
                         Pre {
-                            Kbd { text: "$ ./bin/silk --config mysilkrc" }
+                            Kbd { text: "$ ./bin/silk --config mysilkconfig.qml" }
                         }
                         Bootstrap.AlertInfo {
-                            text: 'Alternatively, you may save it as ~/.silkrc and just run silk'
+                            text: 'Alternatively, you may save it as ~/.silkconfig.qml and just run silk'
                         }
                     }
                 }
