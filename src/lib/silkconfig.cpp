@@ -207,7 +207,13 @@ QVariantHash SilkConfig::readConfigFile(const QUrl &fileName)
     context->setContextProperty("SILK_DATA_PATH", SILK_DATA_PATH);
     QQmlComponent component(&engine, m_url);
     QObject *object = component.create();
-    ret = readObject(object);
+    if (component.status() == QQmlComponent::Ready) {
+        ret = readObject(object);
+    } else {
+        qCritical().noquote() << component.errorString();
+        qFatal("***Fix the error above***");
+    }
+    engine.clearComponentCache();
     qmlClearTypeRegistrations();
 
     return ret;
