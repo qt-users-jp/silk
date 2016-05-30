@@ -44,7 +44,7 @@ class SilkServerConfig : public QObject
     Q_PROPERTY(QJsonObject deflate MEMBER deflate NOTIFY deflateChanged)
     Q_PROPERTY(QJsonObject rewrite MEMBER rewrite NOTIFY rewriteChanged)
 public:
-    explicit SilkServerConfig(QObject *parent = 0) : QObject(parent) {}
+    explicit SilkServerConfig(QObject *parent = 0) : QObject(parent), listen(0) {}
 
 signals:
     void listenChanged(const SilkServerConfigListen &listen);
@@ -83,6 +83,11 @@ QVariant SilkConfig::value(const QVariant &v, const QString &key)
         QMap<QString, QVariant> map = v.toMap();
         foreach (const QString &k, map.keys())
             hash.insert(k, map.value(k));
+        break; }
+    case QMetaType::QJsonObject: {
+        QJsonObject object = v.toJsonObject();
+        foreach (const QString &k, object.keys())
+            hash.insert(k, object.value(k));
         break; }
     default:
         qWarning() << v << "not supported";
