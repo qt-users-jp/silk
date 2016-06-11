@@ -34,8 +34,8 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkCookie>
 
-#include <qhttprequest.h>
-#include <qhttpreply.h>
+#include <QtHttpServer/QHttpRequest>
+#include <QtHttpServer/QHttpReply>
 
 class HttpHandler::Private : public QObject
 {

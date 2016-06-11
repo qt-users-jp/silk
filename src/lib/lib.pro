@@ -1,10 +1,9 @@
 TEMPLATE = lib
 TARGET = silk
 
-QT = qml
+QT = httpserver qml
 
 include(../../silklib.pri)
-include(../../qthttpserver/qthttpserver.pri)
 
 DEFINES += SILK_LIBRARY
 

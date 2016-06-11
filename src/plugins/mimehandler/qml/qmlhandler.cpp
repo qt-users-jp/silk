@@ -39,9 +39,9 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlExtensionPlugin>
 
-#include <qhttprequest.h>
-#include <qhttpreply.h>
-#include <qwebsocket.h>
+#include <QtHttpServer/QHttpRequest>
+#include <QtHttpServer/QHttpReply>
+#include <QtHttpServer/QWebSocket>
 
 #include <silkconfig.h>
 #include <silkimportsinterface.h>

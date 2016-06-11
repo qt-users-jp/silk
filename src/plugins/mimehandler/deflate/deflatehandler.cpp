@@ -28,7 +28,7 @@
 
 #include <QtCore/QDebug>
 
-#include <qhttpreply.h>
+#include <QtHttpServer/QHttpReply>
 
 DeflateHandler::DeflateHandler(QObject *parent)
     : SilkAbstractMimeHandler(parent)

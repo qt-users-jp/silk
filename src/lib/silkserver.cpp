@@ -38,9 +38,9 @@
 #include <QtCore/QRegularExpression>
 #include <QtCore/QUrl>
 
-#include <qhttprequest.h>
-#include <qhttpreply.h>
-#include <qwebsocket.h>
+#include <QtHttpServer/QHttpRequest>
+#include <QtHttpServer/QHttpReply>
+#include <QtHttpServer/QWebSocket>
 
 #include <silkmimehandlerinterface.h>
 #include <silkabstractmimehandler.h>

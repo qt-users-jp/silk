@@ -1,7 +1,7 @@
 SILK_PLUGIN_TYPE = mimehandler
 include(../../../../silkplugin.pri)
 
-QT = core
+QT = core httpserver
 
 HEADERS += \
     deflateplugin.h \

@@ -1,7 +1,7 @@
 SILK_PLUGIN_TYPE = mimehandler
 include(../../../../silkplugin.pri)
 
-QT += network qml
+QT += httpserver qml
 
 HEADERS += \
     qmlplugin.h \

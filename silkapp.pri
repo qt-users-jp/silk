@@ -2,7 +2,7 @@ isEmpty(SILKAPP_PRI) { SILKAPP_PRI = 1
 
     TEMPLATE = app
     QT -= gui
-    QT += network
+    QT += httpserver
 
     include(./silk.pri)
 

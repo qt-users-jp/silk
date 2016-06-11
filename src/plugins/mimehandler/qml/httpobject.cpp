@@ -29,7 +29,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
-#include <qhttprequest.h>
+#include <QtHttpServer/QHttpRequest>
 
 HttpFileData::HttpFileData(QHttpFileData *data, QObject *parent)
     : QObject(parent)

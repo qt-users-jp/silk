@@ -29,7 +29,7 @@
 
 #include "silkglobal.h"
 
-#include <qhttpserver.h>
+#include <QtHttpServer/QHttpServer>
 
 class SILK_EXPORT SilkServer : public QHttpServer
 {

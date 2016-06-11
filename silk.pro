@@ -1,3 +1,8 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS = src contents demos
+
+qtHaveModule(qml): qtHaveModule(httpserver) {
+    SUBDIRS = src contents demos
+} else {
+    error(silk requires QtQml and QtHttpserver installed.)
+}

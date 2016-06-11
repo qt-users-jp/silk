@@ -1,7 +1,7 @@
 SILK_PLUGIN_TYPE = protocolhandler
 include(../../../../silkplugin.pri)
 
-QT += network
+QT = httpserver
 
 HEADERS += \
     httpplugin.h \

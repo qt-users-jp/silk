@@ -1,3 +1,0 @@
-[submodule "qthttpserver"]
-	path = qthttpserver
-	url = ../qthttpserver.git
