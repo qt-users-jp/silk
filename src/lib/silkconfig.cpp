@@ -127,10 +127,11 @@ void SilkConfig::initialize(QCoreApplication *app)
     QCommandLineParser commandLine;
     QCommandLineOption config(QStringLiteral("config"), QStringLiteral("configuration qml file"), QStringLiteral("silkconfig.qml"));
     commandLine.addOption(config);
-    QCommandLineOption address(QStringLiteral("listen.address"), QStringLiteral("listening address"), QStringLiteral("localhost"));
+    QCommandLineOption address(QStringLiteral("listen.address"), QStringLiteral("listening address"), QStringLiteral("*"));
     commandLine.addOption(address);
     QCommandLineOption port(QStringLiteral("listen.port"), QStringLiteral("listening port"), QStringLiteral("8080"));
     commandLine.addOption(port);
+    commandLine.addHelpOption();
     commandLine.process(*app);
 
     if (commandLine.isSet(QStringLiteral("config"))) {

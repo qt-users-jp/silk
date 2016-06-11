@@ -2,7 +2,7 @@ import Silk.Config 0.1
 
 Config {
     listen: Listen {
-        address: 'localhost'
+        address: '*'
         port: 8080
     }
 

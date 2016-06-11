@@ -82,9 +82,8 @@ SilkPageTemplate {
                     Bootstrap.Span6 {
                         H2 { text: 'Build from source' }
                         Pre {
-                            Kbd { text: '$ git clone <a href="http://git.qt-users.jp/git/?p=codereview/silk.git;a=tree" target="_blank">git://git.qt-users.jp/codereview/silk.git</a>\n' }
+                            Kbd { text: '$ git clone --recursive <a href="http://git.qt-users.jp/git/?p=codereview/silk.git;a=tree" target="_blank">git://git.qt-users.jp/codereview/silk.git</a>\n' }
                             Kbd { text: "$ cd silk\n" }
-                            Kbd { text: "$ git submodule update --init\n" }
                             Kbd { text: "$ qt5/bin/qmake\n" }
                             Kbd { text: "$ make\n" }
                             Kbd { text: "$ ./bin/silk\n" }
@@ -110,7 +109,7 @@ SilkPageTemplate {
 
 Config {
     listen: Listen {
-        address: 'localhost'
+        address: '*'
         port: 8080
     }
 
