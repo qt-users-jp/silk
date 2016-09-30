@@ -210,11 +210,11 @@ SilkServer::Private::Private(SilkServer *parent)
             }
         }
     }
-    foreach (const QVariant &val, SilkConfig::value("rewrite").toList()) {
-        QVariantMap map = val.toMap();
-        foreach (const QString &key, map.keys()) {
-            rewriteRules.append(RewriteRule(QRegularExpression(key), map.value(key).toString()));
-        }
+
+    QVariantMap rewrite = SilkConfig::value("rewrite").toMap();
+    foreach (const QString &key, rewrite.keys()) {
+        QString value = rewrite.value(key).toString();
+        rewriteRules.append(RewriteRule(QRegularExpression(key), value));
     }
 
     if (q->listen(address, port)) {
